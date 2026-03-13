@@ -11,6 +11,7 @@ import '../screens/wizard/wizard_screen.dart';
 import '../screens/generation/generation_progress_screen.dart';
 import '../screens/reader/reader_screen.dart';
 import '../screens/library/library_screen.dart';
+import '../screens/legal/legal_screen.dart';
 
 /// Application route paths
 class AppRoutes {
@@ -82,6 +83,23 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.register,
         name: 'register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+
+      // Legal routes (public)
+      GoRoute(
+        path: AppRoutes.terms,
+        name: 'terms',
+        builder: (context, state) => const TermsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.privacy,
+        name: 'privacy',
+        builder: (context, state) => const PrivacyScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.consent,
+        name: 'consent',
+        builder: (context, state) => const ConsentScreen(),
       ),
 
       // Protected routes with shell

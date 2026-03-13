@@ -23,6 +23,7 @@ dependencies:
 
   # Networking
   dio: ^5.7.0
+  http: ^1.2.2
 
   # Auth & Security
   flutter_secure_storage: ^9.2.4

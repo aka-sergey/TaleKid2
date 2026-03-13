@@ -4,11 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
+import 'package:printing/printing.dart';
 
 import '../../config/router.dart';
 import '../../config/theme.dart';
 import '../../models/story.dart';
 import '../../providers/story_provider.dart';
+import '../../services/pdf_service.dart';
+import '../../services/share_service.dart';
 import '../../widgets/educational_popup.dart';
 import '../../widgets/title_dialog.dart';
 
@@ -78,6 +81,36 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
             story.id,
             chosenTitle,
           );
+    }
+  }
+
+  Future<void> _exportPdf(StoryDetail story) async {
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Генерируем PDF...')),
+      );
+      final pdfService = PdfService();
+      final bytes = await pdfService.generateStoryPdf(story);
+      await Printing.layoutPdf(onLayout: (_) => bytes);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ошибка PDF: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _shareStory(StoryDetail story) async {
+    final shareService = ShareService();
+    final copied = await shareService.shareStoryLink(
+      storyId: story.id,
+      storyTitle: story.displayTitle,
+    );
+    if (copied && kIsWeb && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ссылка скопирована!')),
+      );
     }
   }
 
@@ -172,7 +205,7 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
               },
             ),
 
-            // Top overlay — back button & title
+            // Top overlay — back button, title, PDF, share
             Positioned(
               top: 0,
               left: 0,
@@ -182,6 +215,8 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
                 currentPage: _currentPage,
                 totalPages: pages.length,
                 onBack: () => context.go(AppRoutes.library),
+                onPdf: () => _exportPdf(story),
+                onShare: () => _shareStory(story),
               ),
             ),
 
@@ -244,6 +279,18 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
               onPressed: () =>
                   EducationalPopup.show(context, page.educationalContent!),
             ),
+          // PDF export
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf),
+            tooltip: 'Скачать PDF',
+            onPressed: () => _exportPdf(story),
+          ),
+          // Share
+          IconButton(
+            icon: const Icon(Icons.share),
+            tooltip: 'Поделиться',
+            onPressed: () => _shareStory(story),
+          ),
         ],
       ),
       body: Center(
@@ -445,12 +492,16 @@ class _TopOverlay extends StatelessWidget {
   final int currentPage;
   final int totalPages;
   final VoidCallback onBack;
+  final VoidCallback? onPdf;
+  final VoidCallback? onShare;
 
   const _TopOverlay({
     required this.story,
     required this.currentPage,
     required this.totalPages,
     required this.onBack,
+    this.onPdf,
+    this.onShare,
   });
 
   @override
@@ -484,6 +535,18 @@ class _TopOverlay extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
+          if (onPdf != null)
+            IconButton(
+              icon: const Icon(Icons.picture_as_pdf, color: Colors.white70),
+              onPressed: onPdf,
+              tooltip: 'PDF',
+            ),
+          if (onShare != null)
+            IconButton(
+              icon: const Icon(Icons.share, color: Colors.white70),
+              onPressed: onShare,
+              tooltip: 'Поделиться',
+            ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
