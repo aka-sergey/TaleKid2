@@ -1,0 +1,212 @@
+[
+  {
+    "slug": "adventure",
+    "name_ru": "Приключения",
+    "description_ru": "Захватывающие истории с путешествиями, опасностями и смелыми героями.",
+    "prompt_hint": "Create an exciting adventure story with a fast pace, unexpected twists, and brave characters overcoming obstacles. Include moments of tension, discovery, and triumph. The tone should be thrilling yet age-appropriate.",
+    "sort_order": 1
+  },
+  {
+    "slug": "detective",
+    "name_ru": "Детектив",
+    "description_ru": "Истории с загадками, расследованиями и поиском разгадок.",
+    "prompt_hint": "Write a mystery story where the main character must solve a puzzle or find clues to uncover the truth. Include red herrings, logical deduction, and a satisfying reveal at the end. Keep the tone curious and engaging.",
+    "sort_order": 2
+  },
+  {
+    "slug": "rescue",
+    "name_ru": "Спасение",
+    "description_ru": "Истории о спасении друзей, животных или целых миров от опасности.",
+    "prompt_hint": "Write a rescue story where the hero must save someone or something in danger. Build urgency and suspense, show courage and selflessness. Include moments of teamwork and a heartwarming resolution.",
+    "sort_order": 3
+  },
+  {
+    "slug": "riddles",
+    "name_ru": "Загадки",
+    "description_ru": "Истории, построенные вокруг головоломок, ребусов и интеллектуальных вызовов.",
+    "prompt_hint": "Create a story centered around riddles, puzzles, and intellectual challenges that the hero must solve to progress. Include clever wordplay and logic problems. The tone should be playful and stimulating for young minds.",
+    "sort_order": 4
+  },
+  {
+    "slug": "journey",
+    "name_ru": "Путешествие",
+    "description_ru": "Истории о дальних странствиях и открытии новых земель и культур.",
+    "prompt_hint": "Write a journey story where characters travel to distant or unknown places, discovering new lands, cultures, and wonders. Include vivid descriptions of landscapes and encounters with diverse characters. The tone should be wonder-filled and exploratory.",
+    "sort_order": 5
+  },
+  {
+    "slug": "friendship",
+    "name_ru": "Дружба",
+    "description_ru": "Тёплые истории о настоящей дружбе, взаимопомощи и верности.",
+    "prompt_hint": "Create a warm story about the power of friendship, showing how friends support each other through challenges. Emphasize trust, loyalty, and understanding differences. The tone should be heartfelt and emotionally resonant.",
+    "sort_order": 6
+  },
+  {
+    "slug": "fantasy",
+    "name_ru": "Фэнтези",
+    "description_ru": "Истории с волшебством, магическими существами и сказочными мирами.",
+    "prompt_hint": "Write a fantasy story with magic, mythical creatures, and enchanted realms. Include spells, magical artifacts, and wondrous transformations. The tone should be imaginative and filled with a sense of wonder and possibility.",
+    "sort_order": 7
+  },
+  {
+    "slug": "space-sci-fi",
+    "name_ru": "Космос/научная фантастика",
+    "description_ru": "Истории о космических путешествиях, инопланетянах и технологиях будущего.",
+    "prompt_hint": "Create a science fiction story set in space or the future with advanced technology, alien encounters, and cosmic exploration. Include imaginative gadgets and otherworldly settings. The tone should be awe-inspiring and scientifically curious.",
+    "sort_order": 8
+  },
+  {
+    "slug": "fairy-tale",
+    "name_ru": "Сказка",
+    "description_ru": "Классические сказочные истории с волшебством, добром и злом.",
+    "prompt_hint": "Write a classic fairy tale with magical elements, a clear struggle between good and evil, and a moral lesson. Use traditional storytelling patterns with enchanting openings and satisfying endings. The tone should be timeless and enchanting.",
+    "sort_order": 9
+  },
+  {
+    "slug": "humor",
+    "name_ru": "Юмор",
+    "description_ru": "Весёлые и смешные истории, которые поднимают настроение.",
+    "prompt_hint": "Create a funny, lighthearted story with comedic situations, silly misunderstandings, and humorous dialogue. Include slapstick humor, wordplay, and absurd situations that children will find hilarious. The tone should be joyful and playful.",
+    "sort_order": 10
+  },
+  {
+    "slug": "animal-stories",
+    "name_ru": "Истории про животных",
+    "description_ru": "Истории, где главные герои — животные с их характерами и приключениями.",
+    "prompt_hint": "Write a story with animal characters who have distinct personalities reflecting their species. Include natural behaviors mixed with anthropomorphic qualities. The tone should be warm and educational about the animal world while being entertaining.",
+    "sort_order": 11
+  },
+  {
+    "slug": "superheroes",
+    "name_ru": "Супергерои",
+    "description_ru": "Истории о героях с необычными способностями, спасающих мир.",
+    "prompt_hint": "Create a superhero story where an ordinary child discovers special abilities and uses them to help others. Include exciting action sequences, a worthy challenge, and the responsibility that comes with power. The tone should be empowering and inspiring.",
+    "sort_order": 12
+  },
+  {
+    "slug": "light-mystery",
+    "name_ru": "Лёгкая мистика",
+    "description_ru": "Слегка таинственные истории с загадочными явлениями, но без страшных элементов.",
+    "prompt_hint": "Write a mildly mysterious story with unexplained phenomena, hidden secrets, and gentle suspense. Keep it intriguing but never scary — more curious than frightening. The tone should be atmospheric and wonder-filled with a reassuring resolution.",
+    "sort_order": 13
+  },
+  {
+    "slug": "everyday-stories",
+    "name_ru": "Повседневные истории",
+    "description_ru": "Истории о повседневной жизни детей с маленькими открытиями и уроками.",
+    "prompt_hint": "Create a realistic story about everyday childhood experiences — going to the park, making a new friend, dealing with a small problem. Find magic in ordinary moments. The tone should be relatable, gentle, and affirming.",
+    "sort_order": 14
+  },
+  {
+    "slug": "school-stories",
+    "name_ru": "Школьные истории",
+    "description_ru": "Истории о школьной жизни, учёбе, друзьях и приключениях на переменах.",
+    "prompt_hint": "Write a story set in a school environment with classroom adventures, playground dynamics, and learning experiences. Include relatable school situations and friendships. The tone should be fun, engaging, and encouraging toward education.",
+    "sort_order": 15
+  },
+  {
+    "slug": "family-stories",
+    "name_ru": "Семейные истории",
+    "description_ru": "Тёплые истории о семье, любви между родными и семейных ценностях.",
+    "prompt_hint": "Create a heartwarming story about family bonds, relationships between siblings, parents, and grandparents. Show how families support each other and grow together. The tone should be loving, cozy, and emotionally genuine.",
+    "sort_order": 16
+  },
+  {
+    "slug": "moral-stories",
+    "name_ru": "Поучительные истории",
+    "description_ru": "Истории с ясной моралью и жизненным уроком для ребёнка.",
+    "prompt_hint": "Write a story with a clear moral lesson woven naturally into the narrative. Show consequences of choices and the value of good character traits like honesty, kindness, and perseverance. The tone should be wise but never preachy — let the story teach through example.",
+    "sort_order": 17
+  },
+  {
+    "slug": "survival-nature",
+    "name_ru": "Выживание/природа",
+    "description_ru": "Истории о выживании в дикой природе и взаимодействии с окружающим миром.",
+    "prompt_hint": "Create a survival story set in the wilderness where the hero must use knowledge of nature to overcome challenges. Include real facts about plants, animals, and weather. The tone should be adventurous and educational about respecting nature.",
+    "sort_order": 18
+  },
+  {
+    "slug": "historical-adventure",
+    "name_ru": "Исторические приключения",
+    "description_ru": "Приключенческие истории на фоне исторических событий и эпох.",
+    "prompt_hint": "Write an adventure story set in a historical period with accurate cultural details, costumes, and settings. Include real historical elements mixed with fictional characters. The tone should be exciting and educational, bringing history to life for children.",
+    "sort_order": 19
+  },
+  {
+    "slug": "creativity-imagination",
+    "name_ru": "Творчество/воображение",
+    "description_ru": "Истории о силе воображения, творчества и самовыражения.",
+    "prompt_hint": "Create a story celebrating creativity, imagination, and artistic expression. Show how a child's creative vision transforms the world around them. Include moments of inspiration and the joy of making art, music, or stories. The tone should be dreamy, inspiring, and liberating.",
+    "sort_order": 20
+  },
+  {
+    "slug": "holiday-stories",
+    "name_ru": "Праздничные истории",
+    "description_ru": "Истории, связанные с праздниками, торжествами и особыми событиями.",
+    "prompt_hint": "Write a festive story centered around a holiday or celebration with traditions, preparations, and the spirit of togetherness. Include sensory details of decorations, food, and music. The tone should be joyful, festive, and filled with anticipation and warmth.",
+    "sort_order": 21
+  },
+  {
+    "slug": "science-adventure",
+    "name_ru": "Научные приключения",
+    "description_ru": "Истории, где наука и эксперименты становятся основой приключений.",
+    "prompt_hint": "Create a story where scientific curiosity drives the adventure — experiments, discoveries, and inventions. Include real scientific concepts explained in a fun, accessible way. The tone should be curious, intellectual, and exciting about the wonders of science.",
+    "sort_order": 22
+  },
+  {
+    "slug": "quest-treasure-hunt",
+    "name_ru": "Квест/поиск сокровищ",
+    "description_ru": "Истории о поиске сокровищ, следовании за картой и разгадывании подсказок.",
+    "prompt_hint": "Write a quest story with a treasure map, sequential clues, and challenges to overcome at each stage. Build excitement with each discovery leading closer to the final prize. The tone should be adventurous and rewarding, with teamwork and cleverness being the real treasures.",
+    "sort_order": 23
+  },
+  {
+    "slug": "sea-adventure",
+    "name_ru": "Морские приключения",
+    "description_ru": "Истории о морских путешествиях, кораблях и подводных открытиях.",
+    "prompt_hint": "Create a seafaring adventure with ships, ocean exploration, and maritime challenges. Include vivid descriptions of the sea, storms, islands, and marine life. The tone should be bold, salty, and full of the freedom and danger of the open ocean.",
+    "sort_order": 24
+  },
+  {
+    "slug": "prehistoric-world",
+    "name_ru": "Доисторический мир",
+    "description_ru": "Истории о динозаврах, первобытных людях и древних временах.",
+    "prompt_hint": "Write a story set in prehistoric times with dinosaurs, early humans, or ancient creatures. Include factual details about prehistoric life mixed with imaginative storytelling. The tone should be epic, primal, and filled with wonder at the ancient world.",
+    "sort_order": 25
+  },
+  {
+    "slug": "robots-technology",
+    "name_ru": "Роботы/технологии",
+    "description_ru": "Истории о роботах, искусственном интеллекте и технологических изобретениях.",
+    "prompt_hint": "Create a story featuring robots, AI, or futuristic technology as central elements. Explore themes of what makes us human, friendship with machines, and the wonders and responsibilities of technology. The tone should be forward-thinking, imaginative, and thoughtful.",
+    "sort_order": 26
+  },
+  {
+    "slug": "profession-stories",
+    "name_ru": "Истории про профессии",
+    "description_ru": "Истории, знакомящие детей с разными профессиями и их особенностями.",
+    "prompt_hint": "Write a story that introduces children to a profession through an exciting day on the job. Include realistic details about what the profession involves and why it matters. The tone should be informative, respectful of all work, and inspiring for future career dreams.",
+    "sort_order": 27
+  },
+  {
+    "slug": "magical-worlds",
+    "name_ru": "Волшебные миры",
+    "description_ru": "Истории о путешествиях в волшебные миры с необычными правилами и существами.",
+    "prompt_hint": "Create a story about discovering and exploring a magical world with its own unique rules, creatures, and wonders. Include a portal or transition from the real world. The tone should be enchanting, immersive, and full of imaginative world-building details.",
+    "sort_order": 28
+  },
+  {
+    "slug": "secrets-mysteries",
+    "name_ru": "Тайны и секреты",
+    "description_ru": "Истории о раскрытии тайн, секретных обществах и скрытых знаниях.",
+    "prompt_hint": "Write a story about uncovering hidden secrets, ancient mysteries, or concealed truths. Include codes, hidden passages, and layers of discovery. The tone should be intriguing and suspenseful but always safe, with each revelation leading to deeper understanding.",
+    "sort_order": 29
+  },
+  {
+    "slug": "self-discovery-growing-up",
+    "name_ru": "Самопознание/взросление",
+    "description_ru": "Истории о познании себя, своих чувств и взрослении.",
+    "prompt_hint": "Create a story about a child's journey of self-discovery, dealing with emotions, finding their identity, and growing up. Include moments of doubt, reflection, and breakthrough. The tone should be empathetic, validating, and encouraging — showing that growing up is an adventure in itself.",
+    "sort_order": 30
+  }
+]

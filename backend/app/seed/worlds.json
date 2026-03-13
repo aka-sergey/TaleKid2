@@ -1,0 +1,242 @@
+[
+  {
+    "slug": "underwater-kingdom",
+    "name_ru": "Подводное королевство",
+    "description_ru": "Величественное царство на дне океана с коралловыми дворцами и морскими обитателями.",
+    "prompt_hint": "Set the story in a grand underwater kingdom at the bottom of the ocean with coral palaces, pearl gates, and sea creature citizens. The atmosphere is serene yet full of wonder, with currents carrying messages and bioluminescent creatures lighting the way.",
+    "visual_style_hint": "Deep ocean blues and teals, shimmering coral structures in pink and orange, bioluminescent jellyfish and fish providing soft glow. Light rays filtering from the surface above, pearl-white architecture, flowing seaweed gardens, crystal-clear water with floating bubbles.",
+    "sort_order": 1
+  },
+  {
+    "slug": "enchanted-forest",
+    "name_ru": "Волшебный лес",
+    "description_ru": "Таинственный древний лес с говорящими деревьями, магическими существами и светящимися тропами.",
+    "prompt_hint": "Set the story in an ancient enchanted forest where trees whisper secrets, magical creatures hide behind every bush, and glowing paths lead to hidden clearings. The atmosphere is mysterious yet welcoming, with layers of wonder in every mossy corner.",
+    "visual_style_hint": "Lush deep greens with golden sunbeams piercing the canopy, glowing mushrooms and fireflies, ancient gnarled trees with faces in their bark. Misty paths covered in soft moss, flower petals floating in the air, warm amber and emerald color palette with magical sparkles.",
+    "sort_order": 2
+  },
+  {
+    "slug": "outer-space",
+    "name_ru": "Космос",
+    "description_ru": "Бескрайнее космическое пространство с планетами, звёздами и космическими станциями.",
+    "prompt_hint": "Set the story in the vastness of outer space with colorful nebulae, diverse planets, space stations, and starships. The atmosphere is awe-inspiring and boundless, filled with the wonder of cosmic exploration and encounters with alien civilizations.",
+    "visual_style_hint": "Deep black space dotted with brilliant stars, colorful swirling nebulae in purple and pink, ringed planets in the distance. Sleek silver spacecraft, holographic displays, zero-gravity environments. Dramatic lighting from nearby stars casting long shadows.",
+    "sort_order": 3
+  },
+  {
+    "slug": "ancient-legends",
+    "name_ru": "Древние легенды",
+    "description_ru": "Мир древних мифов и легенд с героями, богами и мифическими существами.",
+    "prompt_hint": "Set the story in a world inspired by ancient myths and legends, where gods walk among mortals, heroes undertake epic quests, and mythical creatures guard ancient secrets. The atmosphere is epic and timeless, blending reverence with adventure.",
+    "visual_style_hint": "Ancient stone temples and marble columns, golden sunsets over olive groves, dramatic mountain peaks touching the clouds. Warm earth tones mixed with celestial gold, weathered stone textures, dramatic torch-lit interiors, ornate ancient patterns and mosaics.",
+    "sort_order": 4
+  },
+  {
+    "slug": "underground-world",
+    "name_ru": "Подземный мир",
+    "description_ru": "Таинственный мир глубоко под землёй с пещерами, кристаллами и подземными реками.",
+    "prompt_hint": "Set the story deep underground in a vast network of caverns with crystal formations, underground rivers, and hidden civilizations. The atmosphere is mysterious and enclosed, with every tunnel potentially leading to a new discovery or danger.",
+    "visual_style_hint": "Dramatic cave interiors with massive stalactites and stalagmites, glowing crystals in amethyst purple and emerald green, underground rivers reflecting flickering light. Dark shadows contrasting with bright mineral veins, bioluminescent cave life, warm orange torchlight against cool stone walls.",
+    "sort_order": 5
+  },
+  {
+    "slug": "sky-kingdom",
+    "name_ru": "Небесное королевство",
+    "description_ru": "Парящее королевство среди облаков с воздушными замками и крылатыми жителями.",
+    "prompt_hint": "Set the story in a magnificent kingdom floating among the clouds, with castles built on cloud foundations, rainbow bridges connecting floating islands, and winged citizens soaring through the sky. The atmosphere is light, airy, and filled with freedom.",
+    "visual_style_hint": "Fluffy white and golden clouds forming platforms and pathways, pastel sky in soft pinks, blues, and lavenders. Gleaming white and gold architecture floating weightlessly, rainbow bridges, sunbeams creating halos, birds and butterflies everywhere. Ethereal dreamy quality with soft diffused light.",
+    "sort_order": 6
+  },
+  {
+    "slug": "dinosaur-world",
+    "name_ru": "Мир динозавров",
+    "description_ru": "Доисторический мир с величественными динозаврами, древними джунглями и вулканами.",
+    "prompt_hint": "Set the story in a prehistoric world where dinosaurs roam lush ancient jungles, volcanoes rumble in the distance, and primitive landscapes stretch endlessly. The atmosphere is primal and magnificent, full of the raw power and beauty of the ancient Earth.",
+    "visual_style_hint": "Dense prehistoric jungle with giant ferns and cycads, massive dinosaurs in naturalistic colors. Volcanic mountains smoking in the background, warm amber sunlight, rich earthy greens and browns. Dramatic scale contrasts between tiny characters and enormous creatures, misty primeval atmosphere.",
+    "sort_order": 7
+  },
+  {
+    "slug": "dragon-world",
+    "name_ru": "Мир драконов",
+    "description_ru": "Мир, где драконы и люди живут бок о бок, с огненными горами и драконьими гнёздами.",
+    "prompt_hint": "Set the story in a world where dragons of all sizes and colors coexist with other inhabitants. Dragon eyries sit atop volcanic peaks, young dragons learn to fly, and ancient dragon elders guard hoards of wisdom. The atmosphere is majestic, warm, and awe-inspiring.",
+    "visual_style_hint": "Dramatic rocky peaks with dragon caves, warm fire glow emanating from within mountains, colorful dragon scales shimmering in sunlight. Rich jewel tones — ruby red, sapphire blue, emerald green. Epic sweeping vistas with dragons soaring through dramatic cloud formations, volcanic warmth.",
+    "sort_order": 8
+  },
+  {
+    "slug": "robot-world",
+    "name_ru": "Мир роботов",
+    "description_ru": "Футуристический мир, где роботы строят, творят и живут своей механической жизнью.",
+    "prompt_hint": "Set the story in a futuristic world built and inhabited by robots of all shapes and sizes. Everything runs on gears, circuits, and energy cores. The atmosphere is orderly yet creative, with robots expressing personality through their unique designs and functions.",
+    "visual_style_hint": "Sleek metallic surfaces in chrome, copper, and brushed steel. Neon blue and green accent lights, holographic displays, conveyor belts, and gear mechanisms visible everywhere. Clean geometric architecture, circuit board patterns on surfaces, LED indicator lights, soft blue ambient glow.",
+    "sort_order": 9
+  },
+  {
+    "slug": "enchanted-castle",
+    "name_ru": "Заколдованный замок",
+    "description_ru": "Древний замок, полный магических тайн, заколдованных комнат и волшебных артефактов.",
+    "prompt_hint": "Set the story in an ancient enchanted castle with rooms that change, hallways that shift, and magical artifacts hidden in every corner. Suits of armor may come to life, paintings whisper clues, and secret passages lead to forgotten chambers. The atmosphere is mysterious and magical.",
+    "visual_style_hint": "Gothic stone castle interiors with high vaulted ceilings, flickering candlelight casting dancing shadows. Rich purple and deep blue tapestries, stained glass windows casting colored light, dusty ancient books, magical glowing artifacts. Cobwebs in corners, ornate iron chandeliers, warm fireplace glow contrasting cool stone.",
+    "sort_order": 10
+  },
+  {
+    "slug": "mysterious-island",
+    "name_ru": "Таинственный остров",
+    "description_ru": "Загадочный остров с неизведанными джунглями, древними руинами и скрытыми тайнами.",
+    "prompt_hint": "Set the story on a mysterious uncharted island with dense jungles hiding ancient ruins, hidden caves with forgotten treasures, and strange creatures found nowhere else. The atmosphere is adventurous and suspenseful, with every step revealing something unexpected.",
+    "visual_style_hint": "Tropical island with dense green jungle, sandy golden beaches, turquoise waters. Crumbling stone ruins overgrown with vines, mysterious carved symbols, waterfalls cascading into hidden pools. Dramatic cloud formations overhead, warm tropical sunlight with dappled shadow patterns in the jungle.",
+    "sort_order": 11
+  },
+  {
+    "slug": "wonder-desert",
+    "name_ru": "Пустыня чудес",
+    "description_ru": "Волшебная пустыня с миражами, летающими коврами и сокровищами под песками.",
+    "prompt_hint": "Set the story in a magical desert where sand dunes hide ancient cities, mirages come to life, flying carpets soar overhead, and genies grant wishes. The atmosphere is exotic and dreamlike, with the shimmering heat creating wonders at every turn.",
+    "visual_style_hint": "Vast golden sand dunes under a brilliant blue sky, ornate Arabian-style palaces with golden domes and minarets. Rich warm golds and deep desert oranges, starry night skies of deep indigo, shimmering heat haze effects. Intricate geometric tile patterns, flowing silk fabrics, magical golden sand particles.",
+    "sort_order": 12
+  },
+  {
+    "slug": "north-pole",
+    "name_ru": "Северный полюс",
+    "description_ru": "Ледяной мир Северного полюса с северным сиянием, белыми медведями и снежными дворцами.",
+    "prompt_hint": "Set the story at the North Pole with vast ice fields, magical aurora borealis overhead, ice palaces, and friendly arctic animals. The atmosphere is crisp, sparkling, and magical, where the cold itself has a crystalline beauty.",
+    "visual_style_hint": "Pristine white snow and ice landscapes, spectacular green and purple northern lights dancing across the dark sky. Crystal-clear ice structures catching and refracting light, soft blue shadows on snow, warm golden light from cozy shelters contrasting with cold blue exteriors. Sparkling frost crystals, icicle formations.",
+    "sort_order": 13
+  },
+  {
+    "slug": "jungle",
+    "name_ru": "Джунгли",
+    "description_ru": "Густые тропические джунгли с экзотическими животными, лианами и древними храмами.",
+    "prompt_hint": "Set the story in dense tropical jungles with towering trees, thick vines, exotic animals, and hidden ancient temples. The atmosphere is vibrant and alive, with the constant sounds of wildlife and the thrill of exploring uncharted territory.",
+    "visual_style_hint": "Dense layered jungle canopy in multiple shades of green, colorful tropical birds and butterflies, thick hanging vines and lianas. Dappled sunlight filtering through massive leaves, ancient stone temple ruins covered in moss, rushing jungle rivers. Warm humid atmosphere with mist rising from the forest floor.",
+    "sort_order": 14
+  },
+  {
+    "slug": "future-city",
+    "name_ru": "Город будущего",
+    "description_ru": "Сверкающий город будущего с летающими машинами, небоскрёбами и передовыми технологиями.",
+    "prompt_hint": "Set the story in a gleaming city of the future with flying vehicles, towering skyscrapers connected by skyways, advanced AI helpers, and green rooftop gardens. The atmosphere is optimistic and innovative, showing a bright future where technology improves life for everyone.",
+    "visual_style_hint": "Towering glass and steel skyscrapers with organic curved shapes, flying vehicles leaving light trails, holographic billboards and signs. Clean whites and silvers with colorful neon accents, lush vertical gardens on buildings, transparent walkways between towers, sunset reflecting off mirrored surfaces.",
+    "sort_order": 15
+  },
+  {
+    "slug": "medieval-kingdom",
+    "name_ru": "Средневековое королевство",
+    "description_ru": "Средневековое королевство с рыцарями, турнирами, замками и ярмарками.",
+    "prompt_hint": "Set the story in a medieval kingdom with stone castles, brave knights, bustling market towns, and colorful tournaments. The atmosphere is chivalrous and vibrant, with the pageantry of medieval life and the excitement of jousting and quests.",
+    "visual_style_hint": "Stone castle walls with fluttering colorful banners, cobblestone streets, timber-framed market stalls. Warm golden torchlight, polished armor reflecting light, rich heraldic colors of red, blue, and gold. Green rolling countryside, horse-drawn carts, medieval fair tents in bright stripes.",
+    "sort_order": 16
+  },
+  {
+    "slug": "candy-land",
+    "name_ru": "Страна сладостей",
+    "description_ru": "Сказочная страна, где всё сделано из конфет, шоколада, печенья и мороженого.",
+    "prompt_hint": "Set the story in a fantastical land made entirely of sweets — chocolate rivers, gumdrop mountains, cookie houses, and ice cream glaciers. The atmosphere is joyful and whimsical, appealing to all the senses with delicious surroundings at every turn.",
+    "visual_style_hint": "Vibrant candy colors — bright pinks, purples, yellows, and greens. Chocolate brown rivers flowing past gingerbread houses, lollipop trees lining candy-cane paths, cotton candy clouds. Glossy shiny surfaces like wrapped candy, sugar crystal sparkles, warm bakery glow, frosting-covered architecture.",
+    "sort_order": 17
+  },
+  {
+    "slug": "dream-world",
+    "name_ru": "Мир снов",
+    "description_ru": "Сюрреалистический мир сновидений, где законы физики не работают и фантазия не знает границ.",
+    "prompt_hint": "Set the story in a surreal dream world where the laws of physics are suggestions, stairs lead to the sky, rivers flow upward, and thoughts become visible. The atmosphere is dreamy and fluid, constantly shifting and transforming in delightful ways.",
+    "visual_style_hint": "Soft pastel colors blending into each other — lavender, mint, peach, and baby blue. Floating islands, upside-down waterfalls, melting clock-like distortions. Soft diffused light with no harsh shadows, slightly blurred edges, impossible architecture, gentle swirling patterns in the sky.",
+    "sort_order": 18
+  },
+  {
+    "slug": "lost-city",
+    "name_ru": "Затерянный город",
+    "description_ru": "Древний затерянный город, скрытый от мира, с забытыми технологиями и сокровищами.",
+    "prompt_hint": "Set the story in a long-lost city hidden from the modern world, with forgotten advanced technology, overgrown golden architecture, and ancient guardians still protecting its secrets. The atmosphere is one of awe and discovery, like stepping into a living museum.",
+    "visual_style_hint": "Massive ancient stone and gold architecture overgrown with jungle vines, grand plazas with cracked mosaic floors, towering carved statues. Warm golden stone catching sunlight, green vegetation reclaiming buildings, mysterious glowing symbols, shafts of light penetrating through collapsed roofs.",
+    "sort_order": 19
+  },
+  {
+    "slug": "pirate-islands",
+    "name_ru": "Пиратские острова",
+    "description_ru": "Архипелаг пиратских островов с кораблями, сокровищами и морскими приключениями.",
+    "prompt_hint": "Set the story among a chain of pirate islands with hidden coves, treasure-filled caves, bustling pirate ports, and ships sailing between islands. The atmosphere is adventurous and salty, with the constant excitement of the seafaring life and treasure hunts.",
+    "visual_style_hint": "Tropical islands with palm trees and white sand beaches, wooden pirate ships with billowing sails and skull flags. Turquoise Caribbean waters, sunset oranges and reds, treasure chests spilling gold coins, weathered wooden docks and taverns. Dramatic ocean skies with towering cumulus clouds.",
+    "sort_order": 20
+  },
+  {
+    "slug": "magic-school",
+    "name_ru": "Волшебная школа",
+    "description_ru": "Академия магии, где юные волшебники изучают заклинания, зелья и волшебные искусства.",
+    "prompt_hint": "Set the story in a magical academy where young wizards learn spells, brew potions, and master magical arts. The school has enchanted classrooms, a vast library of spell books, and hidden passages. The atmosphere is scholarly yet full of magical surprises.",
+    "visual_style_hint": "Gothic academic architecture with tall pointed towers, enchanted floating candles, vast libraries with books that fly off shelves. Deep purples and midnight blues with warm golden candlelight, bubbling cauldrons with colorful potions, magical chalk writing appearing on blackboards, starry ceiling enchantments.",
+    "sort_order": 21
+  },
+  {
+    "slug": "deep-ocean",
+    "name_ru": "Подводные глубины",
+    "description_ru": "Тёмные и загадочные глубины океана с невиданными существами и подводными вулканами.",
+    "prompt_hint": "Set the story in the mysterious deep ocean where sunlight never reaches, strange bioluminescent creatures drift through the darkness, and underwater volcanoes create new landscapes. The atmosphere is eerie yet fascinating, like exploring an alien world on our own planet.",
+    "visual_style_hint": "Very dark deep blue and black ocean depths, bioluminescent creatures casting eerie blue, green, and purple light. Massive underwater rock formations, hydrothermal vents glowing orange, ghostly translucent jellyfish, deep-sea angler fish with glowing lures. Particles floating in water like underwater snow.",
+    "sort_order": 22
+  },
+  {
+    "slug": "moon-base",
+    "name_ru": "Лунная база",
+    "description_ru": "Научная база на Луне с куполами, лунными вездеходами и видом на Землю.",
+    "prompt_hint": "Set the story on a lunar base with pressurized domes, moon rovers, low-gravity labs, and a stunning view of Earth in the sky. The atmosphere is pioneering and scientific, with the excitement of living on another world and the challenges of space habitation.",
+    "visual_style_hint": "Gray lunar surface with craters and fine dust, white and silver dome structures with glowing windows, Earth hanging as a blue marble in the black sky. Clean interior lighting in whites and soft blues, astronaut suits, lunar rover tracks in regolith, stark dramatic shadows from unfiltered sunlight.",
+    "sort_order": 23
+  },
+  {
+    "slug": "monster-planet",
+    "name_ru": "Планета монстров",
+    "description_ru": "Далёкая планета, населённая забавными и дружелюбными монстрами всех форм и размеров.",
+    "prompt_hint": "Set the story on a distant planet populated by friendly monsters of all shapes, sizes, and colors. Despite their scary appearance, they are kind and playful. The atmosphere is colorful and comical, subverting expectations about what a monster really is.",
+    "visual_style_hint": "Alien landscape with purple and teal vegetation, oddly shaped rock formations, two moons in the sky. Colorful friendly monsters in every bright hue — spotted, striped, fuzzy, scaly. Whimsical alien architecture with round doorways, playful cartoon-like style, vibrant saturated colors throughout.",
+    "sort_order": 24
+  },
+  {
+    "slug": "giant-world",
+    "name_ru": "Мир великанов",
+    "description_ru": "Мир, где всё огромное — гигантские деревья, огромные грибы и добрые великаны.",
+    "prompt_hint": "Set the story in a world of giants where everything is enormous — massive trees reaching into the clouds, mushrooms the size of houses, and gentle giant inhabitants. The atmosphere emphasizes scale and wonder, making ordinary things extraordinary through sheer size.",
+    "visual_style_hint": "Extreme scale contrast — tiny characters dwarfed by enormous everyday objects, trees reaching impossibly high, mushrooms large as buildings. Rich saturated earth tones and forest greens, dramatic low-angle perspectives looking upward, soft misty atmosphere at the tops of giant structures, warm golden light.",
+    "sort_order": 25
+  },
+  {
+    "slug": "miniature-world",
+    "name_ru": "Мир миниатюрных существ",
+    "description_ru": "Крошечный мир, где обитатели размером с муравья живут среди травинок и цветов.",
+    "prompt_hint": "Set the story in a miniature world where characters are the size of insects, living among blades of grass, flower petals, and dewdrops. An ordinary garden becomes an epic landscape. The atmosphere is intimate yet vast, revealing the hidden world beneath our feet.",
+    "visual_style_hint": "Macro-photography perspective — enormous blades of grass, dewdrops like crystal balls, flower petals as platforms. Bright vivid greens and flower colors, warm diffused sunlight, tiny homes built in acorn caps and thimbles. Detailed textures of leaves and bark at extreme close-up, soft bokeh backgrounds.",
+    "sort_order": 26
+  },
+  {
+    "slug": "cloud-country",
+    "name_ru": "Облачная страна",
+    "description_ru": "Страна, построенная на облаках, где облака можно лепить и из них строить.",
+    "prompt_hint": "Set the story in a country made of clouds where the inhabitants shape clouds into buildings, furniture, and vehicles. Cloud shepherds tend to cloud flocks, and rain is harvested like crops. The atmosphere is light, soft, and full of gentle wonder.",
+    "visual_style_hint": "Entirely white and pastel cloud formations shaped into buildings and landscapes, soft diffused sunlight creating warm glows. Cotton-candy textures, rainbow refractions in mist, golden hour lighting. Soft edges on everything, no hard surfaces, dreamy gentle color gradients from white to soft pink, blue, and gold.",
+    "sort_order": 27
+  },
+  {
+    "slug": "shadow-labyrinth",
+    "name_ru": "Лабиринт теней",
+    "description_ru": "Загадочный лабиринт, где тени оживают и хранят древние секреты.",
+    "prompt_hint": "Set the story in a vast mysterious labyrinth where shadows have a life of their own, walls shift and rearrange, and ancient riddles must be solved to find the way. The atmosphere is suspenseful but not frightening, more puzzling than scary, with light always available as comfort.",
+    "visual_style_hint": "High stone walls of a maze with dramatic shadow play, warm torchlight creating long dancing shadows on walls. Deep blues and warm ambers contrasting, shadows that form recognizable shapes and characters. Mysterious glowing symbols on walls, paths splitting in multiple directions, soft fog at ankle level.",
+    "sort_order": 28
+  },
+  {
+    "slug": "time-kingdom",
+    "name_ru": "Королевство времени",
+    "description_ru": "Волшебное королевство, где можно путешествовать между эпохами и управлять временем.",
+    "prompt_hint": "Set the story in a kingdom that exists outside of normal time, where different eras coexist side by side — a medieval tower next to a futuristic dome. Time flows differently here, and clocks are living creatures. The atmosphere is wonderfully disorienting and full of temporal surprises.",
+    "visual_style_hint": "A patchwork of different historical eras blending together — medieval stone meets futuristic glass, ancient columns support modern roofs. Giant clock gears and mechanisms visible in the architecture, hourglasses as decorative elements. Warm sepia tones for past areas transitioning to cool silver-blue for future zones, golden clock hands and Roman numerals as motifs.",
+    "sort_order": 29
+  },
+  {
+    "slug": "elemental-world",
+    "name_ru": "Мир стихий",
+    "description_ru": "Мир, разделённый на царства четырёх стихий — огня, воды, земли и воздуха.",
+    "prompt_hint": "Set the story in a world divided into four elemental realms — fire, water, earth, and air — each with its own landscape, culture, and elemental magic. The borders between realms create unique phenomena. The atmosphere shifts dramatically between realms, each with its own beauty and challenges.",
+    "visual_style_hint": "Four distinct color palettes merging at borders: Fire realm in reds, oranges, and molten gold with lava rivers; Water realm in deep blues and teals with crystalline waterfalls; Earth realm in rich browns and greens with towering stone formations; Air realm in whites and pale blues with floating clouds. Each zone has its own lighting — warm for fire, cool for water, earthy for earth, bright for air.",
+    "sort_order": 30
+  }
+]
