@@ -1,0 +1,1951 @@
+[
+  {
+    "slug": "little-red-riding-hood",
+    "name_ru": "Красная Шапочка",
+    "summary_ru": "История о девочке, которая отправилась к бабушке через лес и встретила хитрого волка",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Мама отправляет девочку к бабушке с пирожками"},
+        {"act": 2, "description": "В лесу девочка встречает волка, который обманывает её и бежит к бабушке"},
+        {"act": 3, "description": "Волк притворяется бабушкой, но охотник спасает всех"}
+      ]
+    },
+    "moral_ru": "Не разговаривай с незнакомцами и слушай родителей",
+    "icon_url": null,
+    "sort_order": 1,
+    "characters": [
+      {
+        "name_ru": "Красная Шапочка",
+        "role": "protagonist",
+        "appearance_prompt": "A young girl with rosy cheeks wearing a bright red hooded cape, simple dress, carrying a basket of pies, innocent and cheerful expression",
+        "personality_ru": "Добрая, наивная, доверчивая девочка",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Серый Волк",
+        "role": "antagonist",
+        "appearance_prompt": "A large grey wolf with sharp teeth and cunning yellow eyes, fluffy grey fur, sly expression",
+        "personality_ru": "Хитрый, коварный, обманщик",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Бабушка",
+        "role": "helper",
+        "appearance_prompt": "An elderly kind woman with silver hair in a bun, round glasses, wearing a cozy shawl and nightcap, warm gentle face",
+        "personality_ru": "Добрая, заботливая, любящая бабушка",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "three-bears",
+    "name_ru": "Три медведя",
+    "summary_ru": "Девочка заблудилась в лесу и попала в дом трёх медведей, где попробовала их кашу и уснула в кроватке",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Девочка заблудилась в лесу и нашла пустой домик"},
+        {"act": 2, "description": "Она пробует кашу, стулья и кроватки трёх медведей"},
+        {"act": 3, "description": "Медведи возвращаются домой, девочка пугается и убегает"}
+      ]
+    },
+    "moral_ru": "Нельзя трогать чужие вещи без разрешения",
+    "icon_url": null,
+    "sort_order": 2,
+    "characters": [
+      {
+        "name_ru": "Маша",
+        "role": "protagonist",
+        "appearance_prompt": "A small curious girl with blonde braids, wearing a simple blue dress with white apron, bright curious eyes, bare feet",
+        "personality_ru": "Любопытная, непоседливая, смелая девочка",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Михаил Иванович",
+        "role": "antagonist",
+        "appearance_prompt": "A very large brown bear standing upright, thick dark fur, stern expression, massive paws, wearing no clothes, imposing figure",
+        "personality_ru": "Строгий, грозный, но справедливый папа-медведь",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Настасья Петровна",
+        "role": "helper",
+        "appearance_prompt": "A medium-sized brown bear with softer lighter fur, gentle motherly expression, slightly smaller than the father bear",
+        "personality_ru": "Заботливая, аккуратная мама-медведица",
+        "sort_order": 3
+      },
+      {
+        "name_ru": "Мишутка",
+        "role": "helper",
+        "appearance_prompt": "A small adorable bear cub with fluffy light brown fur, big round eyes, playful and cute expression, tiny paws",
+        "personality_ru": "Маленький, обидчивый, забавный медвежонок",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "slug": "cinderella",
+    "name_ru": "Золушка",
+    "summary_ru": "Бедная девушка благодаря волшебству попадает на королевский бал и находит свою любовь",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Золушка живёт с злой мачехой и сёстрами, выполняя всю грязную работу"},
+        {"act": 2, "description": "Фея-крёстная помогает Золушке попасть на бал, где она танцует с принцем"},
+        {"act": 3, "description": "Принц находит Золушку по хрустальной туфельке и женится на ней"}
+      ]
+    },
+    "moral_ru": "Доброта и трудолюбие всегда вознаграждаются",
+    "icon_url": null,
+    "sort_order": 3,
+    "characters": [
+      {
+        "name_ru": "Золушка",
+        "role": "protagonist",
+        "appearance_prompt": "A beautiful young woman with golden hair in an updo, wearing a sparkling blue ball gown with glass slippers, kind gentle eyes, graceful posture",
+        "personality_ru": "Добрая, трудолюбивая, скромная, терпеливая",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Злая мачеха",
+        "role": "antagonist",
+        "appearance_prompt": "A tall stern woman with sharp features, dark hair pulled back tightly, wearing an elaborate dark purple dress, cold piercing eyes, haughty expression",
+        "personality_ru": "Жестокая, завистливая, властная женщина",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Фея-крёстная",
+        "role": "helper",
+        "appearance_prompt": "A plump cheerful elderly fairy with silver hair, sparkling blue eyes, wearing a light blue robe with stars, holding a magic wand with a glowing tip",
+        "personality_ru": "Добрая, мудрая, волшебная помощница",
+        "sort_order": 3
+      },
+      {
+        "name_ru": "Принц",
+        "role": "helper",
+        "appearance_prompt": "A handsome young prince with brown wavy hair, wearing a white royal uniform with gold epaulettes, warm brown eyes, charming smile",
+        "personality_ru": "Благородный, романтичный, настойчивый",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "slug": "snow-queen",
+    "name_ru": "Снежная королева",
+    "summary_ru": "Храбрая девочка Герда отправляется на поиски своего друга Кая, которого похитила Снежная королева",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Осколок волшебного зеркала попадает Каю в сердце, и Снежная королева увозит его в свой ледяной дворец"},
+        {"act": 2, "description": "Герда отправляется в долгое путешествие, встречая добрых и злых персонажей на пути"},
+        {"act": 3, "description": "Герда находит Кая и своей любовью растапливает лёд в его сердце"}
+      ]
+    },
+    "moral_ru": "Настоящая дружба и любовь способны преодолеть любые преграды",
+    "icon_url": null,
+    "sort_order": 4,
+    "characters": [
+      {
+        "name_ru": "Герда",
+        "role": "protagonist",
+        "appearance_prompt": "A brave young girl with long auburn hair, wearing a warm red coat and knitted mittens, determined blue eyes, rosy cheeks from cold",
+        "personality_ru": "Храбрая, верная, любящая, настойчивая",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Снежная королева",
+        "role": "antagonist",
+        "appearance_prompt": "A tall ethereal woman made of ice and snow, pale white skin, icy blue eyes, wearing a crown of ice crystals and a flowing white-silver gown, cold majestic beauty",
+        "personality_ru": "Холодная, могущественная, бессердечная",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Кай",
+        "role": "helper",
+        "appearance_prompt": "A young boy with short blond hair and blue eyes, wearing a warm winter coat and scarf, friendly face that becomes cold and distant after enchantment",
+        "personality_ru": "Умный, добрый мальчик, ставший холодным из-за чар",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "puss-in-boots",
+    "name_ru": "Кот в сапогах",
+    "summary_ru": "Хитрый и находчивый кот помогает своему бедному хозяину стать маркизом и жениться на принцессе",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Бедный мельник оставляет младшему сыну в наследство только кота"},
+        {"act": 2, "description": "Кот хитростью и умом добывает для хозяина богатство и славу"},
+        {"act": 3, "description": "Кот побеждает людоеда, и его хозяин женится на принцессе"}
+      ]
+    },
+    "moral_ru": "Ум и находчивость важнее богатства",
+    "icon_url": null,
+    "sort_order": 5,
+    "characters": [
+      {
+        "name_ru": "Кот в сапогах",
+        "role": "protagonist",
+        "appearance_prompt": "A dashing orange tabby cat standing on hind legs, wearing tall leather boots, a feathered cavalier hat, and a cape, confident smirk, bright green eyes",
+        "personality_ru": "Хитрый, находчивый, преданный, обаятельный",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Маркиз Карабас",
+        "role": "helper",
+        "appearance_prompt": "A young man with brown hair, humble peasant clothes that later become noble attire, kind honest face, modest demeanor",
+        "personality_ru": "Скромный, добрый, доверчивый юноша",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Людоед",
+        "role": "antagonist",
+        "appearance_prompt": "A massive ugly ogre with green-grey skin, huge tusks, wearing rough animal skins, living in a grand dark castle, terrifying appearance",
+        "personality_ru": "Жадный, глупый, самовлюблённый великан",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "sleeping-beauty",
+    "name_ru": "Спящая красавица",
+    "summary_ru": "Принцесса засыпает на сто лет из-за проклятия злой феи, и только поцелуй принца может её разбудить",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Злая фея проклинает новорождённую принцессу — она уколется веретеном и уснёт на сто лет"},
+        {"act": 2, "description": "Принцесса вырастает, укалывается и засыпает вместе со всем замком"},
+        {"act": 3, "description": "Через сто лет принц находит замок и пробуждает принцессу поцелуем"}
+      ]
+    },
+    "moral_ru": "Добро всегда побеждает зло, а любовь разрушает любые чары",
+    "icon_url": null,
+    "sort_order": 6,
+    "characters": [
+      {
+        "name_ru": "Принцесса Аврора",
+        "role": "protagonist",
+        "appearance_prompt": "A beautiful young princess with long golden curly hair, wearing a pink royal gown, delicate tiara, sleeping peacefully with serene expression, long eyelashes",
+        "personality_ru": "Красивая, нежная, добрая, грациозная",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Злая фея Карабос",
+        "role": "antagonist",
+        "appearance_prompt": "A sinister old fairy with hooked nose, dark green and black robes, a tall dark staff with green orb, pale skin, menacing glowing eyes",
+        "personality_ru": "Злобная, мстительная, могущественная колдунья",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Принц",
+        "role": "helper",
+        "appearance_prompt": "A brave young prince in shining armor with a red cape, dark hair, holding a sword, noble and determined expression",
+        "personality_ru": "Храбрый, благородный, романтичный",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "rapunzel",
+    "name_ru": "Рапунцель",
+    "summary_ru": "Девушка с волшебными длинными волосами заточена в башне злой колдуньей, но находит свободу благодаря принцу",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Колдунья похищает девочку и прячет её в высокой башне без дверей"},
+        {"act": 2, "description": "Принц слышит пение Рапунцель и забирается к ней по её длинным волосам"},
+        {"act": 3, "description": "Колдунья разлучает влюблённых, но они находят друг друга и обретают счастье"}
+      ]
+    },
+    "moral_ru": "Любовь и свобода сильнее любых стен и запретов",
+    "icon_url": null,
+    "sort_order": 7,
+    "characters": [
+      {
+        "name_ru": "Рапунцель",
+        "role": "protagonist",
+        "appearance_prompt": "A young woman with extremely long golden blonde hair flowing from a tower, wearing a purple medieval dress with laced bodice, big green eyes, bare feet",
+        "personality_ru": "Мечтательная, творческая, жизнерадостная, смелая",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Колдунья Готель",
+        "role": "antagonist",
+        "appearance_prompt": "An old witch with curly grey-black hair, wearing a dark maroon cloak, sharp features, manipulative smile, bony hands with long nails",
+        "personality_ru": "Хитрая, властная, эгоистичная, манипулятивная",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Принц",
+        "role": "helper",
+        "appearance_prompt": "A young prince with short brown hair, wearing a green tunic and leather boots, adventurous spirit, warm friendly smile",
+        "personality_ru": "Смелый, романтичный, настойчивый",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "hansel-and-gretel",
+    "name_ru": "Гензель и Гретель",
+    "summary_ru": "Брат и сестра заблудились в лесу и попали в пряничный домик злой ведьмы",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Бедные родители оставляют детей в лесу, дети находят пряничный домик"},
+        {"act": 2, "description": "Ведьма заманивает детей сладостями и запирает Гензеля, чтобы откормить его"},
+        {"act": 3, "description": "Гретель хитростью побеждает ведьму, дети находят сокровища и возвращаются домой"}
+      ]
+    },
+    "moral_ru": "Смелость и находчивость помогут справиться с любой бедой",
+    "icon_url": null,
+    "sort_order": 8,
+    "characters": [
+      {
+        "name_ru": "Гензель",
+        "role": "protagonist",
+        "appearance_prompt": "A young boy with short brown hair, wearing patched lederhosen and a white shirt, freckles, brave determined eyes, thin from poverty",
+        "personality_ru": "Смелый, находчивый, заботливый брат",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Гретель",
+        "role": "protagonist",
+        "appearance_prompt": "A young girl with brown braids, wearing a simple blue peasant dress with white apron, bright clever eyes, small and nimble",
+        "personality_ru": "Умная, храбрая, решительная сестра",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Ведьма",
+        "role": "antagonist",
+        "appearance_prompt": "An ugly old witch with a long crooked nose, warts, wearing a dirty brown dress and pointed hat, hunched back, living in a gingerbread house",
+        "personality_ru": "Злая, коварная, прожорливая колдунья",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "ugly-duckling",
+    "name_ru": "Гадкий утёнок",
+    "summary_ru": "Некрасивый утёнок переживает насмешки и трудности, но вырастает в прекрасного лебедя",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "На птичьем дворе вылупляется странный большой утёнок, не похожий на остальных"},
+        {"act": 2, "description": "Утёнка обижают все, он убегает и переживает тяжёлую зиму в одиночестве"},
+        {"act": 3, "description": "Весной утёнок видит своё отражение и понимает, что он прекрасный лебедь"}
+      ]
+    },
+    "moral_ru": "Не суди по внешности — каждый может раскрыть свою истинную красоту",
+    "icon_url": null,
+    "sort_order": 9,
+    "characters": [
+      {
+        "name_ru": "Гадкий утёнок",
+        "role": "protagonist",
+        "appearance_prompt": "A fluffy grey awkward duckling, larger than other ducklings, messy feathers, sad droopy eyes, later transforms into an elegant white swan with long graceful neck",
+        "personality_ru": "Добрый, робкий, мечтательный, чувствительный",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Мама-утка",
+        "role": "helper",
+        "appearance_prompt": "A plump brown duck with an orange beak, motherly appearance, surrounded by small yellow ducklings, warm but worried expression",
+        "personality_ru": "Заботливая, но не всегда понимающая мать",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Злые утки",
+        "role": "antagonist",
+        "appearance_prompt": "A group of white and brown ducks with mean expressions, pecking and chasing, haughty postures, sharp beaks",
+        "personality_ru": "Злобные, насмешливые, жестокие птицы",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "snow-white",
+    "name_ru": "Белоснежка",
+    "summary_ru": "Прекрасная принцесса прячется от злой королевы у семи гномов в лесу",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Злая королева завидует красоте Белоснежки и приказывает избавиться от неё"},
+        {"act": 2, "description": "Белоснежка находит приют у семи гномов, но королева находит её и отравляет яблоком"},
+        {"act": 3, "description": "Принц находит Белоснежку и пробуждает её, злая королева получает по заслугам"}
+      ]
+    },
+    "moral_ru": "Зависть разрушает, а доброта и дружба спасают",
+    "icon_url": null,
+    "sort_order": 10,
+    "characters": [
+      {
+        "name_ru": "Белоснежка",
+        "role": "protagonist",
+        "appearance_prompt": "A beautiful young princess with skin white as snow, lips red as blood, short black hair with a red headband, wearing a blue and yellow dress, gentle kind expression",
+        "personality_ru": "Добрая, нежная, заботливая, наивная",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Злая королева",
+        "role": "antagonist",
+        "appearance_prompt": "A beautiful but cold queen with sharp cheekbones, wearing a tall golden crown and dark purple royal robes, holding a magic mirror, piercing dark eyes",
+        "personality_ru": "Завистливая, тщеславная, жестокая, коварная",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Гномы",
+        "role": "helper",
+        "appearance_prompt": "Seven small cheerful dwarfs with long beards, colorful pointed hats, mining clothes with pickaxes, each with unique personality shown in expression",
+        "personality_ru": "Добрые, трудолюбивые, заботливые друзья",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "pinocchio",
+    "name_ru": "Буратино",
+    "summary_ru": "Деревянная кукла Буратино ищет золотой ключик и переживает множество приключений",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Папа Карло вырезает из полена деревянного мальчика Буратино и отправляет его в школу"},
+        {"act": 2, "description": "Буратино попадает в театр Карабаса-Барабаса и узнаёт о тайне золотого ключика"},
+        {"act": 3, "description": "Буратино с друзьями находит золотой ключик и открывает дверь в волшебный театр"}
+      ]
+    },
+    "moral_ru": "Настоящая дружба и смелость помогают найти счастье",
+    "icon_url": null,
+    "sort_order": 11,
+    "characters": [
+      {
+        "name_ru": "Буратино",
+        "role": "protagonist",
+        "appearance_prompt": "A cheerful wooden puppet boy with a long pointed nose, wearing a red and white striped cap, yellow shirt, blue shorts, bright curious painted eyes, jointed wooden limbs",
+        "personality_ru": "Озорной, любопытный, весёлый, непослушный",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Карабас-Барабас",
+        "role": "antagonist",
+        "appearance_prompt": "A huge menacing man with an enormously long black beard, wearing a dark coat, cracking a whip, angry red face, theatrical villain appearance",
+        "personality_ru": "Жадный, злой, властный кукольный хозяин",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Мальвина",
+        "role": "helper",
+        "appearance_prompt": "A pretty puppet girl with bright blue curly hair, wearing a pink dress with frills, porcelain-like face, neat and proper appearance, blue eyes",
+        "personality_ru": "Умная, аккуратная, строгая, заботливая",
+        "sort_order": 3
+      },
+      {
+        "name_ru": "Папа Карло",
+        "role": "helper",
+        "appearance_prompt": "An elderly kind man with grey hair, wearing a worn patched jacket, gentle tired eyes, woodworker's hands, warm loving smile",
+        "personality_ru": "Добрый, бедный, любящий отец",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "slug": "three-little-pigs",
+    "name_ru": "Три поросёнка",
+    "summary_ru": "Три брата-поросёнка строят себе домики, а злой волк пытается их разрушить",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Три поросёнка решают построить каждый свой дом — из соломы, веток и кирпичей"},
+        {"act": 2, "description": "Волк легко сдувает домики из соломы и веток, поросята прячутся у третьего брата"},
+        {"act": 3, "description": "Волк не может разрушить кирпичный дом и терпит поражение"}
+      ]
+    },
+    "moral_ru": "Трудолюбие и основательность защитят от любой беды",
+    "icon_url": null,
+    "sort_order": 12,
+    "characters": [
+      {
+        "name_ru": "Наф-Наф",
+        "role": "protagonist",
+        "appearance_prompt": "A hardworking pink pig wearing blue overalls and a construction hat, holding a trowel, serious determined expression, sturdy build",
+        "personality_ru": "Трудолюбивый, умный, предусмотрительный",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Ниф-Ниф",
+        "role": "helper",
+        "appearance_prompt": "A playful pink pig wearing a green cap, dancing and playing a flute, carefree happy expression, slender build",
+        "personality_ru": "Весёлый, беззаботный, ленивый",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Нуф-Нуф",
+        "role": "helper",
+        "appearance_prompt": "A pink pig wearing a red beret, slightly worried expression, medium build, carrying sticks for building",
+        "personality_ru": "Немного ленивый, добрый, послушный",
+        "sort_order": 3
+      },
+      {
+        "name_ru": "Серый Волк",
+        "role": "antagonist",
+        "appearance_prompt": "A big bad grey wolf with sharp teeth, puffed cheeks from blowing, ragged fur, menacing yellow eyes, lean and hungry",
+        "personality_ru": "Злой, настырный, голодный, глупый",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "slug": "jack-and-beanstalk",
+    "name_ru": "Джек и бобовое зерно",
+    "summary_ru": "Мальчик Джек обменивает корову на волшебные бобы и поднимается по бобовому стеблю в облака к великану",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Бедный мальчик Джек обменивает корову на волшебные бобы, которые вырастают до облаков"},
+        {"act": 2, "description": "Джек забирается по стеблю и попадает в замок злого великана"},
+        {"act": 3, "description": "Джек крадёт сокровища великана, спускается и срубает стебель"}
+      ]
+    },
+    "moral_ru": "Смелость и находчивость помогут преодолеть любые трудности",
+    "icon_url": null,
+    "sort_order": 13,
+    "characters": [
+      {
+        "name_ru": "Джек",
+        "role": "protagonist",
+        "appearance_prompt": "A small brave boy with messy brown hair, wearing patched peasant clothes and a vest, climbing a giant green beanstalk, adventurous bright eyes",
+        "personality_ru": "Смелый, находчивый, ловкий мальчик",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Великан",
+        "role": "antagonist",
+        "appearance_prompt": "An enormous giant with a bald head, huge bushy beard, wearing crude animal skins, massive club, thunderous angry expression, castle in the clouds",
+        "personality_ru": "Огромный, злой, жадный, глупый",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Мама Джека",
+        "role": "helper",
+        "appearance_prompt": "A thin poor woman with brown hair in a bun, wearing a simple worn dress and apron, tired but loving face, worried expression",
+        "personality_ru": "Заботливая, бедная, любящая мать",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "little-mermaid",
+    "name_ru": "Русалочка",
+    "summary_ru": "Морская принцесса влюбляется в человеческого принца и жертвует всем ради любви",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Русалочка спасает принца во время шторма и влюбляется в него"},
+        {"act": 2, "description": "Она обменивает свой голос на человеческие ноги у морской ведьмы"},
+        {"act": 3, "description": "Русалочка жертвует собой ради счастья принца и превращается в морскую пену"}
+      ]
+    },
+    "moral_ru": "Настоящая любовь требует жертв и бескорыстия",
+    "icon_url": null,
+    "sort_order": 14,
+    "characters": [
+      {
+        "name_ru": "Русалочка",
+        "role": "protagonist",
+        "appearance_prompt": "A beautiful young mermaid with long flowing red hair, shimmering green tail with iridescent scales, purple seashell top, large expressive blue-green eyes, delicate features",
+        "personality_ru": "Мечтательная, любящая, самоотверженная, нежная",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Морская ведьма",
+        "role": "antagonist",
+        "appearance_prompt": "A large sinister sea witch with tentacles instead of legs, dark purple-black skin, wild white hair, glowing eyes, surrounded by eels and dark magic potions",
+        "personality_ru": "Коварная, хитрая, могущественная злодейка",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Принц",
+        "role": "helper",
+        "appearance_prompt": "A handsome young prince with dark hair, wearing a white naval uniform, standing on a ship, kind smile, deep blue eyes",
+        "personality_ru": "Добрый, благородный, но не замечающий истинную любовь",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "frog-prince",
+    "name_ru": "Царевна-лягушка",
+    "summary_ru": "Иван-царевич женится на лягушке, которая оказывается заколдованной прекрасной Василисой Премудрой",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Царь велит сыновьям пустить стрелы — стрела Ивана попадает в болото к лягушке"},
+        {"act": 2, "description": "Лягушка выполняет все задания царя лучше всех, превращаясь в прекрасную Василису"},
+        {"act": 3, "description": "Иван сжигает лягушечью кожу, ищет Василису у Кощея и спасает её"}
+      ]
+    },
+    "moral_ru": "Не суди по внешности и цени внутреннюю красоту",
+    "icon_url": null,
+    "sort_order": 15,
+    "characters": [
+      {
+        "name_ru": "Василиса Премудрая",
+        "role": "protagonist",
+        "appearance_prompt": "A beautiful Russian princess with long golden braid, wearing a traditional ornate kokoshnik headdress and a green embroidered sarafan, wise gentle eyes, sometimes shown as a small green frog with a tiny golden crown",
+        "personality_ru": "Мудрая, красивая, искусная, терпеливая",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Иван-царевич",
+        "role": "protagonist",
+        "appearance_prompt": "A young Russian prince with brown hair, wearing a traditional red kaftan with gold trim, tall boots, brave and honest expression, carrying a bow",
+        "personality_ru": "Честный, смелый, верный, иногда нетерпеливый",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Кощей Бессмертный",
+        "role": "antagonist",
+        "appearance_prompt": "A skeletal old sorcerer with grey skin stretched over bones, wearing dark robes and a black crown, glowing evil eyes, bony fingers, sinister aura",
+        "personality_ru": "Злой, бессмертный, жадный, могущественный",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "thumbelina",
+    "name_ru": "Дюймовочка",
+    "summary_ru": "Крошечная девочка размером с палец переживает множество приключений и находит своё счастье",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Из волшебного цветка рождается крошечная девочка, которую похищает жаба"},
+        {"act": 2, "description": "Дюймовочка скитается, попадает к майскому жуку, мыши и кроту, который хочет на ней жениться"},
+        {"act": 3, "description": "Ласточка уносит Дюймовочку в тёплые края, где она встречает эльфийского принца"}
+      ]
+    },
+    "moral_ru": "Доброе сердце всегда найдёт своё счастье",
+    "icon_url": null,
+    "sort_order": 16,
+    "characters": [
+      {
+        "name_ru": "Дюймовочка",
+        "role": "protagonist",
+        "appearance_prompt": "A tiny girl no bigger than a thumb, with delicate wings like a fairy, wearing a dress made of flower petals, sitting on a water lily, golden hair, sweet innocent face",
+        "personality_ru": "Нежная, добрая, мечтательная, хрупкая",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Крот",
+        "role": "antagonist",
+        "appearance_prompt": "A large blind mole in a black velvet coat, tiny sunglasses, rich and pompous, holding a cane, round plump body, snobby expression",
+        "personality_ru": "Жадный, скучный, не любит солнце и цветы",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Ласточка",
+        "role": "helper",
+        "appearance_prompt": "A graceful swallow bird with dark blue-black feathers, white breast, red throat, long forked tail, bright kind eyes, carrying tiny Thumbelina on her back",
+        "personality_ru": "Благодарная, свободолюбивая, верная подруга",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "bremen-musicians",
+    "name_ru": "Бременские музыканты",
+    "summary_ru": "Четыре животных — осёл, собака, кот и петух — отправляются в Бремен, чтобы стать музыкантами",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Старый осёл убегает от хозяина и по дороге встречает собаку, кота и петуха"},
+        {"act": 2, "description": "Друзья находят в лесу дом разбойников и пугают их своей музыкой"},
+        {"act": 3, "description": "Животные прогоняют разбойников и остаются жить в уютном доме"}
+      ]
+    },
+    "moral_ru": "Вместе мы сила — дружба помогает преодолеть любые трудности",
+    "icon_url": null,
+    "sort_order": 17,
+    "characters": [
+      {
+        "name_ru": "Осёл",
+        "role": "protagonist",
+        "appearance_prompt": "An old grey donkey with long ears, wearing a straw hat, carrying a guitar, tired but determined expression, standing on hind legs",
+        "personality_ru": "Мудрый, упрямый, решительный лидер",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Собака",
+        "role": "helper",
+        "appearance_prompt": "An old brown hound dog with floppy ears, wearing a bandana, holding drumsticks, loyal and brave expression, sitting next to the donkey",
+        "personality_ru": "Верная, смелая, надёжная",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Кот",
+        "role": "helper",
+        "appearance_prompt": "A scruffy orange tabby cat with green eyes, wearing a beret, playing a small accordion, sly clever expression, thin and agile",
+        "personality_ru": "Хитрый, ловкий, весёлый",
+        "sort_order": 3
+      },
+      {
+        "name_ru": "Петух",
+        "role": "helper",
+        "appearance_prompt": "A colorful rooster with bright red comb, golden and green tail feathers, standing proudly on top of the other animals, singing loudly",
+        "personality_ru": "Голосистый, храбрый, задорный",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "slug": "nutcracker",
+    "name_ru": "Щелкунчик",
+    "summary_ru": "Девочка Мари получает в подарок Щелкунчика, который оживает и ведёт войну с мышиным королём",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "На Рождество Мари получает от крёстного Дроссельмейера деревянного Щелкунчика"},
+        {"act": 2, "description": "Ночью игрушки оживают, Щелкунчик сражается с армией мышиного короля"},
+        {"act": 3, "description": "Мари помогает Щелкунчику победить, и он превращается в прекрасного принца"}
+      ]
+    },
+    "moral_ru": "Храбрость и верность творят настоящие чудеса",
+    "icon_url": null,
+    "sort_order": 18,
+    "characters": [
+      {
+        "name_ru": "Щелкунчик",
+        "role": "protagonist",
+        "appearance_prompt": "A wooden nutcracker soldier with a red military uniform, tall black hat, large square jaw for cracking nuts, painted rosy cheeks, later transforms into a handsome prince",
+        "personality_ru": "Храбрый, благородный, верный, заколдованный принц",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Мари",
+        "role": "protagonist",
+        "appearance_prompt": "A sweet young girl with brown curly hair and a pink ribbon, wearing a white Christmas dress with lace, holding the nutcracker doll, dreamy caring eyes",
+        "personality_ru": "Добрая, мечтательная, заботливая, храбрая",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Мышиный король",
+        "role": "antagonist",
+        "appearance_prompt": "A large menacing mouse wearing a golden crown with seven heads, dark grey fur, red cape, wielding a tiny sword, leading an army of mice",
+        "personality_ru": "Злой, коварный, властный мышиный правитель",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "wizard-of-oz",
+    "name_ru": "Волшебник Изумрудного города",
+    "summary_ru": "Девочка Элли с пёсиком Тотошкой попадает в волшебную страну и ищет путь домой",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Ураган уносит домик Элли в Волшебную страну, и она отправляется в Изумрудный город"},
+        {"act": 2, "description": "По дороге Элли встречает Страшилу, Железного Дровосека и Трусливого Льва"},
+        {"act": 3, "description": "Друзья разоблачают обман Гудвина и получают то, о чём мечтали"}
+      ]
+    },
+    "moral_ru": "Всё, что тебе нужно, уже есть внутри тебя — нужна лишь вера в себя",
+    "icon_url": null,
+    "sort_order": 19,
+    "characters": [
+      {
+        "name_ru": "Элли",
+        "role": "protagonist",
+        "appearance_prompt": "A young girl with brown pigtails, wearing a blue gingham dress and silver shoes, carrying a small black dog, brave and cheerful expression",
+        "personality_ru": "Смелая, добрая, верная, находчивая",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Страшила",
+        "role": "helper",
+        "appearance_prompt": "A friendly scarecrow with a painted sack face, wearing a pointed hat and patched clothes, straw sticking out, goofy warm smile, floppy limbs",
+        "personality_ru": "Добрый, мечтающий об уме, верный друг",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Железный Дровосек",
+        "role": "helper",
+        "appearance_prompt": "A silver tin man with a funnel hat, holding an axe, shiny metallic body with rivets, kind eyes, sometimes a tear rolling down, stiff but gentle movements",
+        "personality_ru": "Чувствительный, мечтающий о сердце, заботливый",
+        "sort_order": 3
+      },
+      {
+        "name_ru": "Трусливый Лев",
+        "role": "helper",
+        "appearance_prompt": "A large lion with a magnificent mane but timid expression, wearing a red bow, tail between legs, big tearful eyes, wanting to appear brave",
+        "personality_ru": "Добрый, трусливый, мечтающий о храбрости",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "slug": "alice-wonderland",
+    "name_ru": "Алиса в Стране Чудес",
+    "summary_ru": "Любопытная девочка Алиса падает в кроличью нору и попадает в удивительный мир абсурда",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Алиса следует за Белым Кроликом в нору и попадает в Страну Чудес"},
+        {"act": 2, "description": "Алиса меняет размеры, встречает Чеширского Кота, Безумного Шляпника и других чудаков"},
+        {"act": 3, "description": "Алиса попадает на суд Червонной Королевы и просыпается от этого странного сна"}
+      ]
+    },
+    "moral_ru": "Любопытство открывает двери в новые миры, а воображение не знает границ",
+    "icon_url": null,
+    "sort_order": 20,
+    "characters": [
+      {
+        "name_ru": "Алиса",
+        "role": "protagonist",
+        "appearance_prompt": "A young girl with long blonde hair held by a black headband, wearing a blue dress with white pinafore, white stockings, black shoes, curious and slightly confused expression",
+        "personality_ru": "Любопытная, умная, вежливая, логичная",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Чеширский Кот",
+        "role": "helper",
+        "appearance_prompt": "A large grinning purple and pink striped cat, floating in mid-air, wide mischievous smile visible even when body fades, bright glowing eyes",
+        "personality_ru": "Загадочный, мудрый, озорной, философский",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Червонная Королева",
+        "role": "antagonist",
+        "appearance_prompt": "A short plump queen with a big red heart-shaped head, wearing a red and black royal gown with heart motifs, angry red face, golden crown, holding a scepter",
+        "personality_ru": "Вспыльчивая, властная, жестокая, капризная",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "kolobok",
+    "name_ru": "Колобок",
+    "summary_ru": "Круглый румяный Колобок убегает от бабушки с дедушкой и встречает разных зверей",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Бабка испекла Колобка, он остыл на окошке и укатился в лес"},
+        {"act": 2, "description": "Колобок встречает зайца, волка и медведя, от всех уходит с помощью своей песенки"},
+        {"act": 3, "description": "Хитрая лиса обманывает Колобка и съедает его"}
+      ]
+    },
+    "moral_ru": "Не будь слишком самоуверенным и остерегайся лести",
+    "icon_url": null,
+    "sort_order": 21,
+    "characters": [
+      {
+        "name_ru": "Колобок",
+        "role": "protagonist",
+        "appearance_prompt": "A round golden-brown bun with a cheerful face, rosy cheeks, small dot eyes and a wide smile, rolling along a forest path, simple and cute",
+        "personality_ru": "Весёлый, самоуверенный, хвастливый",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Лиса",
+        "role": "antagonist",
+        "appearance_prompt": "A sly red fox with a fluffy tail, bright orange fur, cunning narrow eyes, sitting with a fake sweet smile, elegant and deceptive posture",
+        "personality_ru": "Хитрая, льстивая, коварная",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Бабушка и Дедушка",
+        "role": "helper",
+        "appearance_prompt": "An elderly Russian couple, grandmother in a headscarf and apron, grandfather with a white beard and cap, standing by a wooden cottage window",
+        "personality_ru": "Добрые, старенькие, заботливые",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "turnip",
+    "name_ru": "Репка",
+    "summary_ru": "Дедка посадил репку, и она выросла такая большая, что тянуть её пришлось всем вместе",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Дед посадил репку, она выросла большая-пребольшая"},
+        {"act": 2, "description": "Дед тянет репку, зовёт бабку, потом внучку, Жучку, кошку — не получается"},
+        {"act": 3, "description": "Позвали мышку, и все вместе вытянули репку"}
+      ]
+    },
+    "moral_ru": "Только вместе, дружной командой, можно справиться с любым делом",
+    "icon_url": null,
+    "sort_order": 22,
+    "characters": [
+      {
+        "name_ru": "Дедка",
+        "role": "protagonist",
+        "appearance_prompt": "An old Russian peasant man with a long white beard, wearing a traditional embroidered shirt and bast shoes, straw hat, pulling a giant turnip from the ground",
+        "personality_ru": "Трудолюбивый, настойчивый, добрый старик",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Бабка",
+        "role": "helper",
+        "appearance_prompt": "An old Russian peasant woman with a white headscarf, wearing a long floral dress and apron, round kind face, helping pull the turnip",
+        "personality_ru": "Заботливая, сильная, помогающая",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Внучка",
+        "role": "helper",
+        "appearance_prompt": "A young Russian girl with red braids and a flower crown, wearing a bright sarafan dress, cheerful expression, holding onto grandmother",
+        "personality_ru": "Весёлая, послушная, старательная",
+        "sort_order": 3
+      },
+      {
+        "name_ru": "Мышка",
+        "role": "helper",
+        "appearance_prompt": "A tiny grey mouse with big round ears, pink nose, thin tail, pulling with all its might at the very end of the chain, determined little face",
+        "personality_ru": "Маленькая, но решающая, храбрая мышка",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "slug": "teremok",
+    "name_ru": "Теремок",
+    "summary_ru": "Звери находят в лесу маленький домик и поселяются в нём один за другим, пока не приходит медведь",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "В лесу стоит маленький теремок, мышка-норушка находит его и поселяется"},
+        {"act": 2, "description": "К теремку приходят лягушка, зайчик, лисичка и волк — все живут дружно"},
+        {"act": 3, "description": "Приходит медведь и садится на теремок, все вместе строят новый, больше прежнего"}
+      ]
+    },
+    "moral_ru": "В тесноте, да не в обиде — дружба важнее удобства",
+    "icon_url": null,
+    "sort_order": 23,
+    "characters": [
+      {
+        "name_ru": "Мышка-норушка",
+        "role": "protagonist",
+        "appearance_prompt": "A small grey mouse with a tiny apron, standing at the door of a little wooden house in the forest, welcoming expression, holding a tiny broom",
+        "personality_ru": "Гостеприимная, аккуратная, хозяйственная",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Лягушка-квакушка",
+        "role": "helper",
+        "appearance_prompt": "A cheerful green frog with big eyes, sitting on a log near the little house, wearing a small flower behind ear, friendly and happy expression",
+        "personality_ru": "Весёлая, дружелюбная, разговорчивая",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Медведь",
+        "role": "antagonist",
+        "appearance_prompt": "A very large clumsy brown bear trying to fit into a tiny wooden house, too big for the doorway, confused friendly expression but accidentally destructive",
+        "personality_ru": "Неуклюжий, добрый, но слишком большой",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "morozko",
+    "name_ru": "Морозко",
+    "summary_ru": "Добрую падчерицу отправляют в лес на мороз, но Морозко награждает её за доброту и терпение",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Злая мачеха отправляет падчерицу в лютый мороз в лес на верную гибель"},
+        {"act": 2, "description": "Морозко испытывает девушку холодом, она терпеливо и вежливо отвечает ему"},
+        {"act": 3, "description": "Морозко награждает падчерицу, а мачехина дочка, грубая и ленивая, получает наказание"}
+      ]
+    },
+    "moral_ru": "Доброта и терпение вознаграждаются, а грубость и лень наказываются",
+    "icon_url": null,
+    "sort_order": 24,
+    "characters": [
+      {
+        "name_ru": "Настенька",
+        "role": "protagonist",
+        "appearance_prompt": "A gentle Russian girl with a long blonde braid, wearing a thin shabby coat and valenki boots, sitting under a snowy pine tree, shivering but smiling kindly",
+        "personality_ru": "Добрая, терпеливая, скромная, трудолюбивая",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Морозко",
+        "role": "helper",
+        "appearance_prompt": "A majestic old man made of frost and ice, long white beard covered in icicles, wearing a blue fur-trimmed coat and tall ice crown, carrying a crystal staff, breath forming frost",
+        "personality_ru": "Справедливый, могущественный, суровый, но добрый",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Мачеха",
+        "role": "antagonist",
+        "appearance_prompt": "A plump mean-looking woman with a scowl, wearing a warm fur coat and colorful headscarf, hands on hips, bossy and cruel expression",
+        "personality_ru": "Злая, жадная, несправедливая, грубая",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "sivka-burka",
+    "name_ru": "Сивка-Бурка",
+    "summary_ru": "Младший сын Иванушка-дурачок ловит волшебного коня и с его помощью добивается руки царевны",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Отец поручает сыновьям стеречь поле, только Иванушка ловит волшебного коня Сивку-Бурку"},
+        {"act": 2, "description": "Царь объявляет: кто допрыгнет до окна царевны, получит её руку, Иванушка скачет на Сивке-Бурке"},
+        {"act": 3, "description": "Иванушка допрыгивает до царевны, снимает перстень и женится на ней"}
+      ]
+    },
+    "moral_ru": "Не суди человека по виду — скромность и доброта ценнее хвастовства",
+    "icon_url": null,
+    "sort_order": 25,
+    "characters": [
+      {
+        "name_ru": "Иванушка-дурачок",
+        "role": "protagonist",
+        "appearance_prompt": "A young Russian peasant boy with messy brown hair, wearing simple peasant clothes and bast shoes, looks unremarkable but has a kind clever spark in his eyes",
+        "personality_ru": "Простодушный, добрый, скромный, на самом деле умный",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Сивка-Бурка",
+        "role": "helper",
+        "appearance_prompt": "A magnificent magical horse with a coat that shimmers between grey, brown and white, fiery mane, glowing eyes, powerful muscles, galloping through the sky with sparks from hooves",
+        "personality_ru": "Волшебный, верный, могущественный конь",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Царевна",
+        "role": "helper",
+        "appearance_prompt": "A beautiful Russian princess sitting at a high tower window, wearing a golden kokoshnik and a richly embroidered dress, holding a ring, regal and lovely",
+        "personality_ru": "Красивая, гордая, ждущая достойного жениха",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "firebird",
+    "name_ru": "Жар-Птица",
+    "summary_ru": "Иван-царевич отправляется на поиски Жар-Птицы и переживает удивительные приключения",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Царь посылает сыновей поймать Жар-Птицу, ворующую золотые яблоки из сада"},
+        {"act": 2, "description": "Иван-царевич с помощью Серого Волка добывает Жар-Птицу, коня и царевну"},
+        {"act": 3, "description": "Братья предают Ивана, но Серый Волк спасает его и восстанавливает справедливость"}
+      ]
+    },
+    "moral_ru": "Верность и доброта побеждают зависть и предательство",
+    "icon_url": null,
+    "sort_order": 26,
+    "characters": [
+      {
+        "name_ru": "Иван-царевич",
+        "role": "protagonist",
+        "appearance_prompt": "A brave young Russian prince with brown hair, wearing a green kaftan with gold embroidery, riding boots, carrying a golden cage, noble and determined expression",
+        "personality_ru": "Смелый, добрый, честный, благородный",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Жар-Птица",
+        "role": "helper",
+        "appearance_prompt": "A magnificent magical bird with brilliant golden and red feathers that glow like fire, long sweeping tail, illuminating the darkness, eyes like rubies, radiating warmth and light",
+        "personality_ru": "Волшебная, прекрасная, неуловимая птица",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Серый Волк",
+        "role": "helper",
+        "appearance_prompt": "A large wise grey wolf with intelligent golden eyes, thick silver-grey fur, powerful build, noble and loyal expression, carrying the prince on his back",
+        "personality_ru": "Мудрый, преданный, могущественный помощник",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "sister-alyonushka",
+    "name_ru": "Сестрица Алёнушка и братец Иванушка",
+    "summary_ru": "Сестра и брат идут через лес, братец не послушался сестру и превратился в козлёночка",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Сироты Алёнушка и Иванушка идут по дороге, Иванушка пьёт из копытца и превращается в козлёночка"},
+        {"act": 2, "description": "Алёнушка выходит замуж за купца, но злая ведьма топит её и занимает её место"},
+        {"act": 3, "description": "Козлёночек просит о помощи, Алёнушку спасают, ведьму наказывают, Иванушка снова становится мальчиком"}
+      ]
+    },
+    "moral_ru": "Слушай старших и не поддавайся искушениям",
+    "icon_url": null,
+    "sort_order": 27,
+    "characters": [
+      {
+        "name_ru": "Алёнушка",
+        "role": "protagonist",
+        "appearance_prompt": "A young Russian girl with a long dark braid, wearing a traditional white blouse and red sarafan, sitting by a pond with a sad gentle expression, floral wreath on her head",
+        "personality_ru": "Заботливая, любящая, терпеливая сестра",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Иванушка-козлёночек",
+        "role": "protagonist",
+        "appearance_prompt": "A small white baby goat with sad human-like eyes, golden bell around neck, standing by the water looking mournful, sometimes shown as a little boy",
+        "personality_ru": "Непослушный, но любящий, маленький и беззащитный",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Ведьма",
+        "role": "antagonist",
+        "appearance_prompt": "A sinister old woman disguised as a beautiful woman, wild dark hair, pale skin, black shawl, evil glinting eyes hidden behind a sweet false smile",
+        "personality_ru": "Коварная, злая, завистливая колдунья",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "flying-ship",
+    "name_ru": "Летучий корабль",
+    "summary_ru": "Простой парень строит летучий корабль и с помощью необычных друзей добивается руки царской дочери",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Царь обещает дочь тому, кто построит летучий корабль, добрый старичок помогает младшему сыну"},
+        {"act": 2, "description": "По пути на летучем корабле герой собирает попутчиков с необычными способностями"},
+        {"act": 3, "description": "Царь даёт невыполнимые задания, но друзья помогают их выполнить, и герой женится на царевне"}
+      ]
+    },
+    "moral_ru": "Доброта привлекает друзей, а настоящие друзья помогут в любом деле",
+    "icon_url": null,
+    "sort_order": 28,
+    "characters": [
+      {
+        "name_ru": "Младший сын",
+        "role": "protagonist",
+        "appearance_prompt": "A simple kind-hearted Russian peasant boy with a warm smile, wearing a patched shirt and worn boots, standing on a magical wooden flying ship in the sky",
+        "personality_ru": "Добрый, простодушный, щедрый, отзывчивый",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Старичок-лесовичок",
+        "role": "helper",
+        "appearance_prompt": "A tiny old forest man with a long white beard reaching the ground, wearing clothes made of bark and moss, wise twinkling eyes, leaning on a wooden staff",
+        "personality_ru": "Мудрый, волшебный, справедливый помощник",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Царь",
+        "role": "antagonist",
+        "appearance_prompt": "A plump Russian tsar with a large golden crown, rich red robes trimmed with ermine, long scepter, proud and dismissive expression, sitting on a throne",
+        "personality_ru": "Хитрый, жадный, не желающий отдавать дочь простолюдину",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "little-humpbacked-horse",
+    "name_ru": "Конёк-горбунок",
+    "summary_ru": "Иванушка-дурачок и его волшебный Конёк-горбунок выполняют невозможные поручения царя",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Иванушка ловит кобылицу, которая дарит ему двух красивых коней и маленького горбатого конька"},
+        {"act": 2, "description": "Царь отправляет Ивана за Жар-Птицей и Царь-девицей, Конёк-горбунок помогает ему"},
+        {"act": 3, "description": "Иван прыгает в котлы с кипятком и молоком, становится красавцем и женится на Царь-девице"}
+      ]
+    },
+    "moral_ru": "Верный друг дороже богатства, а скромность побеждает гордыню",
+    "icon_url": null,
+    "sort_order": 29,
+    "characters": [
+      {
+        "name_ru": "Иванушка",
+        "role": "protagonist",
+        "appearance_prompt": "A young Russian peasant boy with tousled hair, wearing a simple red shirt and baggy pants, riding a tiny magical horse, cheerful and carefree expression",
+        "personality_ru": "Простодушный, добрый, весёлый, смелый",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Конёк-горбунок",
+        "role": "helper",
+        "appearance_prompt": "A tiny magical horse with two humps on its back, long floppy ears, shaggy mane, about the size of a large dog, playful and wise eyes, can fly through the sky",
+        "personality_ru": "Верный, мудрый, волшебный, весёлый",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Царь",
+        "role": "antagonist",
+        "appearance_prompt": "An old greedy tsar with a white beard, wearing heavy golden crown and lavish robes, envious beady eyes, sitting on a jeweled throne",
+        "personality_ru": "Жадный, завистливый, капризный старик",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "masha-and-bear",
+    "name_ru": "Маша и Медведь",
+    "summary_ru": "Маша заблудилась в лесу и попала в дом медведя, который не хотел её отпускать",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Маша пошла в лес за грибами и ягодами и заблудилась, набрела на домик медведя"},
+        {"act": 2, "description": "Медведь заставляет Машу вести хозяйство и не отпускает домой"},
+        {"act": 3, "description": "Маша хитростью прячется в коробе с пирожками, и медведь сам несёт её домой"}
+      ]
+    },
+    "moral_ru": "Смекалка и хитрость помогут найти выход из любой ситуации",
+    "icon_url": null,
+    "sort_order": 30,
+    "characters": [
+      {
+        "name_ru": "Маша",
+        "role": "protagonist",
+        "appearance_prompt": "A small clever Russian girl with a red headscarf, wearing a pink sarafan dress, hiding inside a large basket, mischievous smart eyes, round cheerful face",
+        "personality_ru": "Хитрая, смелая, находчивая, весёлая",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Медведь",
+        "role": "antagonist",
+        "appearance_prompt": "A big brown bear living in a wooden forest cabin, wearing nothing, friendly but stubborn expression, large paws, carrying a big basket on his back",
+        "personality_ru": "Добродушный, но упрямый, одинокий медведь",
+        "sort_order": 2
+      }
+    ]
+  },
+  {
+    "slug": "golden-fish",
+    "name_ru": "Золотая рыбка",
+    "summary_ru": "Старик поймал золотую рыбку, которая исполняет желания, но жадная старуха требует всё больше и больше",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Старик ловит золотую рыбку и отпускает её, рыбка обещает исполнить желания"},
+        {"act": 2, "description": "Жадная старуха требует от рыбки всё больше — новое корыто, избу, дворец, стать царицей"},
+        {"act": 3, "description": "Старуха хочет стать владычицей морской, рыбка забирает всё обратно"}
+      ]
+    },
+    "moral_ru": "Жадность до добра не доводит — умей быть благодарным за то, что имеешь",
+    "icon_url": null,
+    "sort_order": 31,
+    "characters": [
+      {
+        "name_ru": "Старик",
+        "role": "protagonist",
+        "appearance_prompt": "An old humble fisherman with a long grey beard, wearing a worn fishing vest and hat, holding a fishing net, kind tired eyes, standing by the sea shore",
+        "personality_ru": "Добрый, покорный, скромный, безвольный",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Золотая рыбка",
+        "role": "helper",
+        "appearance_prompt": "A beautiful magical golden fish with shimmering scales of gold and ruby, tiny delicate crown, glowing in the blue sea water, graceful fins like flowing silk",
+        "personality_ru": "Волшебная, благодарная, справедливая",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Старуха",
+        "role": "antagonist",
+        "appearance_prompt": "A greedy old woman with an angry scowling face, wearing increasingly rich clothing from rags to royal robes, pointing finger demandingly, sharp nose",
+        "personality_ru": "Жадная, сварливая, ненасытная, властная",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "tale-of-tsar-saltan",
+    "name_ru": "Сказка о царе Салтане",
+    "summary_ru": "Князь Гвидон, сын царя Салтана, вырастает на чудесном острове и воссоединяется с отцом",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Завистливые сёстры обманывают царя, мать с младенцем заточают в бочку и бросают в море"},
+        {"act": 2, "description": "Гвидон спасает Царевну-Лебедь и становится князем чудесного острова Буяна"},
+        {"act": 3, "description": "Гвидон трижды летает к отцу, царь Салтан приплывает на остров и воссоединяется с семьёй"}
+      ]
+    },
+    "moral_ru": "Правда всегда выходит наружу, а зависть и обман наказываются",
+    "icon_url": null,
+    "sort_order": 32,
+    "characters": [
+      {
+        "name_ru": "Князь Гвидон",
+        "role": "protagonist",
+        "appearance_prompt": "A young handsome Russian prince with dark hair, wearing a white princely outfit with gold trim and a small crown, standing on a magical island, noble and brave",
+        "personality_ru": "Храбрый, благородный, любящий сын",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Царевна-Лебедь",
+        "role": "helper",
+        "appearance_prompt": "A beautiful woman who transforms between a graceful white swan and a stunning princess with a star on her forehead and a crescent moon in her braid, white flowing dress",
+        "personality_ru": "Мудрая, прекрасная, волшебная, благодарная",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Ткачиха и Повариха",
+        "role": "antagonist",
+        "appearance_prompt": "Two jealous women, one thin and one plump, wearing traditional Russian dresses, whispering to each other with envious hateful expressions, scheming poses",
+        "personality_ru": "Завистливые, коварные, лживые сёстры",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "twelve-months",
+    "name_ru": "Двенадцать месяцев",
+    "summary_ru": "Злая мачеха отправляет падчерицу зимой в лес за подснежниками, где она встречает двенадцать братьев-месяцев",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Капризная королева приказывает принести подснежники в январе, мачеха отправляет падчерицу в лес"},
+        {"act": 2, "description": "Девочка находит костёр двенадцати месяцев, Апрель дарит ей подснежники"},
+        {"act": 3, "description": "Жадная мачеха и сестра идут в лес сами, но грубят месяцам и получают наказание"}
+      ]
+    },
+    "moral_ru": "Доброта и вежливость открывают любые двери, а грубость и жадность наказываются",
+    "icon_url": null,
+    "sort_order": 33,
+    "characters": [
+      {
+        "name_ru": "Падчерица",
+        "role": "protagonist",
+        "appearance_prompt": "A kind young girl in thin winter clothes, a worn shawl, trudging through deep snow in a dark forest, carrying a basket, gentle and resilient expression",
+        "personality_ru": "Добрая, трудолюбивая, вежливая, терпеливая",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Братец Апрель",
+        "role": "helper",
+        "appearance_prompt": "A young man with spring flowers in his hair, wearing a light green cloak, warm gentle smile, surrounded by melting snow and blooming snowdrops, youthful and kind",
+        "personality_ru": "Добрый, молодой, весенний, щедрый",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Мачеха",
+        "role": "antagonist",
+        "appearance_prompt": "A harsh stern woman in a warm fur coat, pushing a young girl out into the snowstorm, greedy calculating eyes, standing next to her own spoiled daughter",
+        "personality_ru": "Злая, жадная, жестокая, несправедливая",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "snow-maiden",
+    "name_ru": "Снегурочка",
+    "summary_ru": "Старики лепят из снега девочку, которая оживает, но с приходом весны ей грозит опасность",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Бездетные старик и старуха лепят девочку из снега, и она чудесным образом оживает"},
+        {"act": 2, "description": "Снегурочка живёт с ними, но грустит и избегает солнца, мечтая о людском тепле"},
+        {"act": 3, "description": "Весной подружки зовут Снегурочку прыгать через костёр, она тает и превращается в облачко"}
+      ]
+    },
+    "moral_ru": "Каждая радость имеет свою цену, но любовь остаётся навсегда",
+    "icon_url": null,
+    "sort_order": 34,
+    "characters": [
+      {
+        "name_ru": "Снегурочка",
+        "role": "protagonist",
+        "appearance_prompt": "A beautiful pale girl made of snow, white-blue skin, long white-silver hair with snowflakes, wearing a light blue fur-trimmed coat and hat, sad ethereal beauty",
+        "personality_ru": "Нежная, печальная, мечтательная, хрупкая",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Дед",
+        "role": "helper",
+        "appearance_prompt": "A kind old Russian man with a white beard, wearing a warm sheepskin coat and ushanka hat, sculpting a snow girl with loving careful hands",
+        "personality_ru": "Добрый, любящий, заботливый старик",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Бабушка",
+        "role": "helper",
+        "appearance_prompt": "A warm elderly Russian woman in a flowered shawl and thick wool dress, watching the snow girl with teary joyful eyes, round kind face",
+        "personality_ru": "Любящая, заботливая, добрая старушка",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "pied-piper",
+    "name_ru": "Крысолов из Гамельна",
+    "summary_ru": "Таинственный музыкант избавляет город от крыс, но жители отказываются платить ему обещанную награду",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Город Гамельн страдает от нашествия крыс, появляется загадочный флейтист и обещает помочь"},
+        {"act": 2, "description": "Крысолов играет на флейте и уводит всех крыс в реку, но горожане отказываются платить"},
+        {"act": 3, "description": "Обманутый Крысолов играет снова и уводит всех детей из города"}
+      ]
+    },
+    "moral_ru": "Всегда выполняй свои обещания и будь благодарен за помощь",
+    "icon_url": null,
+    "sort_order": 35,
+    "characters": [
+      {
+        "name_ru": "Крысолов",
+        "role": "protagonist",
+        "appearance_prompt": "A mysterious tall thin man in a multicolored patchwork outfit, wearing a pointed hat with a feather, playing a silver flute, enigmatic expression, bright piercing eyes",
+        "personality_ru": "Загадочный, талантливый, справедливый, обидчивый",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Бургомистр",
+        "role": "antagonist",
+        "appearance_prompt": "A fat greedy mayor with a red face, wearing rich medieval clothes and a gold chain of office, counting coins, dishonest shifty eyes",
+        "personality_ru": "Жадный, лживый, неблагодарный правитель",
+        "sort_order": 2
+      }
+    ]
+  },
+  {
+    "slug": "aladdin",
+    "name_ru": "Аладдин",
+    "summary_ru": "Бедный юноша находит волшебную лампу с джинном и обретает богатство и любовь принцессы",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Злой колдун обманывает бедного Аладдина и отправляет его в пещеру за волшебной лампой"},
+        {"act": 2, "description": "Аладдин находит лампу с джинном, становится богатым и завоёвывает сердце принцессы"},
+        {"act": 3, "description": "Колдун крадёт лампу, но Аладдин с помощью смекалки побеждает злодея"}
+      ]
+    },
+    "moral_ru": "Богатство не заменит доброго сердца и смелости",
+    "icon_url": null,
+    "sort_order": 36,
+    "characters": [
+      {
+        "name_ru": "Аладдин",
+        "role": "protagonist",
+        "appearance_prompt": "A young Middle Eastern boy with black hair, wearing a purple vest over white baggy pants, a red fez hat, holding a golden oil lamp, charming street-smart smile",
+        "personality_ru": "Ловкий, добрый, смелый, находчивый",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Джинн",
+        "role": "helper",
+        "appearance_prompt": "A massive blue magical genie emerging from a golden lamp in a swirl of smoke, muscular upper body, golden cuffs on wrists, friendly booming smile, wispy lower body",
+        "personality_ru": "Могущественный, весёлый, преданный, мудрый",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Злой колдун",
+        "role": "antagonist",
+        "appearance_prompt": "A sinister sorcerer in dark robes with a pointed black beard, wearing a dark turban, holding a cobra-headed staff, cold calculating eyes, tall and menacing",
+        "personality_ru": "Коварный, жадный, могущественный злодей",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "beauty-and-beast",
+    "name_ru": "Красавица и Чудовище",
+    "summary_ru": "Красавица попадает в заколдованный замок Чудовища и своей любовью снимает проклятие",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Отец Красавицы срывает розу в саду Чудовища и вынужден отдать ему дочь"},
+        {"act": 2, "description": "Красавица живёт в замке, привыкает к Чудовищу и видит его доброту за страшной внешностью"},
+        {"act": 3, "description": "Красавица признаётся Чудовищу в любви, и он превращается в прекрасного принца"}
+      ]
+    },
+    "moral_ru": "Истинная красота — внутри, а любовь видит сердцем",
+    "icon_url": null,
+    "sort_order": 37,
+    "characters": [
+      {
+        "name_ru": "Красавица",
+        "role": "protagonist",
+        "appearance_prompt": "A beautiful young woman with long brown hair, wearing a golden ball gown, holding a red rose, intelligent warm brown eyes, kind and brave expression",
+        "personality_ru": "Умная, добрая, смелая, любящая",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Чудовище",
+        "role": "protagonist",
+        "appearance_prompt": "A large beast with horns, fangs, thick brown fur, wearing a royal blue cape, sad lonely eyes that show a gentle soul within, powerful but gentle hands",
+        "personality_ru": "Грозный снаружи, но добрый и ранимый внутри",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Отец Красавицы",
+        "role": "helper",
+        "appearance_prompt": "An elderly inventor with grey hair and round glasses, wearing a brown coat, kind worried face, carrying a satchel of tools and blueprints",
+        "personality_ru": "Добрый, любящий, рассеянный отец",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "emperor-new-clothes",
+    "name_ru": "Новое платье короля",
+    "summary_ru": "Два мошенника обманывают тщеславного короля, убеждая его, что шьют ему невидимое платье",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Два мошенника приходят к тщеславному королю и предлагают сшить волшебную ткань, невидимую для глупцов"},
+        {"act": 2, "description": "Все придворные делают вид, что видят платье, боясь показаться глупыми"},
+        {"act": 3, "description": "Король выходит на парад голым, и только ребёнок кричит правду — король голый!"}
+      ]
+    },
+    "moral_ru": "Не бойся говорить правду, даже если все вокруг молчат",
+    "icon_url": null,
+    "sort_order": 38,
+    "characters": [
+      {
+        "name_ru": "Король",
+        "role": "protagonist",
+        "appearance_prompt": "A vain pompous king with a large golden crown, curly mustache, wearing increasingly ridiculous outfits, proud strutting posture, puffed-out chest",
+        "personality_ru": "Тщеславный, глупый, самовлюблённый",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Мошенники-портные",
+        "role": "antagonist",
+        "appearance_prompt": "Two crafty men in tailor outfits, one thin and one fat, pretending to weave at empty looms, sly winking expressions, pockets full of gold coins",
+        "personality_ru": "Хитрые, жуликоватые, изобретательные обманщики",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Мальчик",
+        "role": "helper",
+        "appearance_prompt": "A small honest child in simple clothes, pointing at the naked king and laughing, innocent truthful expression, standing in a crowd of adults",
+        "personality_ru": "Честный, наивный, искренний ребёнок",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "steadfast-tin-soldier",
+    "name_ru": "Стойкий оловянный солдатик",
+    "summary_ru": "Одноногий оловянный солдатик переживает невероятные приключения ради любви к бумажной балерине",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Среди двадцати пяти солдатиков один оказался с одной ногой, он влюбляется в бумажную балерину"},
+        {"act": 2, "description": "Солдатик падает из окна, плывёт по канаве в бумажной лодке, попадает в брюхо рыбы"},
+        {"act": 3, "description": "Солдатик чудом возвращается домой, но злой тролль бросает его в огонь вместе с балериной"}
+      ]
+    },
+    "moral_ru": "Настоящая стойкость — хранить верность и любовь несмотря ни на что",
+    "icon_url": null,
+    "sort_order": 39,
+    "characters": [
+      {
+        "name_ru": "Оловянный солдатик",
+        "role": "protagonist",
+        "appearance_prompt": "A small tin soldier standing at attention on one leg, wearing a blue uniform with red trim and a tall black shako hat, brave unwavering expression, shiny tin surface",
+        "personality_ru": "Стойкий, храбрый, верный, молчаливый",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Балерина",
+        "role": "helper",
+        "appearance_prompt": "A delicate paper ballerina in a white tutu dress, standing on one leg with arms raised gracefully, tiny paper rose on her chest, beautiful and fragile",
+        "personality_ru": "Изящная, нежная, прекрасная танцовщица",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Злой тролль",
+        "role": "antagonist",
+        "appearance_prompt": "A small ugly black troll figure sitting in a jack-in-the-box, mean glowing eyes, sharp teeth, popping out threateningly, dark and sinister toy",
+        "personality_ru": "Злой, завистливый, мстительный",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "peter-pan",
+    "name_ru": "Питер Пэн",
+    "summary_ru": "Мальчик, который не хочет взрослеть, уносит детей в волшебную страну Нетландию",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Питер Пэн прилетает к окну Венди и зовёт детей в Нетландию"},
+        {"act": 2, "description": "Дети летают, сражаются с пиратами капитана Крюка и играют с потерянными мальчишками"},
+        {"act": 3, "description": "Питер побеждает капитана Крюка, а дети возвращаются домой, повзрослев"}
+      ]
+    },
+    "moral_ru": "Детство прекрасно, но взросление — часть жизни",
+    "icon_url": null,
+    "sort_order": 40,
+    "characters": [
+      {
+        "name_ru": "Питер Пэн",
+        "role": "protagonist",
+        "appearance_prompt": "A mischievous boy who never grows up, wearing a green tunic and pointed hat with a red feather, pointed ears, flying through a starry sky, cocky confident grin, bare feet",
+        "personality_ru": "Озорной, бесстрашный, весёлый, вечный мальчик",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Капитан Крюк",
+        "role": "antagonist",
+        "appearance_prompt": "A menacing pirate captain with a hook for a right hand, wearing a large red coat and feathered tricorn hat, long black curly hair, thin mustache, standing on a pirate ship",
+        "personality_ru": "Коварный, злой, трусливый, мстительный пират",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Венди",
+        "role": "helper",
+        "appearance_prompt": "A responsible young girl with brown hair in a blue bow, wearing a light blue nightgown, motherly caring expression, holding a candle, imaginative kind eyes",
+        "personality_ru": "Заботливая, мечтательная, ответственная, добрая",
+        "sort_order": 3
+      },
+      {
+        "name_ru": "Фея Динь-Динь",
+        "role": "helper",
+        "appearance_prompt": "A tiny glowing fairy with translucent wings, wearing a green leaf dress, sparkling golden pixie dust trail, jealous pouty expression, bright blonde hair in a bun",
+        "personality_ru": "Ревнивая, преданная, озорная, маленькая фея",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "slug": "bambi",
+    "name_ru": "Бэмби",
+    "summary_ru": "Маленький оленёнок Бэмби растёт в лесу, познаёт мир и становится великим лесным принцем",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "В лесу рождается оленёнок Бэмби, он исследует мир и заводит друзей"},
+        {"act": 2, "description": "Бэмби теряет маму из-за охотников и учится выживать самостоятельно"},
+        {"act": 3, "description": "Бэмби вырастает, побеждает соперника и становится Великим Князем леса"}
+      ]
+    },
+    "moral_ru": "Жизнь полна испытаний, но они делают нас сильнее и мудрее",
+    "icon_url": null,
+    "sort_order": 41,
+    "characters": [
+      {
+        "name_ru": "Бэмби",
+        "role": "protagonist",
+        "appearance_prompt": "A young deer fawn with big brown eyes, white spots on golden-brown coat, wobbly long legs, small tail, curious innocent expression, later grows into a majestic stag with antlers",
+        "personality_ru": "Любопытный, нежный, храбрый, растущий",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Мама Бэмби",
+        "role": "helper",
+        "appearance_prompt": "A graceful doe with soft brown fur, gentle dark eyes, elegant and protective posture, nuzzling her fawn, warm and loving expression",
+        "personality_ru": "Любящая, защищающая, мудрая мать",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Заяц Тампер",
+        "role": "helper",
+        "appearance_prompt": "A small energetic grey rabbit with one oversized foot that he thumps, big floppy ears, cheeky toothy grin, always bouncing around playfully",
+        "personality_ru": "Весёлый, болтливый, верный друг",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "winnie-the-pooh",
+    "name_ru": "Винни-Пух",
+    "summary_ru": "Забавный медвежонок Винни-Пух и его друзья переживают весёлые приключения в Стоакровом лесу",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Винни-Пух живёт в Стоакровом лесу и очень любит мёд, решает навестить друзей"},
+        {"act": 2, "description": "Пух и Пятачок попадают в забавные ситуации — ищут Слонопотама, ходят в гости к Кролику"},
+        {"act": 3, "description": "Друзья помогают друг другу и понимают, что дружба — самое важное в жизни"}
+      ]
+    },
+    "moral_ru": "Настоящие друзья всегда рядом и принимают тебя таким, какой ты есть",
+    "icon_url": null,
+    "sort_order": 42,
+    "characters": [
+      {
+        "name_ru": "Винни-Пух",
+        "role": "protagonist",
+        "appearance_prompt": "A round chubby bear with golden-brown fur, wearing a small red t-shirt that barely covers his tummy, holding a honey pot, dreamy content smile, short stubby legs",
+        "personality_ru": "Добрый, простодушный, обожает мёд, верный друг",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Пятачок",
+        "role": "helper",
+        "appearance_prompt": "A very small pink piglet with big round ears, wearing a pink and green striped sweater, timid nervous expression, tiny and adorable, always close to Pooh",
+        "personality_ru": "Робкий, маленький, преданный, добрый",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Ослик Иа",
+        "role": "helper",
+        "appearance_prompt": "A sad grey donkey with droopy ears, a detachable tail pinned on with a nail, gloomy downcast expression, sitting alone in a gloomy corner, big sad eyes",
+        "personality_ru": "Грустный, пессимистичный, но добрый",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "muha-tsokotukha",
+    "name_ru": "Муха-Цокотуха",
+    "summary_ru": "Муха-Цокотуха нашла денежку, устроила праздник, но злой паук похитил её, и только комарик спас именинницу",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Муха-Цокотуха нашла денежку, купила самовар и пригласила гостей на именины"},
+        {"act": 2, "description": "На празднике появляется злой паук, хватает Муху, а все гости разбегаются в страхе"},
+        {"act": 3, "description": "Храбрый маленький комарик спасает Муху, побеждает паука и женится на ней"}
+      ]
+    },
+    "moral_ru": "Настоящий герой — не тот, кто большой, а тот, кто храбрый",
+    "icon_url": null,
+    "sort_order": 43,
+    "characters": [
+      {
+        "name_ru": "Муха-Цокотуха",
+        "role": "protagonist",
+        "appearance_prompt": "A cheerful fly lady wearing a blue dress with white polka dots, tiny hat with flowers, carrying a shiny coin, transparent wings, big friendly eyes, hosting a tea party",
+        "personality_ru": "Гостеприимная, весёлая, щедрая, нарядная",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Паук",
+        "role": "antagonist",
+        "appearance_prompt": "A large menacing black spider with eight hairy legs, evil red eyes, sharp pincers, spinning a web to trap the fly, dark sinister appearance",
+        "personality_ru": "Злой, жадный, страшный, жестокий",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Комарик",
+        "role": "helper",
+        "appearance_prompt": "A tiny brave mosquito in a dashing red jacket, holding a miniature sword (lantern), thin legs, gallant heroic pose, determined expression despite small size",
+        "personality_ru": "Храбрый, маленький, отважный герой",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "doctor-aibolit",
+    "name_ru": "Доктор Айболит",
+    "summary_ru": "Добрый доктор Айболит лечит зверей и отправляется в Африку спасать больных обезьянок",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Добрый доктор Айболит лечит всех зверей, к нему приходят звери со всего света"},
+        {"act": 2, "description": "Из Африки приходит телеграмма — обезьянки заболели, Айболит отправляется в опасное путешествие"},
+        {"act": 3, "description": "Преодолевая препятствия с помощью зверей, Айболит добирается до Африки и вылечивает всех"}
+      ]
+    },
+    "moral_ru": "Помогай тем, кто нуждается, и добро вернётся к тебе",
+    "icon_url": null,
+    "sort_order": 44,
+    "characters": [
+      {
+        "name_ru": "Доктор Айболит",
+        "role": "protagonist",
+        "appearance_prompt": "A kind elderly doctor with a white beard, round glasses, wearing a white medical coat and a tall white hat, carrying a medical bag, surrounded by animals, warm gentle smile",
+        "personality_ru": "Добрый, самоотверженный, мудрый, любит зверей",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Бармалей",
+        "role": "antagonist",
+        "appearance_prompt": "A fierce African pirate with a big black beard, wearing torn striped pants and a red bandana, curved sword, scary but somewhat comical, missing teeth",
+        "personality_ru": "Злой, жестокий, но трусливый разбойник",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Собака Авва",
+        "role": "helper",
+        "appearance_prompt": "A loyal white dog with brown spots, wearing a tiny red cross medical armband, carrying a medicine bag in mouth, devoted faithful expression",
+        "personality_ru": "Верная, преданная, храбрая помощница",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "chipollino",
+    "name_ru": "Чиполлино",
+    "summary_ru": "Мальчик-луковка Чиполлино борется против несправедливости жестокого принца Лимона",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Принц Лимон и синьор Помидор угнетают бедный овощной народ, отца Чиполлино сажают в тюрьму"},
+        {"act": 2, "description": "Чиполлино с друзьями борется против несправедливости и помогает бедным жителям"},
+        {"act": 3, "description": "Народ восстаёт, Чиполлино освобождает отца и всех заключённых, наступает справедливость"}
+      ]
+    },
+    "moral_ru": "Нужно бороться с несправедливостью и защищать слабых",
+    "icon_url": null,
+    "sort_order": 45,
+    "characters": [
+      {
+        "name_ru": "Чиполлино",
+        "role": "protagonist",
+        "appearance_prompt": "A brave onion boy with a green onion sprout for hair, round face, wearing patched overalls and a little cap, defiant determined expression, small but fierce",
+        "personality_ru": "Смелый, справедливый, находчивый, весёлый",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Синьор Помидор",
+        "role": "antagonist",
+        "appearance_prompt": "A fat round tomato man with a bright red face, wearing a pompous dark suit with gold buttons, angry puffed-up expression, tiny legs, wielding a stick",
+        "personality_ru": "Злой, важный, жестокий управитель",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Редисочка",
+        "role": "helper",
+        "appearance_prompt": "A cute little radish girl with red and white coloring, green leaf pigtails, wearing a simple dress, cheerful brave expression, small and quick",
+        "personality_ru": "Смелая, весёлая, верная подруга",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "dunno",
+    "name_ru": "Незнайка",
+    "summary_ru": "Маленький коротышка Незнайка, который ничего не знает, попадает в забавные приключения в Цветочном городе",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "В Цветочном городе живут маленькие коротышки, Незнайка пытается чем-то заняться, но у него ничего не получается"},
+        {"act": 2, "description": "Знайка строит воздушный шар, коротышки летят путешествовать и попадают в Зелёный город"},
+        {"act": 3, "description": "Незнайка хвастается и попадает в неприятности, но в конце исправляется и учится быть лучше"}
+      ]
+    },
+    "moral_ru": "Хвастовство и лень до добра не доводят — нужно учиться и стараться",
+    "icon_url": null,
+    "sort_order": 46,
+    "characters": [
+      {
+        "name_ru": "Незнайка",
+        "role": "protagonist",
+        "appearance_prompt": "A tiny boy with wild spiky blond hair, wearing an oversized blue hat, bright orange shirt and green pants, mischievous grin, always getting into trouble",
+        "personality_ru": "Хвастливый, ленивый, но добрый и любопытный",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Знайка",
+        "role": "helper",
+        "appearance_prompt": "A small serious boy with glasses, wearing a neat dark suit and a black graduation cap, always carrying a book, intelligent focused expression",
+        "personality_ru": "Умный, серьёзный, ответственный, лидер",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Пилюлькин",
+        "role": "helper",
+        "appearance_prompt": "A tiny doctor with a white coat and stethoscope, carrying a huge thermometer and medicine bottle, round spectacles, stern but caring expression",
+        "personality_ru": "Строгий, заботливый, любит лечить всех подряд",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "karlsson",
+    "name_ru": "Малыш и Карлсон",
+    "summary_ru": "Маленький мальчик дружит с забавным человечком с пропеллером, который живёт на крыше",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Одинокий мальчик Малыш знакомится с Карлсоном — смешным толстяком с пропеллером на спине"},
+        {"act": 2, "description": "Карлсон и Малыш шалят, едят сладости и устраивают весёлые проделки"},
+        {"act": 3, "description": "Карлсон помогает Малышу справиться с неприятностями и становится его лучшим другом"}
+      ]
+    },
+    "moral_ru": "Настоящий друг приходит в трудную минуту и делает жизнь веселее",
+    "icon_url": null,
+    "sort_order": 47,
+    "characters": [
+      {
+        "name_ru": "Карлсон",
+        "role": "protagonist",
+        "appearance_prompt": "A short chubby man with a round belly, red hair, wearing white shorts with a button and a green shirt, a small propeller on his back, mischievous cheerful expression, rosy cheeks",
+        "personality_ru": "Весёлый, хвастливый, озорной, обаятельный",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Малыш",
+        "role": "protagonist",
+        "appearance_prompt": "A small blond boy about seven years old, wearing simple shorts and a striped t-shirt, big sad eyes that light up with joy around Karlsson, innocent and sweet",
+        "personality_ru": "Добрый, скромный, немного одинокий, мечтательный",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Фрёкен Бок",
+        "role": "antagonist",
+        "appearance_prompt": "A large stern woman with grey hair in a bun, wearing a dark dress with white collar, hands on hips, strict expression, large round glasses, imposing figure",
+        "personality_ru": "Строгая, ворчливая, но в глубине души добрая",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "cheburashka",
+    "name_ru": "Чебурашка",
+    "summary_ru": "Странное ушастое существо Чебурашка подружилось с крокодилом Геной и вместе они строят домик для друзей",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Чебурашка приезжает в ящике с апельсинами и ищет друзей, знакомится с крокодилом Геной"},
+        {"act": 2, "description": "Гена и Чебурашка решают построить Дом дружбы, но старуха Шапокляк мешает им"},
+        {"act": 3, "description": "Несмотря на козни Шапокляк, друзья строят дом и находят множество новых друзей"}
+      ]
+    },
+    "moral_ru": "Дружба — это самое ценное, а вместе можно преодолеть любые преграды",
+    "icon_url": null,
+    "sort_order": 48,
+    "characters": [
+      {
+        "name_ru": "Чебурашка",
+        "role": "protagonist",
+        "appearance_prompt": "A small brown furry creature with huge round ears, big round dark eyes, standing on short legs, innocent and adorable, round head, tiny body, childlike and trusting",
+        "personality_ru": "Добрый, наивный, дружелюбный, ищет друзей",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Крокодил Гена",
+        "role": "protagonist",
+        "appearance_prompt": "A green crocodile standing upright, wearing a brown suit jacket, hat and bow tie, playing an accordion, kind gentle expression, walking on two legs like a gentleman",
+        "personality_ru": "Интеллигентный, добрый, верный, играет на гармошке",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Старуха Шапокляк",
+        "role": "antagonist",
+        "appearance_prompt": "A small old woman with a pointy hat and a black dress, carrying a handbag with a rat inside, sly cunning expression, hunched posture, always scheming",
+        "personality_ru": "Вредная, хитрая, пакостница, но иногда смешная",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "slug": "mowgli",
+    "name_ru": "Маугли",
+    "summary_ru": "Мальчик, воспитанный волками в джунглях, учится жить среди зверей и борется с тигром Шер-Ханом",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Маленький мальчик попадает в стаю волков, медведь Балу и пантера Багира берут его под защиту"},
+        {"act": 2, "description": "Маугли растёт в джунглях, учится законам природы, но тигр Шер-Хан хочет его уничтожить"},
+        {"act": 3, "description": "Маугли побеждает Шер-Хана с помощью огня и ума, становится хозяином джунглей"}
+      ]
+    },
+    "moral_ru": "Знание и дружба — главное оружие, а мы в ответе за тех, кто нас вырастил",
+    "icon_url": null,
+    "sort_order": 49,
+    "characters": [
+      {
+        "name_ru": "Маугли",
+        "role": "protagonist",
+        "appearance_prompt": "A wild boy with tanned skin and messy black hair, wearing only a red loincloth, muscular and agile, living in the jungle, fierce and brave dark eyes, barefoot",
+        "personality_ru": "Смелый, ловкий, свободолюбивый, справедливый",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Шер-Хан",
+        "role": "antagonist",
+        "appearance_prompt": "A massive fearsome Bengal tiger with bright orange and black stripes, scarred face, burning amber eyes full of hatred, powerful muscular body, bared fangs",
+        "personality_ru": "Жестокий, гордый, злой, мстительный тигр",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Балу",
+        "role": "helper",
+        "appearance_prompt": "A large friendly grey bear with a round belly, relaxed lazy posture, teaching Mowgli while lying on his back, warm wise smile, gentle paws",
+        "personality_ru": "Добрый, мудрый, ленивый, весёлый учитель",
+        "sort_order": 3
+      },
+      {
+        "name_ru": "Багира",
+        "role": "helper",
+        "appearance_prompt": "A sleek black panther with shiny dark fur, piercing golden eyes, elegant and powerful, graceful movements, sitting on a tree branch watching protectively",
+        "personality_ru": "Мудрая, строгая, преданная, грациозная",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "slug": "pippi-longstocking",
+    "name_ru": "Пеппи Длинныйчулок",
+    "summary_ru": "Необычная рыжая девочка с невероятной силой живёт одна и переживает весёлые приключения с друзьями",
+    "plot_structure": {
+      "acts": [
+        {"act": 1, "description": "Пеппи Длинныйчулок поселяется одна на вилле Курица с обезьянкой и лошадью, знакомится с Томми и Анникой"},
+        {"act": 2, "description": "Пеппи шокирует взрослых своим поведением, но покоряет детей весельем и добротой"},
+        {"act": 3, "description": "Пеппи защищает друзей, побеждает хулиганов и доказывает, что быть собой — это здорово"}
+      ]
+    },
+    "moral_ru": "Будь собой, верь в свои силы и не бойся быть непохожим на других",
+    "icon_url": null,
+    "sort_order": 50,
+    "characters": [
+      {
+        "name_ru": "Пеппи Длинныйчулок",
+        "role": "protagonist",
+        "appearance_prompt": "A wild freckled girl with bright red hair in two stiff braids sticking out sideways, wearing mismatched stockings (one striped, one plain), oversized shoes, patched dress, superhuman strength, wide toothy grin",
+        "personality_ru": "Весёлая, добрая, невероятно сильная, свободная, фантазёрка",
+        "sort_order": 1
+      },
+      {
+        "name_ru": "Томми",
+        "role": "helper",
+        "appearance_prompt": "A neat polite boy with short blond hair, wearing proper clothes — shorts and a collared shirt, curious but cautious expression, Pippi's loyal friend",
+        "personality_ru": "Вежливый, любопытный, послушный, верный друг",
+        "sort_order": 2
+      },
+      {
+        "name_ru": "Анника",
+        "role": "helper",
+        "appearance_prompt": "A sweet girl with blonde curly hair and a pink dress, clean and tidy, shy but fascinated by Pippi, holding her brother Tommy's hand, pink bows in hair",
+        "personality_ru": "Скромная, аккуратная, добрая, восхищается Пеппи",
+        "sort_order": 3
+      }
+    ]
+  }
+]
