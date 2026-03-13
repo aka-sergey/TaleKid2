@@ -14,10 +14,10 @@ Phase 5 (images):
   5. Character reference generation (Leonardo.ai / DALL-E)
   6. Illustration generation (10 parallel threads)
 
-Phase 6 (finalization, to be added):
-  7. Educational content
-  8. Title generation
-  9. Saving & push notification
+Phase 6 (finalization):
+  7. Educational content (facts & questions)
+  8. Title generation (catchy Russian title)
+  9. Finalization (push notification + save)
 
 Usage:
     python -m app.main
@@ -54,6 +54,9 @@ from app.pipeline.text_generation import TextGenerationStage
 from app.pipeline.scene_decomposition import SceneDecompositionStage
 from app.pipeline.character_references import CharacterReferencesStage
 from app.pipeline.illustration import IllustrationStage
+from app.pipeline.education import EducationStage
+from app.pipeline.title_generation import TitleGenerationStage
+from app.pipeline.finalization import FinalizationStage
 from app.pipeline.base import PipelineContext
 
 # ---------------------------------------------------------------------------
@@ -143,12 +146,19 @@ async def run_pipeline(payload: dict, redis: RedisService) -> None:
             stage6 = IllustrationStage(db, redis, image_svc, s3_svc)
             await stage6.execute(ctx)
 
-            # ---- Phase 6 placeholder ----
-            # Stage 7: Educational content (90% → 93%)
-            # Stage 8: Title generation (93% → 96%)
-            # Stage 9: Finalization + push (96% → 100%)
+            # ---- Stage 7: Educational Content (90% → 93%) ----
+            stage7 = EducationStage(db, redis, openai_svc)
+            await stage7.execute(ctx)
 
-            # Mark as completed (Phase 6 stages will fill 90-100%)
+            # ---- Stage 8: Title Generation (93% → 96%) ----
+            stage8 = TitleGenerationStage(db, redis, openai_svc)
+            await stage8.execute(ctx)
+
+            # ---- Stage 9: Finalization + Push (96% → 100%) ----
+            stage9 = FinalizationStage(db, redis)
+            await stage9.execute(ctx)
+
+            # Mark as completed
             await db.execute(
                 update(GenerationJob)
                 .where(GenerationJob.id == job_id)
