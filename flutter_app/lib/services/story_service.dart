@@ -16,8 +16,9 @@ class StoryService {
         '/stories',
         queryParameters: {'skip': skip, 'limit': limit},
       );
-      final data = response.data as List<dynamic>;
-      return data
+      final body = response.data as Map<String, dynamic>;
+      final stories = body['stories'] as List<dynamic>;
+      return stories
           .map((e) => StoryModel.fromJson(e as Map<String, dynamic>))
           .toList();
     } on DioException catch (e) {

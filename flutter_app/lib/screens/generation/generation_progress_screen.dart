@@ -7,6 +7,8 @@ import 'package:go_router/go_router.dart';
 import '../../config/router.dart';
 import '../../config/theme.dart';
 import '../../providers/generation_provider.dart';
+import '../../providers/story_provider.dart';
+import '../../widgets/title_dialog.dart';
 
 /// Funny Russian status messages that rotate while generating.
 const _funnyStatuses = [
@@ -46,6 +48,7 @@ class _GenerationProgressScreenState
   final _random = Random();
   int _funnyStatusIndex = 0;
   DateTime? _startTime;
+  bool _completionHandled = false;
 
   @override
   void initState() {
@@ -110,9 +113,22 @@ class _GenerationProgressScreenState
         data: (jobState) {
           final job = jobState.job;
 
-          // Auto-navigate to reader on completion
-          if (job.isCompleted) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
+          // On completion: show title dialog, then navigate to reader
+          if (job.isCompleted && !_completionHandled) {
+            _completionHandled = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              if (!mounted) return;
+              // Show title dialog
+              final chosenTitle = await TitleDialog.show(
+                context,
+                suggestedTitle: job.storyTitle,
+                storyId: job.storyId,
+              );
+              if (chosenTitle != null && mounted) {
+                await ref
+                    .read(storiesProvider.notifier)
+                    .updateTitle(job.storyId, chosenTitle);
+              }
               if (mounted) {
                 context.go(
                   AppRoutes.storyReader.replaceAll(':id', job.storyId),
