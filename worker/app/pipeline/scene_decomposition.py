@@ -1,0 +1,135 @@
+"""
+Stage 4: Scene Decomposition
+- For each page, create a detailed scene description for illustration
+- Include character positions, background, lighting, mood
+- Generate an image generation prompt
+- Progress: 55% -> 65%
+"""
+import json
+import logging
+
+from sqlalchemy import select, update
+
+from shared.models.page import Page
+from app.services.openai_service import OpenAIService
+from app.pipeline.base import PipelineContext, PipelineStage
+
+logger = logging.getLogger("worker.pipeline.scene_decomposition")
+
+SYSTEM_PROMPT = """You are an expert art director for children's book illustrations.
+For each story page, create a detailed scene description and image generation prompt.
+
+Output valid JSON:
+{
+  "scene_description": {
+    "setting": "Description of the background/environment",
+    "characters_present": ["list of character names visible in scene"],
+    "character_actions": "What the characters are doing",
+    "mood": "Emotional mood of the scene",
+    "lighting": "Lighting description",
+    "key_objects": ["important objects in the scene"],
+    "color_palette": "Suggested color palette"
+  },
+  "image_prompt": "A detailed prompt for AI image generation in English. Include: art style (children's book illustration, watercolor, warm colors), scene composition, character descriptions, setting details, lighting, mood. Make it under 300 words."
+}"""
+
+
+class SceneDecompositionStage(PipelineStage):
+    stage_name = "scene_decomposition"
+    stage_status = "scene_decomposition"
+    progress_start = 55
+    progress_end = 65
+
+    def __init__(self, db, redis, openai: OpenAIService):
+        super().__init__(db, redis)
+        self.openai = openai
+
+    async def execute(self, ctx: PipelineContext) -> None:
+        await self.update_progress(
+            ctx, 55, "Создаём описания сцен для иллюстраций..."
+        )
+
+        bible = ctx.story_bible or {}
+        visual_style = bible.get(
+            "visual_style",
+            "warm watercolor children's book illustration style",
+        )
+        pages = ctx.pages_text
+        total = len(pages)
+
+        for i, page_info in enumerate(pages):
+            page_num = page_info["page_number"]
+            text = page_info["text_content"]
+            page_id = page_info["page_id"]
+
+            user_prompt = self._build_prompt(
+                page_num, total, text, ctx, visual_style
+            )
+
+            pct = self.progress_start + int(
+                (i + 1) / total * (self.progress_end - self.progress_start)
+            )
+            await self.update_progress(
+                ctx, pct, f"Описание сцены {page_num}/{total}..."
+            )
+
+            raw = await self.openai.chat_json(
+                SYSTEM_PROMPT, user_prompt, max_tokens=1500
+            )
+
+            try:
+                scene_data = json.loads(raw)
+            except json.JSONDecodeError:
+                raw = await self.openai.chat_json(
+                    SYSTEM_PROMPT,
+                    user_prompt + "\n\nReturn ONLY valid JSON.",
+                    max_tokens=1500,
+                )
+                scene_data = json.loads(raw)
+
+            scene_description = scene_data.get("scene_description", {})
+            image_prompt = scene_data.get("image_prompt", "")
+
+            # Update page in DB
+            await self.db.execute(
+                update(Page)
+                .where(Page.id == page_id)
+                .values(
+                    scene_description=scene_description,
+                    image_prompt=image_prompt,
+                )
+            )
+
+            ctx.scenes.append({
+                "page_number": page_num,
+                "page_id": page_id,
+                "scene_description": scene_description,
+                "image_prompt": image_prompt,
+            })
+
+        await self.db.commit()
+        await self.update_progress(ctx, 65, "Описания сцен готовы!")
+
+    def _build_prompt(
+        self, page_num, total, text, ctx: PipelineContext, visual_style
+    ):
+        parts = []
+        parts.append(f"Visual style: {visual_style}")
+        parts.append(f"\nPage {page_num} of {total}")
+        parts.append(f"Story text:\n{text}")
+
+        # Add character descriptions
+        parts.append("\nCharacter appearance references:")
+        for char_id, desc in ctx.character_descriptions.items():
+            parts.append(f"- {desc}")
+
+        if page_num == 1:
+            parts.append(
+                "\nThis is the opening scene. Make it inviting and establish the mood."
+            )
+        elif page_num == total:
+            parts.append(
+                "\nThis is the final scene. Make it warm and conclusive."
+            )
+
+        return "\n".join(parts)
