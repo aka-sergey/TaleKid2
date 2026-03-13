@@ -10,9 +10,9 @@ Phase 4 (text):
   3. Text generation (page by page)
   4. Scene decomposition
 
-Phase 5 (images, to be added):
-  5. Character reference generation
-  6. Illustration generation (Leonardo.ai / DALL-E)
+Phase 5 (images):
+  5. Character reference generation (Leonardo.ai / DALL-E)
+  6. Illustration generation (10 parallel threads)
 
 Phase 6 (finalization, to be added):
   7. Educational content
@@ -42,6 +42,7 @@ from app.database import async_session_factory, engine
 from app.services.openai_service import OpenAIService
 from app.services.redis_service import RedisService
 from app.services.s3_service import S3Service
+from app.services.image_service import ImageService
 
 from shared.models.base import Base
 from shared.models.generation_job import GenerationJob
@@ -51,6 +52,8 @@ from app.pipeline.photo_analysis import PhotoAnalysisStage
 from app.pipeline.story_bible import StoryBibleStage
 from app.pipeline.text_generation import TextGenerationStage
 from app.pipeline.scene_decomposition import SceneDecompositionStage
+from app.pipeline.character_references import CharacterReferencesStage
+from app.pipeline.illustration import IllustrationStage
 from app.pipeline.base import PipelineContext
 
 # ---------------------------------------------------------------------------
@@ -87,7 +90,8 @@ async def run_pipeline(payload: dict, redis: RedisService) -> None:
 
     # Services
     openai_svc = OpenAIService()
-    # s3_svc = S3Service()  # Will be used in Phase 5
+    s3_svc = S3Service()
+    image_svc = ImageService()
 
     async with async_session_factory() as db:
         try:
@@ -131,21 +135,27 @@ async def run_pipeline(payload: dict, redis: RedisService) -> None:
             stage4 = SceneDecompositionStage(db, redis, openai_svc)
             await stage4.execute(ctx)
 
-            # ---- Phases 5-6 placeholder ----
-            # Stage 5: Character references (65% → 70%)
-            # Stage 6: Illustration generation (70% → 90%)
+            # ---- Stage 5: Character References (65% → 70%) ----
+            stage5 = CharacterReferencesStage(db, redis, image_svc, s3_svc)
+            await stage5.execute(ctx)
+
+            # ---- Stage 6: Illustration Generation (70% → 90%) ----
+            stage6 = IllustrationStage(db, redis, image_svc, s3_svc)
+            await stage6.execute(ctx)
+
+            # ---- Phase 6 placeholder ----
             # Stage 7: Educational content (90% → 93%)
             # Stage 8: Title generation (93% → 96%)
             # Stage 9: Finalization + push (96% → 100%)
 
-            # For now, mark as completed at 65% until Phase 5-6 are implemented
+            # Mark as completed (Phase 6 stages will fill 90-100%)
             await db.execute(
                 update(GenerationJob)
                 .where(GenerationJob.id == job_id)
                 .values(
                     status="completed",
                     progress_pct=100,
-                    status_message="Сказка готова! (текст создан, иллюстрации будут в следующей версии)",
+                    status_message="Сказка готова!",
                     completed_at=datetime.now(timezone.utc),
                 )
             )
