@@ -88,9 +88,16 @@ app = FastAPI(
 )
 
 # -- CORS ------------------------------------------------------------------
+# NOTE: allow_origins=["*"] + allow_credentials=True is invalid per the CORS
+# spec — browsers block responses (even 401/403) when this combo is returned,
+# causing Dio to see connectionError instead of the actual HTTP error.
+# Always list explicit origins with allow_credentials=True.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Will be restricted in production
+    allow_origins=[
+        "https://talekid2-production.up.railway.app",
+    ],
+    allow_origin_regex=r"http://localhost:\d+",  # Any localhost port for dev
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

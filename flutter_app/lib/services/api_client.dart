@@ -115,18 +115,30 @@ class _AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401 && !_isRefreshing) {
+    final statusCode = err.response?.statusCode;
+
+    // Handle 401 (token expired) and 403 (no token / forbidden by HTTPBearer)
+    if ((statusCode == 401 || statusCode == 403) && !_isRefreshing) {
       _isRefreshing = true;
 
       try {
         final refreshed = await _client.refreshAccessToken();
         if (refreshed) {
-          // Retry the original request with new token
+          // Retry the original request with the new token
           final token = await _client.getAccessToken();
           err.requestOptions.headers['Authorization'] = 'Bearer $token';
 
-          final response = await _client.dio.fetch(err.requestOptions);
-          handler.resolve(response);
+          try {
+            final response = await _client.dio.fetch(err.requestOptions);
+            handler.resolve(response);
+          } catch (retryError) {
+            // Retry failed — propagate whatever error we got
+            if (retryError is DioException) {
+              handler.next(retryError);
+            } else {
+              handler.next(err);
+            }
+          }
           return;
         }
       } finally {
