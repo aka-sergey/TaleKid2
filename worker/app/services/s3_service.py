@@ -31,7 +31,7 @@ class S3Service:
             ContentType=content_type,
             ACL="public-read",
         )
-        url = f"{self._public_url}/{self._bucket}/{key}"
+        url = f"{self._public_url}/{key}"
         logger.info("Uploaded to S3: %s", key)
         return url
 
