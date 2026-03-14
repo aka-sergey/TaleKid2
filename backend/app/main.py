@@ -32,8 +32,11 @@ async def lifespan(app: FastAPI):
     # Create tables if they do not exist (dev convenience; Alembic is the
     # canonical migration tool for production).
     async with engine.begin() as conn:
+        # TEMPORARY: drop old tables from previous app version to fix schema mismatch.
+        # Remove this line after first successful deployment!
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
-    logger.info("Database tables verified / created")
+    logger.info("Database tables recreated (schema migration)")
     yield
     await engine.dispose()
     logger.info("Database engine disposed")
