@@ -6,7 +6,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.dependencies import get_current_user, get_db
 from app.schemas.character import (
     CharacterCreateRequest,
-    CharacterListResponse,
     CharacterPhotoResponse,
     CharacterResponse,
     CharacterUpdateRequest,
@@ -17,14 +16,13 @@ from shared.models.user import User
 router = APIRouter(prefix="/characters", tags=["characters"])
 
 
-@router.get("", response_model=CharacterListResponse)
+@router.get("", response_model=list[CharacterResponse])
 async def list_characters(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """List all characters belonging to the authenticated user."""
-    characters = await character_service.list_characters(current_user.id, db)
-    return CharacterListResponse(characters=characters)
+    return await character_service.list_characters(current_user.id, db)
 
 
 @router.post("", response_model=CharacterResponse, status_code=201)
