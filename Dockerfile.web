@@ -1,0 +1,29 @@
+FROM ghcr.io/cirruslabs/flutter:stable AS build
+
+WORKDIR /app
+COPY flutter_app/ ./
+
+RUN flutter pub get
+RUN flutter build web \
+    --dart-define=API_BASE_URL=https://talekid-production.up.railway.app/api/v1 \
+    --release
+
+FROM nginx:alpine
+
+COPY --from=build /app/build/web/ /usr/share/nginx/html/
+
+# Nginx config for SPA routing and Railway $PORT
+RUN echo 'server { \
+    listen ${PORT:-80}; \
+    root /usr/share/nginx/html; \
+    index index.html; \
+    location / { \
+        try_files $uri $uri/ /index.html; \
+    } \
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ { \
+        expires 1y; \
+        add_header Cache-Control "public, immutable"; \
+    } \
+}' > /etc/nginx/templates/default.conf.template
+
+EXPOSE 80
