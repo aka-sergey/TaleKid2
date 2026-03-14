@@ -3,7 +3,7 @@ name: Deploy Worker to Railway
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - 'worker/**'
       - 'shared/**'
