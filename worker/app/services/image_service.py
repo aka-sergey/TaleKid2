@@ -36,19 +36,27 @@ class ImageService:
         self,
         prompt: str,
         character_ref_url: str | None = None,
+        character_ref_id: str | None = None,
         width: int = 1024,
         height: int = 768,
     ) -> list[str]:
         """
         Generate an illustration image.
 
-        Tries Leonardo first, falls back to DALL-E on failure.
+        Args:
+            prompt: Image description
+            character_ref_url: DEPRECATED — use character_ref_id
+            character_ref_id: Leonardo image ID for character reference
+            width, height: Image dimensions
+
+        Tries Leonardo first (with character_ref_id if provided),
+        falls back to DALL-E on failure.
         """
         if self._engine == "leonardo" and self._leonardo:
             try:
                 urls = await self._leonardo.generate_image(
                     prompt=prompt,
-                    character_ref_url=character_ref_url,
+                    character_ref_id=character_ref_id,
                     width=width,
                     height=height,
                 )
@@ -77,28 +85,33 @@ class ImageService:
         self,
         character_description: str,
         style_hint: str = "children's book illustration, warm watercolor style",
-    ) -> list[str]:
+    ) -> list[dict]:
         """
         Generate a character reference image for consistent illustration.
+
+        Returns list of {url, id} dicts when using Leonardo,
+        or list of {url, id: None} dicts when using DALL-E fallback.
         """
         if self._engine == "leonardo" and self._leonardo:
             try:
-                urls = await self._leonardo.generate_character_reference(
+                result = await self._leonardo.generate_character_reference(
                     character_description=character_description,
                     style_hint=style_hint,
                 )
-                if urls:
-                    return urls
+                if result:
+                    return result
             except Exception as e:
                 logger.warning(
                     "Leonardo char ref failed, falling back to DALL-E: %s", e
                 )
 
         if self._dalle:
-            return await self._dalle.generate_character_reference(
+            urls = await self._dalle.generate_character_reference(
                 character_description=character_description,
                 style_hint=style_hint,
             )
+            # DALL-E returns plain URLs — wrap as dicts without Leonardo ID
+            return [{"url": u, "id": None} for u in urls]
 
         raise RuntimeError("No image generation service available")
 

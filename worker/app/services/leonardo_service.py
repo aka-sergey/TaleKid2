@@ -8,11 +8,15 @@ API flow:
   1. POST /generations → get generation_id
   2. Poll GET /generations/{id} → wait for status "COMPLETE"
   3. Download generated image URLs
+
+Character Reference flow:
+  1. Generate character reference image via Leonardo
+  2. Get the Leonardo image ID from the response (generated_images[0].id)
+  3. Pass initImageId + initImageType="GENERATED" to subsequent generations
 """
 
 import asyncio
 import logging
-from io import BytesIO
 
 import httpx
 
@@ -52,6 +56,7 @@ class LeonardoService:
         height: int = 768,
         num_images: int = 1,
         character_ref_url: str | None = None,
+        character_ref_id: str | None = None,
         style_preset: str | None = "ILLUSTRATION",
     ) -> list[str]:
         """
@@ -60,25 +65,26 @@ class LeonardoService:
         Args:
             prompt: Image description
             negative_prompt: What to avoid
-            width: Image width
-            height: Image height
+            width, height: Image dimensions
             num_images: Number of images to generate
-            character_ref_url: URL of character reference image (optional)
+            character_ref_url: DEPRECATED — ignored, use character_ref_id
+            character_ref_id: Leonardo image ID for character reference (initImageId)
             style_preset: Leonardo style preset
 
         Returns:
             List of generated image URLs
         """
         async with self._semaphore:
-            return await self._generate(
+            result = await self._generate(
                 prompt=prompt,
                 negative_prompt=negative_prompt,
                 width=width,
                 height=height,
                 num_images=num_images,
-                character_ref_url=character_ref_url,
+                character_ref_id=character_ref_id,
                 style_preset=style_preset,
             )
+            return [item["url"] for item in result]
 
     async def _generate(
         self,
@@ -87,10 +93,10 @@ class LeonardoService:
         width: int,
         height: int,
         num_images: int,
-        character_ref_url: str | None,
+        character_ref_id: str | None,
         style_preset: str | None,
-    ) -> list[str]:
-        """Internal generation logic."""
+    ) -> list[dict]:
+        """Internal generation logic. Returns list of {url, id} dicts."""
         body: dict = {
             "modelId": LEONARDO_MODEL_ID,
             "prompt": prompt,
@@ -106,15 +112,17 @@ class LeonardoService:
         if style_preset:
             body["presetStyle"] = style_preset
 
-        # Add character reference if provided
-        if character_ref_url:
+        # Add character reference using Leonardo image ID (initImageType: GENERATED)
+        if character_ref_id:
             body["controlnets"] = [
                 {
+                    "initImageId": character_ref_id,
+                    "initImageType": "GENERATED",
                     "preprocessorId": CHARACTER_REF_PREPROCESSOR_ID,
                     "strengthType": "Mid",
-                    "initImageUrl": character_ref_url,
                 }
             ]
+            logger.info("Using character reference ID: %s", character_ref_id)
 
         async with httpx.AsyncClient(timeout=120.0) as client:
             # Step 1: Submit generation request
@@ -130,8 +138,7 @@ class LeonardoService:
             logger.info("Leonardo generation submitted: %s", generation_id)
 
             # Step 2: Poll for completion
-            image_urls = await self._poll_generation(client, generation_id)
-            return image_urls
+            return await self._poll_generation(client, generation_id)
 
     async def _poll_generation(
         self,
@@ -139,8 +146,11 @@ class LeonardoService:
         generation_id: str,
         max_attempts: int = 60,
         poll_interval: float = 3.0,
-    ) -> list[str]:
-        """Poll Leonardo API until generation is complete."""
+    ) -> list[dict]:
+        """Poll Leonardo API until generation is complete.
+
+        Returns list of {url, id} dicts for each generated image.
+        """
         for attempt in range(max_attempts):
             await asyncio.sleep(poll_interval)
 
@@ -156,13 +166,17 @@ class LeonardoService:
 
             if status == "COMPLETE":
                 images = gen_data.get("generated_images", [])
-                urls = [img["url"] for img in images if img.get("url")]
+                result = [
+                    {"url": img["url"], "id": img["id"]}
+                    for img in images
+                    if img.get("url") and img.get("id")
+                ]
                 logger.info(
                     "Leonardo generation %s complete: %d images",
                     generation_id,
-                    len(urls),
+                    len(result),
                 )
-                return urls
+                return result
 
             if status == "FAILED":
                 raise RuntimeError(
@@ -192,11 +206,13 @@ class LeonardoService:
         self,
         character_description: str,
         style_hint: str = "children's book illustration, warm watercolor style",
-    ) -> list[str]:
+    ) -> list[dict]:
         """
         Generate a character reference image for consistent illustration.
 
-        Returns list of generated image URLs.
+        Returns list of {url, id} dicts.
+        The Leonardo image ID is stored and passed as initImageId in
+        subsequent page illustration generations.
         """
         prompt = (
             f"Full body character portrait, {character_description}, "
@@ -205,10 +221,13 @@ class LeonardoService:
             f"children's fairy tale character design"
         )
 
-        return await self.generate_image(
-            prompt=prompt,
-            width=768,
-            height=1024,
-            num_images=1,
-            style_preset="ILLUSTRATION",
-        )
+        async with self._semaphore:
+            return await self._generate(
+                prompt=prompt,
+                negative_prompt="ugly, deformed, blurry, low quality, text, watermark",
+                width=768,
+                height=1024,
+                num_images=1,
+                character_ref_id=None,
+                style_preset="ILLUSTRATION",
+            )

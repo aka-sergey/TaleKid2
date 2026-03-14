@@ -65,24 +65,39 @@ class CharacterReferencesStage(PipelineStage):
             try:
                 # Generate character reference image
                 logger.info("Generating reference for character: %s", character.name)
-                image_urls = await self.image_svc.generate_character_reference(
+                image_results = await self.image_svc.generate_character_reference(
                     character_description=char_description,
                     style_hint=visual_style,
                 )
 
-                if image_urls:
+                if image_results:
+                    first = image_results[0]
+                    image_url = first["url"]
+                    leonardo_id = first.get("id")  # None if DALL-E fallback
+
                     # Download and upload to S3
-                    image_bytes = await self.image_svc.download_image(image_urls[0])
+                    image_bytes = await self.image_svc.download_image(image_url)
                     s3_key = f"stories/{ctx.story_id}/characters/{character.id}/reference.png"
                     s3_url = self.s3_svc.upload_bytes(s3_key, image_bytes)
 
-                    # Save reference URL
+                    # Save reference URL in DB
                     sc.reference_image_url = s3_url
-                    logger.info(
-                        "Character reference uploaded: %s → %s",
-                        character.name,
-                        s3_key,
-                    )
+
+                    # Store Leonardo image ID in context for illustration stage
+                    if leonardo_id:
+                        ctx.character_leonardo_ids[str(character.id)] = leonardo_id
+                        logger.info(
+                            "Character reference uploaded: %s → %s (leonardo_id: %s)",
+                            character.name,
+                            s3_key,
+                            leonardo_id,
+                        )
+                    else:
+                        logger.info(
+                            "Character reference uploaded (DALL-E): %s → %s",
+                            character.name,
+                            s3_key,
+                        )
 
             except Exception as e:
                 logger.warning(

@@ -24,6 +24,9 @@ class PipelineContext:
         self.story_bible: dict | None = None
         self.pages_text: list[dict] = []  # [{page_number, text_content}]
         self.scenes: list[dict] = []  # [{page_number, scene_description, image_prompt}]
+        # Leonardo image IDs for character references (char_id -> leonardo_image_id)
+        # Used for initImageId + initImageType="GENERATED" in controlnets
+        self.character_leonardo_ids: dict[str, str] = {}
 
 
 class PipelineStage:

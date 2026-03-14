@@ -46,26 +46,34 @@ class IllustrationStage(PipelineStage):
             await self.update_progress(ctx, 90, "Нет сцен для иллюстрации")
             return
 
-        # Get character reference URLs for consistent illustration
+        # Get character reference IDs (Leonardo) for consistent illustration
         result = await self.db.execute(
             select(StoryCharacter)
             .where(StoryCharacter.story_id == ctx.story_id)
         )
         story_characters = result.scalars().all()
 
-        # Pick the protagonist's reference image (if available)
-        protagonist_ref_url = None
+        # Pick the protagonist's Leonardo image ID (if available)
+        protagonist_ref_id = None
         for sc in story_characters:
-            if sc.role_in_story == "protagonist" and sc.reference_image_url:
-                protagonist_ref_url = sc.reference_image_url
-                break
-
-        # If no protagonist ref, use any available reference
-        if not protagonist_ref_url:
-            for sc in story_characters:
-                if sc.reference_image_url:
-                    protagonist_ref_url = sc.reference_image_url
+            if sc.role_in_story == "protagonist":
+                leo_id = ctx.character_leonardo_ids.get(str(sc.character_id))
+                if leo_id:
+                    protagonist_ref_id = leo_id
                     break
+
+        # If no protagonist ref, use any available Leonardo ID
+        if not protagonist_ref_id:
+            for sc in story_characters:
+                leo_id = ctx.character_leonardo_ids.get(str(sc.character_id))
+                if leo_id:
+                    protagonist_ref_id = leo_id
+                    break
+
+        if protagonist_ref_id:
+            logger.info("Using character reference ID for illustrations: %s", protagonist_ref_id)
+        else:
+            logger.info("No Leonardo character reference available, generating without character ref")
 
         # Generate illustrations in parallel batches
         completed = 0
@@ -77,7 +85,7 @@ class IllustrationStage(PipelineStage):
             task = self._generate_single_illustration(
                 ctx=ctx,
                 scene=scene,
-                character_ref_url=protagonist_ref_url,
+                character_ref_id=protagonist_ref_id,
             )
             tasks.append(task)
 
@@ -143,7 +151,7 @@ class IllustrationStage(PipelineStage):
         self,
         ctx: PipelineContext,
         scene: dict,
-        character_ref_url: str | None,
+        character_ref_id: str | None,
     ) -> str | None:
         """Generate and upload a single page illustration."""
         page_num = scene["page_number"]
@@ -154,10 +162,10 @@ class IllustrationStage(PipelineStage):
             return None
 
         try:
-            # Generate image
+            # Generate image using Leonardo image ID for character reference
             image_urls = await self.image_svc.generate_image(
                 prompt=image_prompt,
-                character_ref_url=character_ref_url,
+                character_ref_id=character_ref_id,
                 width=1024,
                 height=768,
             )
