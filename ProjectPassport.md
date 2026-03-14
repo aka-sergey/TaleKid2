@@ -1,6 +1,6 @@
 # TaleKID - Project Passport
 
-> **Version:** 1.0.0 | **Date:** 2026-03-14 | **Repository:** https://github.com/aka-sergey/TaleKid2 | **Branch:** master
+> **Version:** 1.2.0 | **Date:** 2026-03-15 | **Repository:** https://github.com/aka-sergey/TaleKid2 | **Branch:** master
 
 ---
 
@@ -632,6 +632,16 @@ Backend (API)                Redis                    Worker
 **Access:** All objects uploaded with `ACL: public-read`
 **Public URL pattern:** `{STORAGE_PUBLIC_URL}/{key}`
 
+> ⚠️ **Important:** `STORAGE_PUBLIC_URL` already includes the bucket name
+> (e.g., `https://s3.twcstorage.ru/{bucket-id}`). Never append the bucket name
+> again when building public URLs — that produces a double-bucket 404 path.
+
+**CORS:** Bucket has an explicit CORS rule allowing `GET`/`HEAD` from:
+- `https://talekid2-production.up.railway.app` (production web)
+- `http://localhost:8080`, `http://localhost:3000`, `http://localhost:5173` (local dev)
+
+Flutter Web uses `XMLHttpRequest` for `CachedNetworkImage`, so S3 CORS is **required** for images to load in browsers.
+
 ---
 
 ## 8. Flutter App Architecture
@@ -708,9 +718,12 @@ flutter_app/lib/
 │    if path NOT in [/auth/*, /health, /catalog/*]:   │
 │      → add Authorization: Bearer {accessToken}      │
 │                                                     │
-│  Response 401:                                      │
+│  Response 401 OR 403:                               │
+│    (401 = token expired; 403 = no token, HTTPBearer)│
 │    → POST /auth/refresh {refresh_token}             │
 │    → if success: save new tokens, retry request     │
+│      (retry wrapped in try/catch — handler always   │
+│       called to prevent hanging requests)           │
 │    → if fail: clear tokens, redirect to login       │
 │                                                     │
 └─────────────────────────────────────────────────────┘
@@ -1006,19 +1019,47 @@ EducationalContentType: fact | question
 |---------|-----|
 | API | https://talekid-production.up.railway.app |
 | API Docs | https://talekid-production.up.railway.app/docs |
-| Web App | (Railway web service URL) |
+| Web App | https://talekid2-production.up.railway.app |
 | Domain (planned) | https://talekid.ai |
 
 ---
 
 ## 15. Known Constraints & Notes
 
-1. **CORS:** Currently `allow_origins=["*"]` — to be restricted in production
-2. **Password hashing:** Requires `bcrypt==4.1.3` (passlib 1.7.4 incompatible with bcrypt >=5.0)
-3. **Email validation:** Requires `pydantic[email]` (includes email-validator package)
-4. **SSL fallback:** Without `root.crt`, SSL connection is encrypted but without certificate verification
-5. **Image consistency:** Leonardo Character Reference (preprocessorId 133) used for visual consistency across pages; DALL-E fallback loses character consistency
-6. **Catalog auto-seed:** 6 genres + 6 worlds inserted on first startup; base tales (3) available via seed script only
-7. **Firebase FCM:** Not yet initialized in Flutter; push_service in worker gracefully degrades if credentials missing
-8. **PDF generation:** Client-side (Flutter `pdf` package), no server load
-9. **Localization:** Russian UI throughout; API prompts in English for AI models, user-facing content in Russian
+1. **CORS (API):** `allow_origins` lists explicit origins only — `allow_origins=["*"]` is **forbidden** when `allow_credentials=True` (CORS spec violation). Current allowed: `https://talekid2-production.up.railway.app` + `allow_origin_regex` for localhost.
+2. **CORS (S3):** TimeWeb S3 bucket has explicit CORS rules for web origin. If the domain changes, update via `boto3.put_bucket_cors()`.
+3. **Password hashing:** Requires `bcrypt==4.1.3` (passlib 1.7.4 incompatible with bcrypt >=5.0)
+4. **Email validation:** Requires `pydantic[email]` (includes email-validator package)
+5. **SSL fallback:** Without `root.crt`, SSL connection is encrypted but without certificate verification
+6. **Image consistency:** Leonardo Character Reference (preprocessorId 133) + `initImageId`/`initImageType: "GENERATED"` for visual consistency across pages; DALL-E fallback loses character consistency (no reference support)
+7. **Leonardo image ID flow:** `generate_character_reference` returns `{url, id}`; ID stored in `PipelineContext.character_leonardo_ids[character_id]`; used as `initImageId` in controlnets for page illustrations
+8. **Catalog auto-seed:** 6 genres + 6 worlds inserted on first startup; base tales (3) available via seed script only
+9. **Firebase FCM:** Not yet initialized in Flutter; push_service in worker gracefully degrades if credentials missing
+10. **PDF generation:** Client-side (Flutter `pdf` package), no server load
+11. **Localization:** Russian UI throughout; API prompts in English for AI models, user-facing content in Russian
+
+---
+
+## 16. Changelog
+
+### v1.2.0 — 2026-03-15
+
+**Fixes:**
+
+- **S3 CORS** — Configured `GET`/`HEAD` CORS rule on TimeWeb S3 bucket for `https://talekid2-production.up.railway.app`. Flutter Web uses `XMLHttpRequest` for `CachedNetworkImage`, so without CORS images were silently blocked by the browser.
+- **DB: double-bucket image URLs** — 18 pages + 2 story covers + 2 character reference URLs had path `/{bucket}/{bucket}/{key}` in the database (written before the S3 URL fix). Fixed via direct SQL `REPLACE()` update.
+- **CORS middleware (API)** — Replaced `allow_origins=["*"]` with explicit origin list. The wildcard combined with `allow_credentials=True` is invalid per the CORS spec; browsers suppressed 401/403 responses, making Dio report `connectionError` instead of `badResponse`.
+- **JWT interceptor: 403 handling** — FastAPI `HTTPBearer` returns HTTP 403 (not 401) when `Authorization` header is absent. Interceptor now handles both `401` and `403` for token refresh.
+- **JWT interceptor: dangling handler** — `dio.fetch()` retry inside `onError` was not wrapped in `try/catch`. Any exception left `ErrorInterceptorHandler` uncalled, causing the request to hang and surface as a fake `connectionError`. Added `try/catch` with `handler.next()` fallback.
+
+### v1.1.0 — 2026-03-14
+
+**Fixes:**
+
+- **S3 URL double-bucket** (`worker/app/services/s3_service.py`) — `STORAGE_PUBLIC_URL` already contains the bucket name; worker was appending `/{bucket}/{key}` → produced broken `/{bucket}/{bucket}/{key}` URLs. Fixed: use `{STORAGE_PUBLIC_URL}/{key}` directly.
+- **Leonardo.ai 400 Bad Request** — Worker used non-existent `initImageUrl` field in controlnets. Leonardo API requires `initImageId` (internal generation ID) + `initImageType: "GENERATED"`. Rewrote 5 files:
+  - `worker/app/pipeline/base.py` — added `character_leonardo_ids: dict[str, str]` to `PipelineContext`
+  - `worker/app/services/leonardo_service.py` — `_poll_generation` returns `list[{url, id}]`; `generate_image` accepts `character_ref_id`; builds correct controlnet payload
+  - `worker/app/services/image_service.py` — passes `character_ref_id` through; `generate_character_reference` returns `list[{url, id}]`
+  - `worker/app/pipeline/character_references.py` — stores Leonardo image ID in context
+  - `worker/app/pipeline/illustration.py` — looks up protagonist's Leonardo ID from context, passes as `character_ref_id`
