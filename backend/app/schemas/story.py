@@ -44,9 +44,11 @@ class StoryResponse(BaseModel):
     cover_image_url: Optional[str]
     status: str
     age_range: str
+    education_level: float
     page_count: int
     reading_duration_minutes: int
     created_at: datetime
+    updated_at: datetime
 
     model_config = {"from_attributes": True}
 

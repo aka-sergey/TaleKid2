@@ -63,9 +63,11 @@ async def get_story(
         cover_image_url=story.cover_image_url,
         status=story.status,
         age_range=story.age_range,
+        education_level=story.education_level,
         page_count=story.page_count,
         reading_duration_minutes=story.reading_duration_minutes,
         created_at=story.created_at,
+        updated_at=story.updated_at,
         pages=story.pages,
         characters=characters,
     )

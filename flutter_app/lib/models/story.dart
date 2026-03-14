@@ -39,7 +39,9 @@ class StoryModel {
       pageCount: json['page_count'] as int? ?? 10,
       readingDurationMinutes: json['reading_duration_minutes'] as int? ?? 10,
       createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : DateTime.now(),
     );
   }
 
@@ -160,7 +162,9 @@ class StoryDetail extends StoryModel {
       pageCount: json['page_count'] as int? ?? 10,
       readingDurationMinutes: json['reading_duration_minutes'] as int? ?? 10,
       createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : DateTime.now(),
       pages: (json['pages'] as List<dynamic>?)
               ?.map((e) => StoryPage.fromJson(e as Map<String, dynamic>))
               .toList() ??
