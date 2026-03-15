@@ -19,18 +19,18 @@ import 'character_create_dialog.dart';
 const _genreAssets = <String, String>{
   'adventure': UiAssets.adventure,
   'fairy-tale': UiAssets.fairy_tale,
-  'educational': UiAssets.educational,
   'friendship': UiAssets.friendship,
-  'funny': UiAssets.funny,
-  'bedtime': UiAssets.bedtime,
+  'humor': UiAssets.funny,
+  'science-adventure': UiAssets.educational,
+  'family-stories': UiAssets.bedtime,
 };
 
 const _worldAssets = <String, String>{
   'enchanted-forest': UiAssets.magic_forest,
-  'space': UiAssets.space,
-  'underwater': UiAssets.underwater,
+  'outer-space': UiAssets.space,
+  'underwater-kingdom': UiAssets.underwater,
   'medieval-kingdom': UiAssets.medieval_kingdom,
-  'modern-city': UiAssets.modern_city,
+  'future-city': UiAssets.modern_city,
   'dinosaur-world': UiAssets.dinosaur_world,
 };
 
