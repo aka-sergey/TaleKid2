@@ -233,22 +233,19 @@ class _StoryCardState extends ConsumerState<_StoryCard> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      if (widget.story.coverImageUrl != null)
+                      if (widget.story.coverImageUrl != null &&
+                          widget.story.coverImageUrl!.isNotEmpty)
                         CachedNetworkImage(
                           imageUrl: widget.story.coverImageUrl!,
                           fit: BoxFit.cover,
-                          placeholder: (_, __) => Container(
-                            color: AppTheme.primaryLight
-                                .withValues(alpha: 0.1),
-                            child: const Center(
-                              child: Icon(Icons.auto_stories,
-                                  size: 36, color: AppTheme.primaryLight),
-                            ),
-                          ),
-                          errorWidget: (_, __, ___) => _PlaceholderCover(),
+                          placeholder: (_, __) => _PlaceholderCover(
+                              title: widget.story.displayTitle),
+                          errorWidget: (_, __, ___) => _PlaceholderCover(
+                              title: widget.story.displayTitle),
                         )
                       else
-                        _PlaceholderCover(),
+                        _PlaceholderCover(
+                            title: widget.story.displayTitle),
 
                       // Status badge
                       if (!widget.story.isCompleted)
@@ -517,22 +514,56 @@ class _StatusBadge extends StatelessWidget {
 // Placeholder cover
 // =============================================================================
 class _PlaceholderCover extends StatelessWidget {
+  final String? title;
+  const _PlaceholderCover({this.title});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.primaryLight.withValues(alpha: 0.15),
-            AppTheme.secondaryLight.withValues(alpha: 0.1),
+            Color(0xFFE0E7FF), // indigo-100
+            Color(0xFFF5F3FF), // violet-50
+            Color(0xFFFFE4E6), // rose-100
           ],
         ),
       ),
-      child: const Center(
-        child:
-            Icon(Icons.auto_stories, size: 48, color: AppTheme.primaryLight),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.7),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(Icons.auto_stories,
+                  size: 28, color: AppTheme.primaryColor),
+            ),
+            if (title != null) ...[
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  title!,
+                  style: GoogleFonts.comfortaa(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.primaryColor.withValues(alpha: 0.7),
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

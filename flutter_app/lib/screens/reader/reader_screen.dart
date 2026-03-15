@@ -291,7 +291,7 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
             ),
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 900),
+                constraints: const BoxConstraints(maxWidth: 1200),
                 child: Row(
                   children: [
                     GestureDetector(
@@ -366,70 +366,92 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
           Expanded(
             child: Center(
               child: ConstrainedBox(
-                constraints:
-                    BoxConstraints(maxWidth: isWide ? 900 : double.infinity),
+                constraints: const BoxConstraints(maxWidth: 1200),
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(24),
                   child: Column(
                     children: [
-                      // Image with rounded corners
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: AspectRatio(
-                          aspectRatio: 4 / 3,
-                          child: page.imageUrl != null
-                              ? CachedNetworkImage(
-                                  imageUrl: page.imageUrl!,
-                                  fit: BoxFit.cover,
-                                  placeholder: (_, __) => Container(
-                                    color: AppTheme.primaryLight
-                                        .withValues(alpha: 0.1),
-                                    child: const Center(
-                                      child: CircularProgressIndicator(
-                                        color: AppTheme.primaryColor,
-                                      ),
-                                    ),
+                      // ── Image + Text: side-by-side on wide, stacked on narrow ──
+                      if (isWide)
+                        // Wide: image left, text right
+                        IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Image — 55%
+                              Expanded(
+                                flex: 55,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: AspectRatio(
+                                    aspectRatio: 4 / 3,
+                                    child: _pageImage(page),
                                   ),
-                                  errorWidget: (_, __, ___) => Container(
-                                    color: AppTheme.primaryLight
-                                        .withValues(alpha: 0.1),
-                                    child: const Icon(Icons.broken_image,
-                                        size: 64, color: AppTheme.textLight),
-                                  ),
-                                )
-                              : Container(
-                                  color: AppTheme.primaryLight
-                                      .withValues(alpha: 0.1),
-                                  child: const Icon(Icons.image,
-                                      size: 64, color: AppTheme.textLight),
                                 ),
+                              ),
+                              const SizedBox(width: 24),
+                              // Text — 45%
+                              Expanded(
+                                flex: 45,
+                                child: page.textContent != null
+                                    ? Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 28,
+                                          vertical: 24,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          boxShadow: AppTheme.cardShadow,
+                                        ),
+                                        child: Text(
+                                          page.textContent!,
+                                          style: GoogleFonts.nunitoSans(
+                                            fontSize: 17,
+                                            height: 1.7,
+                                            color: AppTheme.textPrimary,
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox.shrink(),
+                              ),
+                            ],
+                          ),
+                        )
+                      else ...[
+                        // Narrow: stacked vertically
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: AspectRatio(
+                            aspectRatio: 4 / 3,
+                            child: _pageImage(page),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Text content in a card
-                      if (page.textContent != null)
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 28,
-                            vertical: 24,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: AppTheme.cardShadow,
-                          ),
-                          child: Text(
-                            page.textContent!,
-                            style: GoogleFonts.nunitoSans(
-                              fontSize: 18,
-                              height: 1.7,
-                              color: AppTheme.textPrimary,
+                        const SizedBox(height: 24),
+                        if (page.textContent != null)
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 28,
+                              vertical: 24,
                             ),
-                            textAlign: TextAlign.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: AppTheme.cardShadow,
+                            ),
+                            child: Text(
+                              page.textContent!,
+                              style: GoogleFonts.nunitoSans(
+                                fontSize: 18,
+                                height: 1.7,
+                                color: AppTheme.textPrimary,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
+                      ],
                       const SizedBox(height: 32),
 
                       // Navigation arrows + page dots
@@ -463,6 +485,30 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _pageImage(StoryPage page) {
+    if (page.imageUrl != null) {
+      return CachedNetworkImage(
+        imageUrl: page.imageUrl!,
+        fit: BoxFit.cover,
+        placeholder: (_, __) => Container(
+          color: AppTheme.primaryLight.withValues(alpha: 0.1),
+          child: const Center(
+            child: CircularProgressIndicator(color: AppTheme.primaryColor),
+          ),
+        ),
+        errorWidget: (_, __, ___) => Container(
+          color: AppTheme.primaryLight.withValues(alpha: 0.1),
+          child: const Icon(Icons.broken_image,
+              size: 64, color: AppTheme.textLight),
+        ),
+      );
+    }
+    return Container(
+      color: AppTheme.primaryLight.withValues(alpha: 0.1),
+      child: const Icon(Icons.image, size: 64, color: AppTheme.textLight),
     );
   }
 

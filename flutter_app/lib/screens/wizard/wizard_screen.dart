@@ -19,7 +19,11 @@ import 'character_create_dialog.dart';
 const _genreAssets = <String, String>{
   'adventure': UiAssets.adventure,
   'fairy-tale': UiAssets.fairy_tale,
+  'educational': UiAssets.educational,
   'friendship': UiAssets.friendship,
+  'funny': UiAssets.funny,
+  'bedtime': UiAssets.bedtime,
+  // Forward-compat: if DB is re-seeded with expanded catalog
   'humor': UiAssets.funny,
   'science-adventure': UiAssets.educational,
   'family-stories': UiAssets.bedtime,
@@ -27,11 +31,15 @@ const _genreAssets = <String, String>{
 
 const _worldAssets = <String, String>{
   'enchanted-forest': UiAssets.magic_forest,
+  'space': UiAssets.space,
+  'underwater': UiAssets.underwater,
+  'medieval-kingdom': UiAssets.medieval_kingdom,
+  'modern-city': UiAssets.modern_city,
+  'dinosaur-world': UiAssets.dinosaur_world,
+  // Forward-compat: if DB is re-seeded with expanded catalog
   'outer-space': UiAssets.space,
   'underwater-kingdom': UiAssets.underwater,
-  'medieval-kingdom': UiAssets.medieval_kingdom,
   'future-city': UiAssets.modern_city,
-  'dinosaur-world': UiAssets.dinosaur_world,
 };
 
 const _ageAssets = <String, String>{

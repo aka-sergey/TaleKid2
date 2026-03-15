@@ -424,16 +424,13 @@ class _StoryMiniCardState extends State<_StoryMiniCard> {
               ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(20)),
-                child: widget.coverUrl != null
+                child: widget.coverUrl != null && widget.coverUrl!.isNotEmpty
                     ? CachedNetworkImage(
                         imageUrl: widget.coverUrl!,
                         height: 120,
                         width: 150,
                         fit: BoxFit.cover,
-                        placeholder: (_, __) => Container(
-                          height: 120,
-                          color: AppTheme.fillColor,
-                        ),
+                        placeholder: (_, __) => _placeholder(),
                         errorWidget: (_, __, ___) => _placeholder(),
                       )
                     : _placeholder(),

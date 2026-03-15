@@ -15,6 +15,7 @@ from app.core.middleware import RequestLoggingMiddleware
 from app.database import engine, async_session_factory
 from app.routers import auth, catalog, characters, generation, health, stories
 from shared.models.base import Base
+from shared.models.base_tale import BaseTale, BaseTaleCharacter
 from shared.models.genre import Genre
 from shared.models.world import World
 
@@ -76,6 +77,108 @@ async def _seed_catalog_if_empty():
         db.add_all(genres + worlds)
         await db.commit()
         logger.info("Catalog seeded: %d genres, %d worlds", len(genres), len(worlds))
+
+    # Seed base tales if empty
+    await _seed_base_tales_if_empty()
+
+
+async def _seed_base_tales_if_empty():
+    """Insert a small set of popular base tales if the table is empty."""
+    async with async_session_factory() as db:
+        count = await db.scalar(select(func.count()).select_from(BaseTale))
+        if count and count > 0:
+            logger.info("Base tales already seeded (%d tales)", count)
+            return
+
+        tales_data = [
+            {
+                "slug": "little-red-riding-hood",
+                "name_ru": "Красная Шапочка",
+                "summary_ru": "Девочка идёт через лес к бабушке, но встречает хитрого волка.",
+                "plot_structure": {"act1": "Мама отправляет Красную Шапочку к бабушке с пирожками.", "act2": "В лесу она встречает волка, который обманом опережает её.", "act3": "Охотник спасает бабушку и Красную Шапочку."},
+                "moral_ru": "Не разговаривай с незнакомцами и слушай родителей.",
+                "sort_order": 1,
+                "characters": [
+                    {"name_ru": "Красная Шапочка", "role": "protagonist", "appearance_prompt": "A young girl in a red hooded cape, carrying a basket", "personality_ru": "Добрая и доверчивая девочка", "sort_order": 1},
+                    {"name_ru": "Волк", "role": "antagonist", "appearance_prompt": "A big gray wolf with cunning eyes", "personality_ru": "Хитрый и коварный", "sort_order": 2},
+                    {"name_ru": "Бабушка", "role": "secondary", "appearance_prompt": "An elderly woman in a nightgown and cap", "personality_ru": "Добрая и любящая бабушка", "sort_order": 3},
+                ],
+            },
+            {
+                "slug": "three-little-pigs",
+                "name_ru": "Три поросёнка",
+                "summary_ru": "Три брата-поросёнка строят дома, но только самый трудолюбивый строит крепкий кирпичный дом.",
+                "plot_structure": {"act1": "Три поросёнка решают построить свои домики.", "act2": "Волк легко сдувает домики из соломы и веток.", "act3": "Кирпичный домик третьего поросёнка выдерживает, и братья побеждают волка."},
+                "moral_ru": "Трудолюбие и основательность всегда вознаграждаются.",
+                "sort_order": 2,
+                "characters": [
+                    {"name_ru": "Наф-Наф", "role": "protagonist", "appearance_prompt": "A smart pig wearing overalls and a hard hat", "personality_ru": "Трудолюбивый и разумный поросёнок", "sort_order": 1},
+                    {"name_ru": "Ниф-Ниф", "role": "secondary", "appearance_prompt": "A playful pig in a straw hat", "personality_ru": "Весёлый и легкомысленный", "sort_order": 2},
+                    {"name_ru": "Нуф-Нуф", "role": "secondary", "appearance_prompt": "A carefree pig playing a flute", "personality_ru": "Беззаботный и ленивый", "sort_order": 3},
+                ],
+            },
+            {
+                "slug": "cinderella",
+                "name_ru": "Золушка",
+                "summary_ru": "Добрая девушка с помощью волшебства попадает на бал, где встречает принца.",
+                "plot_structure": {"act1": "Золушка живёт с мачехой и сёстрами, мечтая о бале.", "act2": "Фея-крёстная помогает ей попасть на бал, но волшебство заканчивается в полночь.", "act3": "Принц находит Золушку по хрустальной туфельке."},
+                "moral_ru": "Доброта и терпение всегда вознаграждаются.",
+                "sort_order": 3,
+                "characters": [
+                    {"name_ru": "Золушка", "role": "protagonist", "appearance_prompt": "A beautiful young girl in a ball gown with glass slippers", "personality_ru": "Добрая, трудолюбивая и мечтательная", "sort_order": 1},
+                    {"name_ru": "Принц", "role": "secondary", "appearance_prompt": "A handsome prince in royal attire", "personality_ru": "Благородный и романтичный", "sort_order": 2},
+                    {"name_ru": "Фея-крёстная", "role": "helper", "appearance_prompt": "A kind fairy godmother with a magic wand and sparkly dress", "personality_ru": "Мудрая и волшебная", "sort_order": 3},
+                ],
+            },
+            {
+                "slug": "kolobok",
+                "name_ru": "Колобок",
+                "summary_ru": "Круглый румяный Колобок убегает от бабушки с дедушкой и встречает разных зверей.",
+                "plot_structure": {"act1": "Бабушка испекла Колобка, а он убежал.", "act2": "Колобок встречает зайца, волка и медведя, от всех уходит с песенкой.", "act3": "Хитрая лиса обманывает Колобка."},
+                "moral_ru": "Не стоит быть слишком самоуверенным.",
+                "sort_order": 4,
+                "characters": [
+                    {"name_ru": "Колобок", "role": "protagonist", "appearance_prompt": "A round golden bread bun with a smiling face, arms and legs", "personality_ru": "Весёлый и самоуверенный", "sort_order": 1},
+                    {"name_ru": "Лиса", "role": "antagonist", "appearance_prompt": "A cunning red fox with a bushy tail", "personality_ru": "Хитрая и льстивая", "sort_order": 2},
+                ],
+            },
+            {
+                "slug": "snow-queen",
+                "name_ru": "Снежная Королева",
+                "summary_ru": "Девочка Герда отправляется на поиски названного брата Кая, которого похитила Снежная Королева.",
+                "plot_structure": {"act1": "Осколок зеркала попадает Каю в глаз, и Снежная Королева увозит его.", "act2": "Герда проходит через множество испытаний, ища Кая.", "act3": "Любовь Герды растапливает ледяное сердце Кая."},
+                "moral_ru": "Любовь и верность сильнее любого зла.",
+                "sort_order": 5,
+                "characters": [
+                    {"name_ru": "Герда", "role": "protagonist", "appearance_prompt": "A brave young girl in warm clothing, with determination in her eyes", "personality_ru": "Смелая, верная и любящая", "sort_order": 1},
+                    {"name_ru": "Кай", "role": "secondary", "appearance_prompt": "A boy with an icy expression, sitting in an ice palace", "personality_ru": "Добрый мальчик, заколдованный льдом", "sort_order": 2},
+                    {"name_ru": "Снежная Королева", "role": "antagonist", "appearance_prompt": "A tall majestic ice queen in a sparkling white gown with a crown of ice crystals", "personality_ru": "Холодная и величественная", "sort_order": 3},
+                ],
+            },
+            {
+                "slug": "masha-and-bear",
+                "name_ru": "Маша и Медведь",
+                "summary_ru": "Маша заблудилась в лесу и попала в дом медведя, но нашла способ вернуться домой.",
+                "plot_structure": {"act1": "Маша идёт в лес за грибами и ягодами и теряется.", "act2": "Она попадает в избушку медведя, который не хочет её отпускать.", "act3": "Маша придумывает хитрость — прячется в коробе с пирожками, и медведь сам несёт её домой."},
+                "moral_ru": "Смекалка и находчивость помогут выбраться из любой ситуации.",
+                "sort_order": 6,
+                "characters": [
+                    {"name_ru": "Маша", "role": "protagonist", "appearance_prompt": "A clever young girl with a headscarf and a playful expression", "personality_ru": "Находчивая и хитрая", "sort_order": 1},
+                    {"name_ru": "Медведь", "role": "secondary", "appearance_prompt": "A large brown bear with a kind but stern face", "personality_ru": "Добродушный, но упрямый", "sort_order": 2},
+                ],
+            },
+        ]
+
+        for td in tales_data:
+            chars_data = td.pop("characters")
+            tale = BaseTale(**td)
+            db.add(tale)
+            await db.flush()
+            for cd in chars_data:
+                db.add(BaseTaleCharacter(base_tale_id=tale.id, **cd))
+
+        await db.commit()
+        logger.info("Base tales seeded: %d tales", len(tales_data))
 
 
 # ---------------------------------------------------------------------------
