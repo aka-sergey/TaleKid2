@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../config/router.dart';
 import '../../config/theme.dart';
+import '../../config/ui_assets.dart';
 import '../../models/story.dart';
 import '../../providers/story_provider.dart';
+import '../../widgets/gradient_button.dart';
+import '../../widgets/shimmer_loading.dart';
 
 /// Library screen — grid of completed stories with rename / delete.
 class LibraryScreen extends ConsumerWidget {
@@ -19,37 +22,130 @@ class LibraryScreen extends ConsumerWidget {
     final storiesAsync = ref.watch(storiesProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Библиотека'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go(AppRoutes.home),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Обновить',
-            onPressed: () => ref.read(storiesProvider.notifier).refresh(),
+      backgroundColor: AppTheme.backgroundColor,
+      body: SafeArea(
+        child: storiesAsync.when(
+          data: (stories) {
+            if (stories.isEmpty) {
+              return _EmptyLibrary();
+            }
+            return RefreshIndicator(
+              color: AppTheme.primaryColor,
+              onRefresh: () => ref.read(storiesProvider.notifier).refresh(),
+              child: CustomScrollView(
+                slivers: [
+                  // Custom header
+                  SliverToBoxAdapter(
+                      child: _LibraryHeader(count: stories.length)),
+                  // Grid
+                  _StoryGrid(stories: stories),
+                  const SliverToBoxAdapter(child: SizedBox(height: 32)),
+                ],
+              ),
+            );
+          },
+          loading: () => const _LoadingSkeleton(),
+          error: (e, _) => _ErrorState(
+            error: e,
+            onRetry: () => ref.invalidate(storiesProvider),
           ),
-        ],
-      ),
-      body: storiesAsync.when(
-        data: (stories) {
-          if (stories.isEmpty) {
-            return _EmptyLibrary();
-          }
-          return RefreshIndicator(
-            onRefresh: () => ref.read(storiesProvider.notifier).refresh(),
-            child: _StoryGrid(stories: stories),
-          );
-        },
-        loading: () => const _LoadingSkeleton(),
-        error: (e, _) => _ErrorState(
-          error: e,
-          onRetry: () => ref.invalidate(storiesProvider),
         ),
       ),
     );
+  }
+}
+
+// =============================================================================
+// Library Header
+// =============================================================================
+class _LibraryHeader extends StatelessWidget {
+  final int count;
+  const _LibraryHeader({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 900),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () => context.go(AppRoutes.home),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppTheme.fillColor,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.arrow_back,
+                      size: 20, color: AppTheme.textSecondary),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Библиотека', style: AppTheme.heading(size: 22)),
+                  const SizedBox(height: 2),
+                  Text(
+                    '$count ${_pluralStories(count)}',
+                    style: AppTheme.body(
+                      size: 13,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () => context.go(AppRoutes.wizard),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    gradient: AppTheme.primaryGradient,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.add, size: 18, color: Colors.white),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Новая',
+                        style: GoogleFonts.comfortaa(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _pluralStories(int n) {
+    if (n % 10 == 1 && n % 100 != 11) return 'сказка';
+    if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) {
+      return 'сказки';
+    }
+    return 'сказок';
   }
 }
 
@@ -64,121 +160,153 @@ class _StoryGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final crossAxisCount = screenWidth > 900
+    final crossAxisCount = screenWidth > 1000
         ? 4
-        : screenWidth > 600
+        : screenWidth > 700
             ? 3
             : 2;
 
-    return GridView.builder(
-      padding: const EdgeInsets.all(AppTheme.spacingMd),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        childAspectRatio: 0.72,
-        crossAxisSpacing: AppTheme.spacingMd,
-        mainAxisSpacing: AppTheme.spacingMd,
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          childAspectRatio: 0.68,
+          crossAxisSpacing: 14,
+          mainAxisSpacing: 14,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (context, index) => _StoryCard(story: stories[index]),
+          childCount: stories.length,
+        ),
       ),
-      itemCount: stories.length,
-      itemBuilder: (context, index) => _StoryCard(story: stories[index]),
     );
   }
 }
 
 // =============================================================================
-// Story Card
+// Story Card — with hover effect
 // =============================================================================
-class _StoryCard extends ConsumerWidget {
+class _StoryCard extends ConsumerStatefulWidget {
   final StoryModel story;
 
   const _StoryCard({required this.story});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: story.isCompleted
-            ? () => context.go(
-                  AppRoutes.storyReader.replaceAll(':id', story.id),
-                )
-            : null,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Cover image
-            Expanded(
-              flex: 3,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  // Image
-                  if (story.coverImageUrl != null)
-                    CachedNetworkImage(
-                      imageUrl: story.coverImageUrl!,
-                      fit: BoxFit.cover,
-                      placeholder: (_, __) => Container(
-                        color: AppTheme.primaryLight.withValues(alpha: 0.1),
-                        child: const Center(
-                          child: Icon(Icons.auto_stories,
-                              size: 40, color: AppTheme.primaryLight),
-                        ),
-                      ),
-                      errorWidget: (_, __, ___) => _PlaceholderCover(),
-                    )
-                  else
-                    _PlaceholderCover(),
+  ConsumerState<_StoryCard> createState() => _StoryCardState();
+}
 
-                  // Status badge
-                  if (!story.isCompleted)
-                    Positioned(
-                      top: 8,
-                      left: 8,
-                      child: _StatusBadge(status: story.status),
-                    ),
+class _StoryCardState extends ConsumerState<_StoryCard> {
+  bool _hovering = false;
 
-                  // Popup menu
-                  Positioned(
-                    top: 4,
-                    right: 4,
-                    child: _CardMenu(story: story),
-                  ),
-                ],
-              ),
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovering = true),
+      onExit: (_) => setState(() => _hovering = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: Matrix4.translationValues(0, _hovering ? -4 : 0, 0),
+        child: GestureDetector(
+          onTap: widget.story.isCompleted
+              ? () => context.go(
+                    AppRoutes.storyReader
+                        .replaceAll(':id', widget.story.id),
+                  )
+              : null,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: AppTheme.borderColor, width: 0.5),
+              boxShadow: _hovering
+                  ? AppTheme.cardShadowHover
+                  : AppTheme.cardShadow,
             ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Cover image
+                Expanded(
+                  flex: 3,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      if (widget.story.coverImageUrl != null)
+                        CachedNetworkImage(
+                          imageUrl: widget.story.coverImageUrl!,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) => Container(
+                            color: AppTheme.primaryLight
+                                .withValues(alpha: 0.1),
+                            child: const Center(
+                              child: Icon(Icons.auto_stories,
+                                  size: 36, color: AppTheme.primaryLight),
+                            ),
+                          ),
+                          errorWidget: (_, __, ___) => _PlaceholderCover(),
+                        )
+                      else
+                        _PlaceholderCover(),
 
-            // Title & date
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.spacingSm,
-                  vertical: AppTheme.spacingXs,
+                      // Status badge
+                      if (!widget.story.isCompleted)
+                        Positioned(
+                          top: 8,
+                          left: 8,
+                          child:
+                              _StatusBadge(status: widget.story.status),
+                        ),
+
+                      // Popup menu
+                      Positioned(
+                        top: 6,
+                        right: 6,
+                        child: _CardMenu(story: widget.story),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      story.displayTitle,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+
+                // Title & date
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.story.displayTitle,
+                          style: GoogleFonts.comfortaa(
+                            fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: AppTheme.textPrimary,
                           ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      DateFormat('d MMM yyyy', 'ru').format(story.createdAt),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          DateFormat('d MMM yyyy', 'ru')
+                              .format(widget.story.createdAt),
+                          style: GoogleFonts.nunitoSans(
+                            fontSize: 11,
                             color: AppTheme.textLight,
                           ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -197,12 +325,15 @@ class _CardMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return PopupMenuButton<String>(
       icon: Container(
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.35),
-          shape: BoxShape.circle,
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: const Icon(Icons.more_vert, color: Colors.white, size: 18),
+        child: const Icon(Icons.more_vert, color: Colors.white, size: 16),
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
       ),
       onSelected: (value) async {
         switch (value) {
@@ -242,7 +373,9 @@ class _CardMenu extends ConsumerWidget {
     final result = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Переименовать'),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text('Переименовать', style: AppTheme.heading(size: 20)),
         content: TextField(
           controller: controller,
           autofocus: true,
@@ -268,10 +401,18 @@ class _CardMenu extends ConsumerWidget {
 
     if (result != null && result.isNotEmpty && context.mounted) {
       try {
-        await ref.read(storiesProvider.notifier).updateTitle(story.id, result);
+        await ref
+            .read(storiesProvider.notifier)
+            .updateTitle(story.id, result);
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Название обновлено')),
+            SnackBar(
+              content: const Text('Название обновлено'),
+              backgroundColor: AppTheme.successColor,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
           );
         }
       } catch (e) {
@@ -289,10 +430,13 @@ class _CardMenu extends ConsumerWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Удалить сказку?'),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text('Удалить сказку?', style: AppTheme.heading(size: 20)),
         content: Text(
           'Сказка "${story.displayTitle}" будет удалена навсегда. '
           'Это действие нельзя отменить.',
+          style: AppTheme.body(color: AppTheme.textSecondary),
         ),
         actions: [
           TextButton(
@@ -315,7 +459,12 @@ class _CardMenu extends ConsumerWidget {
         await ref.read(storiesProvider.notifier).deleteStory(story.id);
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Сказка удалена')),
+            SnackBar(
+              content: const Text('Сказка удалена'),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
           );
         }
       } catch (e) {
@@ -347,14 +496,14 @@ class _StatusBadge extends StatelessWidget {
     };
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.9),
-        borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         label,
-        style: const TextStyle(
+        style: GoogleFonts.nunitoSans(
           color: Colors.white,
           fontSize: 11,
           fontWeight: FontWeight.w600,
@@ -371,60 +520,87 @@ class _PlaceholderCover extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppTheme.primaryLight.withValues(alpha: 0.1),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.primaryLight.withValues(alpha: 0.15),
+            AppTheme.secondaryLight.withValues(alpha: 0.1),
+          ],
+        ),
+      ),
       child: const Center(
-        child: Icon(Icons.auto_stories, size: 48, color: AppTheme.primaryLight),
+        child:
+            Icon(Icons.auto_stories, size: 48, color: AppTheme.primaryLight),
       ),
     );
   }
 }
 
 // =============================================================================
-// Empty state
+// Empty state with illustration
 // =============================================================================
 class _EmptyLibrary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingXl),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: AppTheme.primaryLight.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.library_books,
-                size: 56,
-                color: AppTheme.primaryLight,
-              ),
-            ),
-            const SizedBox(height: AppTheme.spacingLg),
-            Text(
-              'Библиотека пуста',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: AppTheme.textPrimary,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(32),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Illustration
+              ClipRRect(
+                borderRadius: BorderRadius.circular(28),
+                child: SizedBox(
+                  width: 200,
+                  height: 200,
+                  child: CachedNetworkImage(
+                    imageUrl: UiAssets.empty_library,
+                    fit: BoxFit.cover,
+                    placeholder: (_, __) => Container(
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.library_books,
+                          size: 56, color: AppTheme.primaryLight),
+                    ),
+                    errorWidget: (_, __, ___) => Container(
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.library_books,
+                          size: 56, color: AppTheme.primaryLight),
+                    ),
                   ),
-            ),
-            const SizedBox(height: AppTheme.spacingSm),
-            Text(
-              'Создайте свою первую сказку!',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppTheme.textSecondary,
-                  ),
-            ),
-            const SizedBox(height: AppTheme.spacingXl),
-            ElevatedButton.icon(
-              onPressed: () => context.go(AppRoutes.wizard),
-              icon: const Icon(Icons.auto_stories),
-              label: const Text('Создать сказку'),
-            ),
-          ],
+                ),
+              ),
+              const SizedBox(height: 28),
+              Text(
+                'Библиотека пуста',
+                style: AppTheme.heading(size: 24),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Создайте свою первую сказку!',
+                style: AppTheme.body(
+                  size: 16,
+                  color: AppTheme.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 28),
+              GradientButton(
+                text: 'Создать сказку',
+                icon: Icons.auto_stories,
+                onPressed: () => context.go(AppRoutes.wizard),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -444,25 +620,35 @@ class _ErrorState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingLg),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline,
-                size: 64, color: AppTheme.errorColor),
-            const SizedBox(height: AppTheme.spacingMd),
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppTheme.errorColor.withValues(alpha: 0.1),
+              ),
+              child: const Icon(Icons.error_outline,
+                  size: 40, color: AppTheme.errorColor),
+            ),
+            const SizedBox(height: 20),
             Text(
               'Не удалось загрузить библиотеку',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: AppTheme.heading(size: 20),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppTheme.spacingSm),
-            Text('$error', textAlign: TextAlign.center),
-            const SizedBox(height: AppTheme.spacingLg),
-            ElevatedButton.icon(
+            const SizedBox(height: 8),
+            Text('$error',
+                textAlign: TextAlign.center,
+                style: AppTheme.body(color: AppTheme.textSecondary)),
+            const SizedBox(height: 24),
+            GradientButton(
+              text: 'Повторить',
+              icon: Icons.refresh,
               onPressed: onRetry,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Повторить'),
             ),
           ],
         ),
@@ -480,55 +666,25 @@ class _LoadingSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final crossAxisCount = screenWidth > 900
+    final crossAxisCount = screenWidth > 1000
         ? 4
-        : screenWidth > 600
+        : screenWidth > 700
             ? 3
             : 2;
 
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+    return Padding(
+      padding: const EdgeInsets.all(16),
       child: GridView.builder(
-        padding: const EdgeInsets.all(AppTheme.spacingMd),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
-          childAspectRatio: 0.72,
-          crossAxisSpacing: AppTheme.spacingMd,
-          mainAxisSpacing: AppTheme.spacingMd,
+          childAspectRatio: 0.68,
+          crossAxisSpacing: 14,
+          mainAxisSpacing: 14,
         ),
         itemCount: 6,
-        itemBuilder: (_, __) => Card(
-          child: Column(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Container(color: Colors.white),
-              ),
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 12,
-                        width: double.infinity,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(height: 6),
-                      Container(
-                        height: 10,
-                        width: 80,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+        itemBuilder: (_, __) => const ShimmerCard(
+          height: double.infinity,
+          borderRadius: 20,
         ),
       ),
     );

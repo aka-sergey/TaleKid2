@@ -1,8 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../config/router.dart';
 import '../../config/theme.dart';
+import '../../config/ui_assets.dart';
+import '../../widgets/app_card.dart';
 
 class LandingScreen extends StatelessWidget {
   const LandingScreen({super.key});
@@ -13,6 +17,7 @@ class LandingScreen extends StatelessWidget {
     final isWide = screenWidth > 800;
 
     return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -56,117 +61,234 @@ class _HeroSection extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.primaryColor,
-            AppTheme.primaryDark,
-            Color(0xFF2D1B69),
+            Color(0xFF6366F1),
+            Color(0xFF8B5CF6),
+            Color(0xFF4338CA),
           ],
         ),
       ),
-      padding: EdgeInsets.symmetric(
-        horizontal: AppTheme.spacingLg,
-        vertical: isWide ? 80 : 48,
-      ),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 900),
-          child: Column(
-            children: [
-              // Nav bar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: isWide ? 32 : 20,
+            ),
+            child: Column(
+              children: [
+                // Nav bar
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.auto_stories,
+                              color: AppTheme.accentColor, size: 20),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'TaleKID',
+                          style: GoogleFonts.comfortaa(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: () => context.go(AppRoutes.login),
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 10),
+                          ),
+                          child: Text('Войти',
+                              style: GoogleFonts.nunitoSans(
+                                  fontWeight: FontWeight.w600)),
+                        ),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: () => context.go(AppRoutes.register),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              'Регистрация',
+                              style: GoogleFonts.nunitoSans(
+                                color: AppTheme.primaryColor,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: isWide ? 60 : 40),
+
+                // Hero content — text + image side by side on wide
+                if (isWide)
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Icon(Icons.auto_stories,
-                          color: AppTheme.accentColor, size: 28),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'TaleKID',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
+                      Expanded(
+                        flex: 5,
+                        child: _HeroText(isWide: isWide),
+                      ),
+                      const SizedBox(width: 40),
+                      Expanded(
+                        flex: 4,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(28),
+                          child: CachedNetworkImage(
+                            imageUrl: UiAssets.landing_hero,
+                            fit: BoxFit.cover,
+                            height: 320,
+                            placeholder: (_, __) => Container(
+                              height: 320,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                            ),
+                            errorWidget: (_, __, ___) => Container(
+                              height: 320,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                              child: const Icon(Icons.auto_stories,
+                                  size: 80, color: Colors.white30),
+                            ),
+                          ),
                         ),
                       ),
                     ],
-                  ),
-                  Row(
-                    children: [
-                      TextButton(
-                        onPressed: () => context.go(AppRoutes.login),
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.white,
+                  )
+                else ...[
+                  _HeroText(isWide: isWide),
+                  const SizedBox(height: 32),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: CachedNetworkImage(
+                      imageUrl: UiAssets.landing_hero,
+                      fit: BoxFit.cover,
+                      height: 200,
+                      width: double.infinity,
+                      placeholder: (_, __) => Container(
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(24),
                         ),
-                        child: const Text('Войти'),
                       ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () => context.go(AppRoutes.register),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: AppTheme.primaryColor,
-                        ),
-                        child: const Text('Регистрация'),
-                      ),
-                    ],
+                      errorWidget: (_, __, ___) => const SizedBox.shrink(),
+                    ),
                   ),
                 ],
-              ),
-              SizedBox(height: isWide ? 80 : 48),
-
-              // Hero content
-              Text(
-                'Персонализированные\nсказки для вашего ребёнка',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: isWide ? 48 : 32,
-                  fontWeight: FontWeight.w800,
-                  height: 1.2,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'AI создаёт уникальные иллюстрированные истории, '
-                'где ваш ребёнок — главный герой. '
-                'С образовательным контентом на каждой странице.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: isWide ? 20 : 16,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 36),
-              ElevatedButton.icon(
-                onPressed: () => context.go(AppRoutes.register),
-                icon: const Icon(Icons.auto_stories),
-                label: const Text('Создать сказку бесплатно'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.accentColor,
-                  foregroundColor: AppTheme.textPrimary,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 18,
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Бесплатно. Без ограничений.',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.7),
-                  fontSize: 14,
-                ),
-              ),
-            ],
+                SizedBox(height: isWide ? 60 : 40),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _HeroText extends StatelessWidget {
+  final bool isWide;
+  const _HeroText({required this.isWide});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment:
+          isWide ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      children: [
+        Text(
+          'Персонализированные\nсказки для вашего ребёнка',
+          textAlign: isWide ? TextAlign.left : TextAlign.center,
+          style: GoogleFonts.comfortaa(
+            color: Colors.white,
+            fontSize: isWide ? 40 : 28,
+            fontWeight: FontWeight.w800,
+            height: 1.2,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'AI создаёт уникальные иллюстрированные истории, '
+          'где ваш ребёнок — главный герой. '
+          'С образовательным контентом на каждой странице.',
+          textAlign: isWide ? TextAlign.left : TextAlign.center,
+          style: GoogleFonts.nunitoSans(
+            color: Colors.white.withValues(alpha: 0.9),
+            fontSize: isWide ? 18 : 15,
+            height: 1.6,
+          ),
+        ),
+        const SizedBox(height: 28),
+        GestureDetector(
+          onTap: () => context.go(AppRoutes.register),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+            decoration: BoxDecoration(
+              color: AppTheme.accentColor,
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.accentColor.withValues(alpha: 0.4),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.auto_stories,
+                    color: AppTheme.textPrimary, size: 20),
+                const SizedBox(width: 10),
+                Text(
+                  'Создать сказку бесплатно',
+                  style: GoogleFonts.comfortaa(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          'Бесплатно. Без ограничений.',
+          textAlign: isWide ? TextAlign.left : TextAlign.center,
+          style: GoogleFonts.nunitoSans(
+            color: Colors.white.withValues(alpha: 0.6),
+            fontSize: 13,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -181,8 +303,8 @@ class _HowItWorksSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppTheme.spacingLg, vertical: AppTheme.spacingXxl),
+      padding: EdgeInsets.symmetric(
+          horizontal: 24, vertical: isWide ? 64 : 48),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 900),
@@ -190,19 +312,18 @@ class _HowItWorksSection extends StatelessWidget {
             children: [
               Text(
                 'Как это работает',
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: AppTheme.heading(size: isWide ? 28 : 24),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               Text(
                 '3 простых шага до волшебной сказки',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppTheme.textSecondary,
-                    ),
+                style: AppTheme.body(color: AppTheme.textSecondary),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 36),
               Wrap(
-                spacing: 24,
-                runSpacing: 24,
+                spacing: 20,
+                runSpacing: 20,
+                alignment: WrapAlignment.center,
                 children: [
                   _StepCard(
                     step: '1',
@@ -265,61 +386,71 @@ class _StepCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: isWide ? 260 : double.infinity,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingLg),
-          child: Column(
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                    ),
-                    child: Icon(icon, size: 32, color: color),
+      child: AppCard(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(18),
                   ),
-                  Positioned(
-                    top: -2,
-                    right: -2,
-                    child: Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
+                  child: Icon(icon, size: 28, color: color),
+                ),
+                Positioned(
+                  top: -6,
+                  right: -6,
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [color, color.withValues(alpha: 0.8)],
                       ),
-                      child: Center(
-                        child: Text(
-                          step,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
-                          ),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: color.withValues(alpha: 0.3),
+                          blurRadius: 6,
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text(
+                        step,
+                        style: GoogleFonts.comfortaa(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
                     ),
                   ),
-                ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: AppTheme.heading(size: 15),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              description,
+              textAlign: TextAlign.center,
+              style: AppTheme.body(
+                size: 13,
+                color: AppTheme.textSecondary,
               ),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                description,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -337,9 +468,9 @@ class _WhyTaleKidSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: AppTheme.primaryColor.withValues(alpha: 0.04),
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppTheme.spacingLg, vertical: AppTheme.spacingXxl),
+      color: AppTheme.fillColor,
+      padding: EdgeInsets.symmetric(
+          horizontal: 24, vertical: isWide ? 64 : 48),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 900),
@@ -347,12 +478,12 @@ class _WhyTaleKidSection extends StatelessWidget {
             children: [
               Text(
                 'Почему TaleKID?',
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: AppTheme.heading(size: isWide ? 28 : 24),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 36),
               Wrap(
-                spacing: 20,
-                runSpacing: 20,
+                spacing: 12,
+                runSpacing: 12,
                 alignment: WrapAlignment.center,
                 children: const [
                   _FeatureChip(
@@ -410,13 +541,14 @@ class _FeatureChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppTheme.borderColor, width: 0.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -425,14 +557,23 @@ class _FeatureChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 20, color: AppTheme.primaryColor),
-          const SizedBox(width: 8),
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: AppTheme.primaryColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 16, color: AppTheme.primaryColor),
+          ),
+          const SizedBox(width: 10),
           Text(
             label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.textPrimary,
-                ),
+            style: GoogleFonts.nunitoSans(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.textPrimary,
+            ),
           ),
         ],
       ),
@@ -455,7 +596,7 @@ class _ExampleStoriesSection extends StatelessWidget {
       description:
           'Маша отправляется в путешествие по волшебному лесу, '
           'где встречает говорящих зверей и разгадывает загадки.',
-      color: Color(0xFF00B894),
+      color: Color(0xFF34D399),
       icon: Icons.forest,
     ),
     _ExampleData(
@@ -465,7 +606,7 @@ class _ExampleStoriesSection extends StatelessWidget {
       description:
           'Дима становится юным космонавтом и исследует '
           'далёкие планеты, помогая инопланетным друзьям.',
-      color: Color(0xFF6C5CE7),
+      color: Color(0xFF8B5CF6),
       icon: Icons.rocket_launch,
     ),
     _ExampleData(
@@ -475,7 +616,7 @@ class _ExampleStoriesSection extends StatelessWidget {
       description:
           'Алиса открывает вход в подводное королевство '
           'и помогает морским жителям спасти коралловый риф.',
-      color: Color(0xFF0984E3),
+      color: Color(0xFF38BDF8),
       icon: Icons.water,
     ),
   ];
@@ -483,8 +624,8 @@ class _ExampleStoriesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppTheme.spacingLg, vertical: AppTheme.spacingXxl),
+      padding: EdgeInsets.symmetric(
+          horizontal: 24, vertical: isWide ? 64 : 48),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 900),
@@ -492,19 +633,18 @@ class _ExampleStoriesSection extends StatelessWidget {
             children: [
               Text(
                 'Примеры сказок',
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: AppTheme.heading(size: isWide ? 28 : 24),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               Text(
                 'Вот что может создать TaleKID',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppTheme.textSecondary,
-                    ),
+                style: AppTheme.body(color: AppTheme.textSecondary),
               ),
               const SizedBox(height: 32),
               Wrap(
-                spacing: 20,
-                runSpacing: 20,
+                spacing: 16,
+                runSpacing: 16,
+                alignment: WrapAlignment.center,
                 children: _examples
                     .map((e) => _ExampleStoryCard(data: e, isWide: isWide))
                     .toList(),
@@ -544,42 +684,56 @@ class _ExampleStoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: isWide ? 260 : double.infinity,
-      child: Card(
+      width: isWide ? 270 : double.infinity,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppTheme.borderColor, width: 0.5),
+          boxShadow: AppTheme.cardShadow,
+        ),
         clipBehavior: Clip.antiAlias,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              height: 180,
+              height: 160,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    data.color.withValues(alpha: 0.3),
-                    data.color.withValues(alpha: 0.1),
+                    data.color.withValues(alpha: 0.2),
+                    data.color.withValues(alpha: 0.08),
                   ],
                 ),
               ),
               child: Center(
-                child: Icon(
-                  data.icon,
-                  size: 64,
-                  color: data.color.withValues(alpha: 0.7),
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: data.color.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Icon(
+                    data.icon,
+                    size: 36,
+                    color: data.color,
+                  ),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(AppTheme.spacingMd),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     data.title,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: AppTheme.heading(size: 15),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
                       _Tag(label: data.genre, color: data.color),
@@ -587,13 +741,13 @@ class _ExampleStoryCard extends StatelessWidget {
                       _Tag(label: data.world, color: data.color),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
                   Text(
                     data.description,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppTheme.textSecondary,
-                          height: 1.4,
-                        ),
+                    style: AppTheme.body(
+                      size: 13,
+                      color: AppTheme.textSecondary,
+                    ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -616,14 +770,14 @@ class _Tag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
         label,
-        style: TextStyle(
+        style: GoogleFonts.nunitoSans(
           fontSize: 11,
           color: color,
           fontWeight: FontWeight.w600,
@@ -649,14 +803,14 @@ class _CtaBanner extends StatelessWidget {
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: [
-            AppTheme.primaryColor,
-            AppTheme.secondaryColor,
+            Color(0xFF6366F1),
+            Color(0xFFFB7185),
           ],
         ),
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: AppTheme.spacingLg,
-        vertical: isWide ? 60 : 40,
+        horizontal: 24,
+        vertical: isWide ? 56 : 40,
       ),
       child: Center(
         child: ConstrainedBox(
@@ -666,9 +820,9 @@ class _CtaBanner extends StatelessWidget {
               Text(
                 'Готовы создать сказку?',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.comfortaa(
                   color: Colors.white,
-                  fontSize: isWide ? 32 : 24,
+                  fontSize: isWide ? 30 : 24,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -676,26 +830,43 @@ class _CtaBanner extends StatelessWidget {
               Text(
                 'Зарегистрируйтесь и создайте первую историю за 5 минут',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.nunitoSans(
                   color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 16,
+                  fontSize: 15,
                 ),
               ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: () => context.go(AppRoutes.register),
-                icon: const Icon(Icons.arrow_forward),
-                label: const Text('Начать бесплатно'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: AppTheme.primaryColor,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
+              const SizedBox(height: 28),
+              GestureDetector(
+                onTap: () => context.go(AppRoutes.register),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
-                  textStyle: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.arrow_forward,
+                          color: AppTheme.primaryColor, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Начать бесплатно',
+                        style: GoogleFonts.comfortaa(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: AppTheme.primaryColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -718,8 +889,8 @@ class _Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: AppTheme.textPrimary,
-      padding: const EdgeInsets.all(AppTheme.spacingLg),
+      color: const Color(0xFF1C1917),
+      padding: const EdgeInsets.all(24),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 900),
@@ -728,14 +899,22 @@ class _Footer extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.auto_stories,
-                      color: AppTheme.accentColor, size: 20),
-                  const SizedBox(width: 8),
-                  const Text(
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.auto_stories,
+                        color: AppTheme.accentColor, size: 16),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
                     'TaleKID',
-                    style: TextStyle(
+                    style: GoogleFonts.comfortaa(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -743,33 +922,39 @@ class _Footer extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Wrap(
-                spacing: 16,
+                spacing: 12,
                 runSpacing: 8,
                 alignment: WrapAlignment.center,
                 children: [
                   TextButton(
                     onPressed: () => context.go(AppRoutes.terms),
-                    style: TextButton.styleFrom(foregroundColor: Colors.white70),
-                    child: const Text('Пользовательское соглашение'),
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white60),
+                    child: Text('Соглашение',
+                        style: GoogleFonts.nunitoSans(fontSize: 13)),
                   ),
                   TextButton(
                     onPressed: () => context.go(AppRoutes.privacy),
-                    style: TextButton.styleFrom(foregroundColor: Colors.white70),
-                    child: const Text('Политика конфиденциальности'),
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white60),
+                    child: Text('Конфиденциальность',
+                        style: GoogleFonts.nunitoSans(fontSize: 13)),
                   ),
                   TextButton(
                     onPressed: () => context.go(AppRoutes.consent),
-                    style: TextButton.styleFrom(foregroundColor: Colors.white70),
-                    child: const Text('Согласие на обработку'),
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white60),
+                    child: Text('Согласие на обработку',
+                        style: GoogleFonts.nunitoSans(fontSize: 13)),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
               Text(
                 '\u00a9 2025 TaleKID. Все права защищены.',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.5),
-                  fontSize: 13,
+                style: GoogleFonts.nunitoSans(
+                  color: Colors.white.withValues(alpha: 0.4),
+                  fontSize: 12,
                 ),
               ),
             ],

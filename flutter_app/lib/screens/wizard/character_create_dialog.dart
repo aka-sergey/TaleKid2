@@ -2,10 +2,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../config/theme.dart';
 import '../../models/character.dart';
 import '../../providers/character_provider.dart';
+import '../../widgets/gradient_button.dart';
 import '../../widgets/photo_picker.dart';
 
 /// Bottom-sheet dialog for creating or editing a character.
@@ -89,13 +91,13 @@ class _CharacterCreateDialogState
   List<_GenderOption> get _genderOptions {
     if (_selectedType == 'child') {
       return [
-        _GenderOption(value: 'male', label: 'Мальчик', icon: Icons.boy),
-        _GenderOption(value: 'female', label: 'Девочка', icon: Icons.girl),
+        _GenderOption(value: 'male', label: 'Мальчик', emoji: '👦'),
+        _GenderOption(value: 'female', label: 'Девочка', emoji: '👧'),
       ];
     }
     return [
-      _GenderOption(value: 'male', label: 'Мужской', icon: Icons.male),
-      _GenderOption(value: 'female', label: 'Женский', icon: Icons.female),
+      _GenderOption(value: 'male', label: 'Мужской', emoji: '👨'),
+      _GenderOption(value: 'female', label: 'Женский', emoji: '👩'),
     ];
   }
 
@@ -177,12 +179,7 @@ class _CharacterCreateDialogState
       ),
       padding: EdgeInsets.only(bottom: bottomInset),
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(
-          AppTheme.spacingLg,
-          AppTheme.spacingMd,
-          AppTheme.spacingLg,
-          AppTheme.spacingLg,
-        ),
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
         child: Form(
           key: _formKey,
           child: Column(
@@ -194,9 +191,9 @@ class _CharacterCreateDialogState
                 child: Container(
                   width: 40,
                   height: 4,
-                  margin: const EdgeInsets.only(bottom: AppTheme.spacingMd),
+                  margin: const EdgeInsets.only(bottom: 20),
                   decoration: BoxDecoration(
-                    color: AppTheme.textLight,
+                    color: AppTheme.borderColor,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -205,36 +202,48 @@ class _CharacterCreateDialogState
               // Title
               Text(
                 _isEditing ? 'Редактировать персонажа' : 'Новый персонаж',
-                style: Theme.of(context).textTheme.titleLarge,
+                style: AppTheme.heading(size: 22),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppTheme.spacingLg),
+              const SizedBox(height: 24),
 
-              // 1. Character type
-              Text('Тип персонажа',
-                  style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: AppTheme.spacingSm),
+              // 1. Character type — emoji cards
+              Text(
+                'Тип персонажа',
+                style: AppTheme.body(
+                  size: 14,
+                  weight: FontWeight.w700,
+                  color: AppTheme.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 10),
               _TypeSelector(
                 selected: _selectedType,
                 onChanged: (type) {
                   setState(() {
                     _selectedType = type;
-                    // Reset gender when type changes to keep labels consistent.
                     _selectedGender = 'male';
                   });
                 },
               ),
-              const SizedBox(height: AppTheme.spacingLg),
+              const SizedBox(height: 20),
 
-              // 2. Gender
-              Text('Пол', style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: AppTheme.spacingSm),
+              // 2. Gender — emoji cards
+              Text(
+                'Пол',
+                style: AppTheme.body(
+                  size: 14,
+                  weight: FontWeight.w700,
+                  color: AppTheme.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 10),
               _GenderSelector(
                 options: _genderOptions,
                 selected: _selectedGender,
                 onChanged: (g) => setState(() => _selectedGender = g),
               ),
-              const SizedBox(height: AppTheme.spacingLg),
+              const SizedBox(height: 20),
 
               // 3. Name
               TextFormField(
@@ -252,7 +261,7 @@ class _CharacterCreateDialogState
                   return null;
                 },
               ),
-              const SizedBox(height: AppTheme.spacingMd),
+              const SizedBox(height: 14),
 
               // 4. Age
               TextFormField(
@@ -273,7 +282,7 @@ class _CharacterCreateDialogState
                   return null;
                 },
               ),
-              const SizedBox(height: AppTheme.spacingLg),
+              const SizedBox(height: 20),
 
               // 5. Photos
               PhotoPicker(
@@ -296,42 +305,65 @@ class _CharacterCreateDialogState
 
               // Show pending (not yet uploaded) photos as small info chips
               if (_pendingPhotos.isNotEmpty) ...[
-                const SizedBox(height: AppTheme.spacingSm),
+                const SizedBox(height: 10),
                 Wrap(
-                  spacing: AppTheme.spacingSm,
+                  spacing: 8,
+                  runSpacing: 6,
                   children: _pendingPhotos.asMap().entries.map((entry) {
-                    return Chip(
-                      avatar: const Icon(Icons.image, size: 18),
-                      label: Text(
-                        entry.value.filename,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
                       ),
-                      onDeleted: () {
-                        setState(() => _pendingPhotos.removeAt(entry.key));
-                      },
+                      decoration: BoxDecoration(
+                        color: AppTheme.fillColor,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: AppTheme.borderColor,
+                          width: 0.5,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.image,
+                              size: 16, color: AppTheme.primaryColor),
+                          const SizedBox(width: 6),
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 100),
+                            child: Text(
+                              entry.value.filename,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTheme.body(
+                                size: 12,
+                                color: AppTheme.textSecondary,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          GestureDetector(
+                            onTap: () {
+                              setState(
+                                  () => _pendingPhotos.removeAt(entry.key));
+                            },
+                            child: const Icon(Icons.close,
+                                size: 14, color: AppTheme.textLight),
+                          ),
+                        ],
+                      ),
                     );
                   }).toList(),
                 ),
               ],
-              const SizedBox(height: AppTheme.spacingXl),
+              const SizedBox(height: 28),
 
-              // 6. Save button
-              SizedBox(
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: _isSaving ? null : _save,
-                  child: _isSaving
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Text(_isEditing ? 'Сохранить' : 'Создать'),
-                ),
+              // 6. Save button — gradient
+              GradientButton(
+                text: _isEditing ? 'Сохранить' : 'Создать персонажа',
+                icon: _isEditing ? Icons.check : Icons.add,
+                isLoading: _isSaving,
+                onPressed: _isSaving ? null : _save,
               ),
             ],
           ),
@@ -352,9 +384,9 @@ class _TypeSelector extends StatelessWidget {
   const _TypeSelector({required this.selected, required this.onChanged});
 
   static const _types = [
-    _TypeOption(value: 'child', label: 'Ребёнок', icon: Icons.child_care),
-    _TypeOption(value: 'adult', label: 'Взрослый', icon: Icons.person),
-    _TypeOption(value: 'pet', label: 'Питомец', icon: Icons.pets),
+    _TypeOption(value: 'child', label: 'Ребёнок', emoji: '👶'),
+    _TypeOption(value: 'adult', label: 'Взрослый', emoji: '🧑'),
+    _TypeOption(value: 'pet', label: 'Питомец', emoji: '🐱'),
   ];
 
   @override
@@ -365,28 +397,45 @@ class _TypeSelector extends StatelessWidget {
         return Expanded(
           child: Padding(
             padding: EdgeInsets.only(
-              right: t.value != _types.last.value ? AppTheme.spacingSm : 0,
+              right: t.value != _types.last.value ? 10 : 0,
             ),
-            child: ChoiceChip(
-              label: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(t.icon,
-                      size: 18,
-                      color: isSelected
-                          ? AppTheme.primaryColor
-                          : AppTheme.textSecondary),
-                  const SizedBox(width: 4),
-                  Text(t.label),
-                ],
-              ),
-              selected: isSelected,
-              onSelected: (_) => onChanged(t.value),
-              showCheckmark: false,
-              selectedColor: AppTheme.primaryLight.withValues(alpha: 0.3),
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppTheme.spacingSm,
-                vertical: AppTheme.spacingSm,
+            child: GestureDetector(
+              onTap: () => onChanged(t.value),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOut,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? AppTheme.primaryColor.withValues(alpha: 0.08)
+                      : AppTheme.fillColor,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: isSelected
+                        ? AppTheme.primaryColor
+                        : AppTheme.borderColor,
+                    width: isSelected ? 2 : 1,
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(t.emoji, style: const TextStyle(fontSize: 28)),
+                    const SizedBox(height: 6),
+                    Text(
+                      t.label,
+                      style: GoogleFonts.nunitoSans(
+                        fontSize: 13,
+                        fontWeight:
+                            isSelected ? FontWeight.w700 : FontWeight.w500,
+                        color: isSelected
+                            ? AppTheme.primaryColor
+                            : AppTheme.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -415,28 +464,45 @@ class _GenderSelector extends StatelessWidget {
         return Expanded(
           child: Padding(
             padding: EdgeInsets.only(
-              right: o.value != options.last.value ? AppTheme.spacingSm : 0,
+              right: o.value != options.last.value ? 10 : 0,
             ),
-            child: ChoiceChip(
-              label: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(o.icon,
-                      size: 18,
-                      color: isSelected
-                          ? AppTheme.primaryColor
-                          : AppTheme.textSecondary),
-                  const SizedBox(width: 4),
-                  Text(o.label),
-                ],
-              ),
-              selected: isSelected,
-              onSelected: (_) => onChanged(o.value),
-              showCheckmark: false,
-              selectedColor: AppTheme.primaryLight.withValues(alpha: 0.3),
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppTheme.spacingSm,
-                vertical: AppTheme.spacingSm,
+            child: GestureDetector(
+              onTap: () => onChanged(o.value),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOut,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? AppTheme.primaryColor.withValues(alpha: 0.08)
+                      : AppTheme.fillColor,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: isSelected
+                        ? AppTheme.primaryColor
+                        : AppTheme.borderColor,
+                    width: isSelected ? 2 : 1,
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(o.emoji, style: const TextStyle(fontSize: 28)),
+                    const SizedBox(height: 6),
+                    Text(
+                      o.label,
+                      style: GoogleFonts.nunitoSans(
+                        fontSize: 13,
+                        fontWeight:
+                            isSelected ? FontWeight.w700 : FontWeight.w500,
+                        color: isSelected
+                            ? AppTheme.primaryColor
+                            : AppTheme.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -453,17 +519,17 @@ class _GenderSelector extends StatelessWidget {
 class _TypeOption {
   final String value;
   final String label;
-  final IconData icon;
+  final String emoji;
   const _TypeOption(
-      {required this.value, required this.label, required this.icon});
+      {required this.value, required this.label, required this.emoji});
 }
 
 class _GenderOption {
   final String value;
   final String label;
-  final IconData icon;
+  final String emoji;
   _GenderOption(
-      {required this.value, required this.label, required this.icon});
+      {required this.value, required this.label, required this.emoji});
 }
 
 class _PendingPhoto {

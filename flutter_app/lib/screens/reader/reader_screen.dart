@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:printing/printing.dart';
 
 import '../../config/router.dart';
@@ -87,7 +90,13 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
   Future<void> _exportPdf(StoryDetail story) async {
     try {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Генерируем PDF...')),
+        SnackBar(
+          content: const Text('Генерируем PDF...'),
+          backgroundColor: AppTheme.primaryColor,
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
       );
       final pdfService = PdfService();
       final bytes = await pdfService.generateStoryPdf(story);
@@ -109,7 +118,13 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
     );
     if (copied && kIsWeb && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ссылка скопирована!')),
+        SnackBar(
+          content: const Text('Ссылка скопирована!'),
+          backgroundColor: AppTheme.successColor,
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
       );
     }
   }
@@ -137,44 +152,55 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
             : _buildMobileReader(context, story, pages);
       },
       loading: () => Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: const Color(0xFF1C1917),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const CircularProgressIndicator(color: Colors.white),
-              const SizedBox(height: AppTheme.spacingMd),
+              const CircularProgressIndicator(color: AppTheme.primaryLight),
+              const SizedBox(height: 16),
               Text(
                 'Загружаем сказку...',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(color: Colors.white70),
+                style: GoogleFonts.comfortaa(
+                  color: Colors.white70,
+                  fontSize: 16,
+                ),
               ),
             ],
           ),
         ),
       ),
       error: (e, _) => Scaffold(
-        appBar: AppBar(title: const Text('Ошибка')),
+        backgroundColor: AppTheme.backgroundColor,
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(AppTheme.spacingLg),
+            padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline,
-                    size: 64, color: AppTheme.errorColor),
-                const SizedBox(height: AppTheme.spacingMd),
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppTheme.errorColor.withValues(alpha: 0.1),
+                  ),
+                  child: const Icon(Icons.error_outline,
+                      size: 40, color: AppTheme.errorColor),
+                ),
+                const SizedBox(height: 20),
                 Text('Не удалось загрузить сказку',
-                    style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: AppTheme.spacingSm),
-                Text('$e', textAlign: TextAlign.center),
-                const SizedBox(height: AppTheme.spacingLg),
-                ElevatedButton(
+                    style: AppTheme.heading(size: 20)),
+                const SizedBox(height: 8),
+                Text('$e',
+                    textAlign: TextAlign.center,
+                    style: AppTheme.body(color: AppTheme.textSecondary)),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
                   onPressed: () =>
                       ref.invalidate(storyDetailProvider(widget.storyId)),
-                  child: const Text('Повторить'),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Повторить'),
                 ),
               ],
             ),
@@ -251,158 +277,216 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
     final isWide = screenWidth > 800;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go(AppRoutes.library),
-        ),
-        title: Text(story.displayTitle),
-        actions: [
-          // Page indicator
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                '${_currentPage + 1} / ${pages.length}',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppTheme.textSecondary,
-                      fontWeight: FontWeight.w600,
-                    ),
+      backgroundColor: AppTheme.backgroundColor,
+      body: Column(
+        children: [
+          // Custom top bar
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                bottom: BorderSide(color: AppTheme.borderColor, width: 0.5),
               ),
             ),
-          ),
-          // Lightbulb button
-          if (page.educationalContent != null)
-            IconButton(
-              icon: const Icon(Icons.lightbulb, color: AppTheme.accentColor),
-              tooltip: 'Образовательный контент',
-              onPressed: () =>
-                  EducationalPopup.show(context, page.educationalContent!),
-            ),
-          // PDF export
-          IconButton(
-            icon: const Icon(Icons.picture_as_pdf),
-            tooltip: 'Скачать PDF',
-            onPressed: () => _exportPdf(story),
-          ),
-          // Share
-          IconButton(
-            icon: const Icon(Icons.share),
-            tooltip: 'Поделиться',
-            onPressed: () => _shareStory(story),
-          ),
-        ],
-      ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: isWide ? 900 : double.infinity),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppTheme.spacingMd),
-            child: Column(
-              children: [
-                // Image — 80-90% viewport height
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                  child: AspectRatio(
-                    aspectRatio: 4 / 3,
-                    child: page.imageUrl != null
-                        ? CachedNetworkImage(
-                            imageUrl: page.imageUrl!,
-                            fit: BoxFit.cover,
-                            placeholder: (_, __) => Container(
-                              color: AppTheme.primaryLight.withValues(alpha: 0.1),
-                              child: const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                            errorWidget: (_, __, ___) => Container(
-                              color: AppTheme.primaryLight.withValues(alpha: 0.1),
-                              child: const Icon(Icons.broken_image,
-                                  size: 64, color: AppTheme.textLight),
-                            ),
-                          )
-                        : Container(
-                            color: AppTheme.primaryLight.withValues(alpha: 0.1),
-                            child: const Icon(Icons.image,
-                                size: 64, color: AppTheme.textLight),
-                          ),
-                  ),
-                ),
-                const SizedBox(height: AppTheme.spacingLg),
-
-                // Text content
-                if (page.textContent != null)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppTheme.spacingMd),
-                    child: Text(
-                      page.textContent!,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontSize: 18,
-                            height: 1.7,
-                            color: AppTheme.textPrimary,
-                          ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                const SizedBox(height: AppTheme.spacingXl),
-
-                // Navigation arrows
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: Row(
                   children: [
-                    IconButton.filled(
-                      onPressed: _currentPage > 0
-                          ? () => setState(() => _currentPage--)
-                          : null,
-                      icon: const Icon(Icons.arrow_back_ios_new),
-                      style: IconButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor,
-                        disabledBackgroundColor:
-                            AppTheme.textLight.withValues(alpha: 0.3),
+                    GestureDetector(
+                      onTap: () => context.go(AppRoutes.library),
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: AppTheme.fillColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(Icons.arrow_back,
+                            size: 18, color: AppTheme.textSecondary),
                       ),
                     ),
-                    const SizedBox(width: AppTheme.spacingXl),
-                    // Page dots (limited to 10 visible)
-                    _PageDots(
-                      total: pages.length,
-                      current: _currentPage,
-                    ),
-                    const SizedBox(width: AppTheme.spacingXl),
-                    IconButton.filled(
-                      onPressed: _currentPage < pages.length - 1
-                          ? () => setState(() => _currentPage++)
-                          : null,
-                      icon: const Icon(Icons.arrow_forward_ios),
-                      style: IconButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor,
-                        disabledBackgroundColor:
-                            AppTheme.textLight.withValues(alpha: 0.3),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        story.displayTitle,
+                        style: AppTheme.heading(size: 16),
+                        overflow: TextOverflow.ellipsis,
                       ),
+                    ),
+                    // Page counter pill
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '${_currentPage + 1} / ${pages.length}',
+                        style: GoogleFonts.nunitoSans(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppTheme.primaryColor,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // Lightbulb
+                    if (page.educationalContent != null)
+                      _ActionBtn(
+                        icon: Icons.lightbulb,
+                        color: AppTheme.accentColor,
+                        tooltip: 'Узнать интересное!',
+                        onTap: () => EducationalPopup.show(
+                            context, page.educationalContent!),
+                      ),
+                    // PDF
+                    _ActionBtn(
+                      icon: Icons.picture_as_pdf,
+                      tooltip: 'Скачать PDF',
+                      onTap: () => _exportPdf(story),
+                    ),
+                    // Share
+                    _ActionBtn(
+                      icon: Icons.share,
+                      tooltip: 'Поделиться',
+                      onTap: () => _shareStory(story),
                     ),
                   ],
                 ),
-                const SizedBox(height: AppTheme.spacingXl),
-              ],
+              ),
             ),
           ),
-        ),
+
+          // Content
+          Expanded(
+            child: Center(
+              child: ConstrainedBox(
+                constraints:
+                    BoxConstraints(maxWidth: isWide ? 900 : double.infinity),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      // Image with rounded corners
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: AspectRatio(
+                          aspectRatio: 4 / 3,
+                          child: page.imageUrl != null
+                              ? CachedNetworkImage(
+                                  imageUrl: page.imageUrl!,
+                                  fit: BoxFit.cover,
+                                  placeholder: (_, __) => Container(
+                                    color: AppTheme.primaryLight
+                                        .withValues(alpha: 0.1),
+                                    child: const Center(
+                                      child: CircularProgressIndicator(
+                                        color: AppTheme.primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  errorWidget: (_, __, ___) => Container(
+                                    color: AppTheme.primaryLight
+                                        .withValues(alpha: 0.1),
+                                    child: const Icon(Icons.broken_image,
+                                        size: 64, color: AppTheme.textLight),
+                                  ),
+                                )
+                              : Container(
+                                  color: AppTheme.primaryLight
+                                      .withValues(alpha: 0.1),
+                                  child: const Icon(Icons.image,
+                                      size: 64, color: AppTheme.textLight),
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Text content in a card
+                      if (page.textContent != null)
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 28,
+                            vertical: 24,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: AppTheme.cardShadow,
+                          ),
+                          child: Text(
+                            page.textContent!,
+                            style: GoogleFonts.nunitoSans(
+                              fontSize: 18,
+                              height: 1.7,
+                              color: AppTheme.textPrimary,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      const SizedBox(height: 32),
+
+                      // Navigation arrows + page dots
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _NavArrow(
+                            icon: Icons.arrow_back_ios_new,
+                            enabled: _currentPage > 0,
+                            onTap: () => setState(() => _currentPage--),
+                          ),
+                          const SizedBox(width: 20),
+                          _PageDots(
+                            total: pages.length,
+                            current: _currentPage,
+                          ),
+                          const SizedBox(width: 20),
+                          _NavArrow(
+                            icon: Icons.arrow_forward_ios,
+                            enabled: _currentPage < pages.length - 1,
+                            onTap: () => setState(() => _currentPage++),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 32),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildEmptyState(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Сказка')),
+      backgroundColor: AppTheme.backgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.menu_book, size: 64, color: AppTheme.textLight),
-            const SizedBox(height: AppTheme.spacingMd),
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppTheme.primaryLight.withValues(alpha: 0.1),
+              ),
+              child: const Icon(Icons.menu_book,
+                  size: 48, color: AppTheme.primaryLight),
+            ),
+            const SizedBox(height: 20),
             Text('Страницы ещё не готовы',
-                style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: AppTheme.spacingLg),
+                style: AppTheme.heading(size: 20)),
+            const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => context.go(AppRoutes.home),
               child: const Text('На главную'),
@@ -415,7 +499,90 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
 }
 
 // =============================================================================
-// Mobile page view — fullscreen image + text overlay
+// Action button for the web top bar
+// =============================================================================
+class _ActionBtn extends StatelessWidget {
+  final IconData icon;
+  final Color? color;
+  final String tooltip;
+  final VoidCallback onTap;
+
+  const _ActionBtn({
+    required this.icon,
+    this.color,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 36,
+          height: 36,
+          margin: const EdgeInsets.only(left: 4),
+          decoration: BoxDecoration(
+            color: AppTheme.fillColor,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, size: 18, color: color ?? AppTheme.textSecondary),
+        ),
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Navigation arrow button
+// =============================================================================
+class _NavArrow extends StatelessWidget {
+  final IconData icon;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _NavArrow({
+    required this.icon,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: enabled ? onTap : null,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          gradient: enabled ? AppTheme.primaryGradient : null,
+          color: enabled ? null : AppTheme.fillColor,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: enabled
+              ? [
+                  BoxShadow(
+                    color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Icon(
+          icon,
+          size: 18,
+          color: enabled ? Colors.white : AppTheme.textLight,
+        ),
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Mobile page view — fullscreen image + frosted glass text overlay
 // =============================================================================
 class _MobilePageView extends StatelessWidget {
   final StoryPage page;
@@ -448,11 +615,10 @@ class _MobilePageView extends StatelessWidget {
         else
           Container(
             color: Colors.grey[900],
-            child:
-                const Icon(Icons.image, size: 64, color: Colors.white24),
+            child: const Icon(Icons.image, size: 64, color: Colors.white24),
           ),
 
-        // Text overlay at bottom
+        // Frosted glass text overlay at bottom
         if (page.textContent != null)
           Positioned(
             bottom: 60,
@@ -460,22 +626,33 @@ class _MobilePageView extends StatelessWidget {
             right: 0,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 16,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.65),
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              ),
-              child: Text(
-                page.textContent!,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  height: 1.6,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 18,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.4),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.15),
+                      ),
+                    ),
+                    child: Text(
+                      page.textContent!,
+                      style: GoogleFonts.nunitoSans(
+                        color: Colors.white,
+                        fontSize: 16,
+                        height: 1.6,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
           ),
@@ -506,64 +683,71 @@ class _TopOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.black.withValues(alpha: 0.6),
-            Colors.transparent,
-          ],
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black.withValues(alpha: 0.5),
+                Colors.transparent,
+              ],
+            ),
+          ),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: onBack,
+              ),
+              Expanded(
+                child: Text(
+                  story.displayTitle,
+                  style: GoogleFonts.comfortaa(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (onPdf != null)
+                IconButton(
+                  icon:
+                      const Icon(Icons.picture_as_pdf, color: Colors.white70),
+                  onPressed: onPdf,
+                  tooltip: 'PDF',
+                ),
+              if (onShare != null)
+                IconButton(
+                  icon: const Icon(Icons.share, color: Colors.white70),
+                  onPressed: onShare,
+                  tooltip: 'Поделиться',
+                ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '${currentPage + 1}/$totalPages',
+                  style: GoogleFonts.nunitoSans(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
         ),
-      ),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: onBack,
-          ),
-          Expanded(
-            child: Text(
-              story.displayTitle,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          if (onPdf != null)
-            IconButton(
-              icon: const Icon(Icons.picture_as_pdf, color: Colors.white70),
-              onPressed: onPdf,
-              tooltip: 'PDF',
-            ),
-          if (onShare != null)
-            IconButton(
-              icon: const Icon(Icons.share, color: Colors.white70),
-              onPressed: onShare,
-              tooltip: 'Поделиться',
-            ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(AppTheme.radiusFull),
-            ),
-            child: Text(
-              '${currentPage + 1}/$totalPages',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
       ),
     );
   }
@@ -594,7 +778,7 @@ class _BottomOverlay extends StatelessWidget {
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
           colors: [
-            Colors.black.withValues(alpha: 0.6),
+            Colors.black.withValues(alpha: 0.5),
             Colors.transparent,
           ],
         ),
@@ -604,10 +788,17 @@ class _BottomOverlay extends StatelessWidget {
         children: [
           // Lightbulb button
           if (onLightbulb != null)
-            IconButton(
-              icon: const Icon(Icons.lightbulb, color: AppTheme.accentColor),
-              onPressed: onLightbulb,
-              tooltip: 'Узнать интересное!',
+            Container(
+              decoration: BoxDecoration(
+                color: AppTheme.accentColor.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon:
+                    const Icon(Icons.lightbulb, color: AppTheme.accentColor),
+                onPressed: onLightbulb,
+                tooltip: 'Узнать интересное!',
+              ),
             )
           else
             const SizedBox(width: 48),
@@ -652,24 +843,27 @@ class _PageDots extends StatelessWidget {
         if (start > 0)
           const Padding(
             padding: EdgeInsets.only(right: 4),
-            child: Text('...', style: TextStyle(color: Colors.white54, fontSize: 10)),
+            child: Text('...',
+                style: TextStyle(color: Colors.white54, fontSize: 10)),
           ),
         for (int i = start; i < end; i++)
-          Container(
-            width: i == current ? 10 : 6,
-            height: i == current ? 10 : 6,
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            width: i == current ? 20 : 6,
+            height: 6,
             margin: const EdgeInsets.symmetric(horizontal: 3),
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(3),
               color: i == current
-                  ? Colors.white
+                  ? AppTheme.primaryLight
                   : Colors.white.withValues(alpha: 0.4),
             ),
           ),
         if (end < total)
           const Padding(
             padding: EdgeInsets.only(left: 4),
-            child: Text('...', style: TextStyle(color: Colors.white54, fontSize: 10)),
+            child: Text('...',
+                style: TextStyle(color: Colors.white54, fontSize: 10)),
           ),
       ],
     );

@@ -1,21 +1,49 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../config/router.dart';
 import '../../config/theme.dart';
+import '../../config/ui_assets.dart';
 import '../../models/catalog.dart';
 import '../../providers/catalog_provider.dart';
 import '../../providers/character_provider.dart';
 import '../../providers/generation_provider.dart';
-import '../../widgets/character_card.dart';
+import '../../widgets/app_card.dart';
+import '../../widgets/gradient_button.dart';
+import '../../widgets/shimmer_loading.dart';
 import 'character_create_dialog.dart';
 
-/// 3-step wizard for creating a new story.
-///
-/// Step 1: Select characters (existing + create new)
-/// Step 2: Choose age range, education, genre, world, base tale (optional)
-/// Step 3: Configure page count and reading duration
+// ── Slug → UiAssets mappings ────────────────────────────────────────────
+const _genreAssets = <String, String>{
+  'adventure': UiAssets.adventure,
+  'fairy-tale': UiAssets.fairy_tale,
+  'educational': UiAssets.educational,
+  'friendship': UiAssets.friendship,
+  'funny': UiAssets.funny,
+  'bedtime': UiAssets.bedtime,
+};
+
+const _worldAssets = <String, String>{
+  'enchanted-forest': UiAssets.magic_forest,
+  'space': UiAssets.space,
+  'underwater': UiAssets.underwater,
+  'medieval-kingdom': UiAssets.medieval_kingdom,
+  'modern-city': UiAssets.modern_city,
+  'dinosaur-world': UiAssets.dinosaur_world,
+};
+
+const _ageAssets = <String, String>{
+  '3-5': UiAssets.age_3_5,
+  '6-8': UiAssets.age_6_8,
+  '9-12': UiAssets.age_9_12,
+};
+
+// ═════════════════════════════════════════════════════════════════════════
+// Wizard Screen
+// ═════════════════════════════════════════════════════════════════════════
+
 class WizardScreen extends ConsumerStatefulWidget {
   const WizardScreen({super.key});
 
@@ -27,44 +55,31 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
   int _currentStep = 0;
   bool _isSubmitting = false;
 
-  // Step 1: Characters
   final Set<String> _selectedCharacterIds = {};
-
-  // Step 2: Settings
   String _ageRange = '3-5';
   double _educationLevel = 0.5;
   int? _selectedGenreId;
   int? _selectedWorldId;
   int? _selectedBaseTaleId;
-
-  // Step 3: Format
   int _pageCount = 10;
   int _readingDuration = 10;
 
   bool get _canProceedStep1 => _selectedCharacterIds.isNotEmpty;
-
   bool get _canProceedStep2 =>
       _selectedGenreId != null && _selectedWorldId != null;
-
   bool get _canSubmit => _canProceedStep1 && _canProceedStep2;
 
   void _nextStep() {
-    if (_currentStep < 2) {
-      setState(() => _currentStep++);
-    }
+    if (_currentStep < 2) setState(() => _currentStep++);
   }
 
   void _prevStep() {
-    if (_currentStep > 0) {
-      setState(() => _currentStep--);
-    }
+    if (_currentStep > 0) setState(() => _currentStep--);
   }
 
   Future<void> _submit() async {
     if (!_canSubmit || _isSubmitting) return;
-
     setState(() => _isSubmitting = true);
-
     try {
       final service = ref.read(generationServiceProvider);
       final job = await service.createGeneration(
@@ -77,20 +92,16 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
         pageCount: _pageCount,
         readingDurationMinutes: _readingDuration,
       );
-
       if (mounted) {
         context.go(
-          AppRoutes.generationProgress.replaceAll(':jobId', job.id),
-        );
+            AppRoutes.generationProgress.replaceAll(':jobId', job.id));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Ошибка: ${e.toString()}'),
-            backgroundColor: AppTheme.errorColor,
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Ошибка: ${e.toString()}'),
+          backgroundColor: AppTheme.errorColor,
+        ));
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -100,63 +111,74 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Создать сказку'),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => context.go(AppRoutes.home),
-        ),
-      ),
-      body: Column(
-        children: [
-          // Step indicator
-          _StepIndicator(
-            currentStep: _currentStep,
-            labels: const ['Персонажи', 'Настройки', 'Формат'],
-          ),
-
-          // Step content
-          Expanded(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: _buildCurrentStep(),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // ── Top bar ──────────────────────────────────────────
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  _circleBtn(Icons.close_rounded,
+                      () => context.go(AppRoutes.home)),
+                  const Spacer(),
+                  Text('Создать сказку',
+                      style: AppTheme.heading(size: 18)),
+                  const Spacer(),
+                  const SizedBox(width: 40),
+                ],
+              ),
             ),
-          ),
-
-          // Navigation buttons
-          _BottomNavigation(
-            currentStep: _currentStep,
-            canProceed: _currentStep == 0
-                ? _canProceedStep1
-                : _currentStep == 1
-                    ? _canProceedStep2
-                    : _canSubmit,
-            isSubmitting: _isSubmitting,
-            onBack: _currentStep > 0 ? _prevStep : null,
-            onNext: _currentStep < 2 ? _nextStep : null,
-            onSubmit: _currentStep == 2 ? _submit : null,
-          ),
-        ],
+            // ── Step indicator ───────────────────────────────────
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
+              child: _StepIndicator(currentStep: _currentStep),
+            ),
+            // ── Content ──────────────────────────────────────────
+            Expanded(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (child, anim) =>
+                    FadeTransition(opacity: anim, child: child),
+                child: _buildStep(),
+              ),
+            ),
+            // ── Bottom nav ───────────────────────────────────────
+            _BottomNav(
+              currentStep: _currentStep,
+              canProceed: _currentStep == 0
+                  ? _canProceedStep1
+                  : _currentStep == 1
+                      ? _canProceedStep2
+                      : _canSubmit,
+              isSubmitting: _isSubmitting,
+              onBack: _currentStep > 0 ? _prevStep : null,
+              onNext: _currentStep < 2 ? _nextStep : null,
+              onSubmit: _currentStep == 2 ? _submit : null,
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildCurrentStep() {
+  Widget _buildStep() {
     switch (_currentStep) {
       case 0:
         return _Step1Characters(
-          key: const ValueKey('step1'),
+          key: const ValueKey('s1'),
           selectedIds: _selectedCharacterIds,
-          onSelectionChanged: (ids) {
-            setState(() {
-              _selectedCharacterIds.clear();
-              _selectedCharacterIds.addAll(ids);
-            });
-          },
+          onSelectionChanged: (ids) => setState(() {
+            _selectedCharacterIds
+              ..clear()
+              ..addAll(ids);
+          }),
         );
       case 1:
         return _Step2Settings(
-          key: const ValueKey('step2'),
+          key: const ValueKey('s2'),
           ageRange: _ageRange,
           educationLevel: _educationLevel,
           selectedGenreId: _selectedGenreId,
@@ -167,11 +189,12 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
               setState(() => _educationLevel = v),
           onGenreChanged: (v) => setState(() => _selectedGenreId = v),
           onWorldChanged: (v) => setState(() => _selectedWorldId = v),
-          onBaseTaleChanged: (v) => setState(() => _selectedBaseTaleId = v),
+          onBaseTaleChanged: (v) =>
+              setState(() => _selectedBaseTaleId = v),
         );
       case 2:
         return _Step3Format(
-          key: const ValueKey('step3'),
+          key: const ValueKey('s3'),
           pageCount: _pageCount,
           readingDuration: _readingDuration,
           onPageCountChanged: (v) => setState(() => _pageCount = v),
@@ -182,94 +205,113 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
         return const SizedBox.shrink();
     }
   }
+
+  Widget _circleBtn(IconData icon, VoidCallback onTap) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: AppTheme.fillColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, size: 20, color: AppTheme.textSecondary),
+        ),
+      );
 }
 
-// =============================================================================
+// ═════════════════════════════════════════════════════════════════════════
 // Step Indicator
-// =============================================================================
+// ═════════════════════════════════════════════════════════════════════════
 
 class _StepIndicator extends StatelessWidget {
   final int currentStep;
-  final List<String> labels;
+  const _StepIndicator({required this.currentStep});
 
-  const _StepIndicator({required this.currentStep, required this.labels});
+  static const _icons = [Icons.person, Icons.tune, Icons.menu_book];
+  static const _labels = ['Персонажи', 'Настройки', 'Формат'];
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.spacingLg,
-        vertical: AppTheme.spacingMd,
-      ),
-      child: Row(
-        children: List.generate(labels.length * 2 - 1, (index) {
-          if (index.isOdd) {
-            // Connector line
-            final stepIndex = index ~/ 2;
-            final isCompleted = stepIndex < currentStep;
-            return Expanded(
-              child: Container(
-                height: 2,
-                color: isCompleted
-                    ? AppTheme.primaryColor
-                    : AppTheme.textLight.withValues(alpha: 0.3),
+    return Row(
+      children: List.generate(5, (i) {
+        if (i.isOdd) {
+          final done = i ~/ 2 < currentStep;
+          return Expanded(
+            child: Container(
+              height: 2.5,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2),
+                gradient: done
+                    ? const LinearGradient(colors: [
+                        AppTheme.successColor,
+                        AppTheme.primaryColor
+                      ])
+                    : null,
+                color: done ? null : AppTheme.borderColor,
               ),
-            );
-          }
-
-          final stepIndex = index ~/ 2;
-          final isActive = stepIndex == currentStep;
-          final isCompleted = stepIndex < currentStep;
-
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isActive
-                      ? AppTheme.primaryColor
-                      : isCompleted
-                          ? AppTheme.successColor
-                          : AppTheme.textLight.withValues(alpha: 0.3),
-                ),
-                child: Center(
-                  child: isCompleted
-                      ? const Icon(Icons.check, size: 18, color: Colors.white)
-                      : Text(
-                          '${stepIndex + 1}',
-                          style: TextStyle(
-                            color: isActive ? Colors.white : AppTheme.textSecondary,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                          ),
-                        ),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                labels[stepIndex],
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-                  color: isActive
-                      ? AppTheme.primaryColor
-                      : AppTheme.textSecondary,
-                ),
-              ),
-            ],
+            ),
           );
-        }),
-      ),
+        }
+        final step = i ~/ 2;
+        final active = step == currentStep;
+        final done = step < currentStep;
+
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: done
+                    ? AppTheme.successColor
+                    : active
+                        ? AppTheme.primaryColor
+                        : AppTheme.fillColor,
+                boxShadow: active
+                    ? [
+                        BoxShadow(
+                          color: AppTheme.primaryColor
+                              .withValues(alpha: 0.35),
+                          blurRadius: 12,
+                        )
+                      ]
+                    : null,
+              ),
+              child: Center(
+                child: done
+                    ? const Icon(Icons.check_rounded,
+                        size: 18, color: Colors.white)
+                    : Icon(_icons[step],
+                        size: 18,
+                        color: active
+                            ? Colors.white
+                            : AppTheme.textSecondary),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              _labels[step],
+              style: AppTheme.body(
+                size: 11,
+                weight: active ? FontWeight.w700 : FontWeight.w500,
+                color:
+                    active ? AppTheme.primaryColor : AppTheme.textSecondary,
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 }
 
-// =============================================================================
-// Step 1: Characters
-// =============================================================================
+// ═════════════════════════════════════════════════════════════════════════
+// Step 1 — Characters
+// ═════════════════════════════════════════════════════════════════════════
 
 class _Step1Characters extends ConsumerWidget {
   final Set<String> selectedIds;
@@ -283,133 +325,163 @@ class _Step1Characters extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final charactersAsync = ref.watch(charactersProvider);
+    final charsAsync = ref.watch(charactersProvider);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppTheme.spacingLg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Выберите персонажей',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: AppTheme.spacingSm),
-          Text(
-            'Выберите одного или нескольких персонажей для вашей сказки',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
-                ),
-          ),
-          const SizedBox(height: AppTheme.spacingLg),
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 640),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Выберите персонажей',
+                  style: AppTheme.heading(size: 22)),
+              const SizedBox(height: 4),
+              Text(
+                  'Выберите одного или нескольких персонажей для вашей сказки',
+                  style: AppTheme.body(
+                      size: 14, color: AppTheme.textSecondary)),
+              const SizedBox(height: 20),
 
-          // Create new character button
-          OutlinedButton.icon(
-            onPressed: () {
-              CharacterCreateDialog.show(
-                context,
-                onSaved: () => ref.invalidate(charactersProvider),
-              );
-            },
-            icon: const Icon(Icons.add),
-            label: const Text('Создать персонажа'),
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 48),
-            ),
-          ),
-          const SizedBox(height: AppTheme.spacingLg),
-
-          // Characters list
-          charactersAsync.when(
-            data: (characters) {
-              if (characters.isEmpty) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppTheme.spacingXl),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.people_outline,
-                          size: 64,
-                          color: AppTheme.textLight.withValues(alpha: 0.5),
-                        ),
-                        const SizedBox(height: AppTheme.spacingMd),
-                        Text(
-                          'У вас пока нет персонажей',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                    color: AppTheme.textSecondary,
-                                  ),
-                        ),
-                        const SizedBox(height: AppTheme.spacingSm),
-                        Text(
-                          'Создайте хотя бы одного персонажа',
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: AppTheme.textLight,
-                                  ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              return Column(
-                children: characters.map((character) {
-                  final isSelected = selectedIds.contains(character.id);
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-                    child: CharacterCard(
-                      character: character,
-                      isSelected: isSelected,
-                      onTap: () {
-                        final newIds = Set<String>.from(selectedIds);
-                        if (isSelected) {
-                          newIds.remove(character.id);
-                        } else {
-                          newIds.add(character.id);
-                        }
-                        onSelectionChanged(newIds);
-                      },
-                    ),
-                  );
-                }).toList(),
-              );
-            },
-            loading: () => const Center(
-              child: Padding(
-                padding: EdgeInsets.all(AppTheme.spacingXl),
-                child: CircularProgressIndicator(),
-              ),
-            ),
-            error: (e, _) => Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppTheme.spacingXl),
-                child: Column(
+              // Create button
+              AppCard(
+                onTap: () => CharacterCreateDialog.show(context,
+                    onSaved: () => ref.invalidate(charactersProvider)),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 18, vertical: 14),
+                child: Row(
                   children: [
-                    const Icon(Icons.error_outline,
-                        size: 48, color: AppTheme.errorColor),
-                    const SizedBox(height: AppTheme.spacingMd),
-                    Text('Ошибка загрузки: $e'),
-                    TextButton(
-                      onPressed: () => ref.invalidate(charactersProvider),
-                      child: const Text('Повторить'),
-                    ),
+                    const Icon(Icons.add_circle_outline,
+                        color: AppTheme.primaryColor, size: 22),
+                    const SizedBox(width: 12),
+                    Text('Создать персонажа',
+                        style: AppTheme.body(
+                            size: 15,
+                            weight: FontWeight.w600,
+                            color: AppTheme.primaryColor)),
                   ],
                 ),
               ),
-            ),
+              const SizedBox(height: 16),
+
+              // Character list
+              charsAsync.when(
+                data: (chars) {
+                  if (chars.isEmpty) {
+                    return _emptyState();
+                  }
+                  return Column(
+                    children: chars.map((c) {
+                      final sel = selectedIds.contains(c.id);
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: AppCard(
+                          highlighted: sel,
+                          onTap: () {
+                            final n = Set<String>.from(selectedIds);
+                            sel ? n.remove(c.id) : n.add(c.id);
+                            onSelectionChanged(n);
+                          },
+                          padding: const EdgeInsets.all(14),
+                          child: Row(
+                            children: [
+                              _charAvatar(c),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Text(c.name,
+                                        style: AppTheme.body(
+                                            size: 15,
+                                            weight: FontWeight.w700)),
+                                    const SizedBox(height: 3),
+                                    Row(children: [
+                                      _badge(c.characterTypeLabel),
+                                      if (c.age != null) ...[
+                                        const SizedBox(width: 8),
+                                        Text(
+                                            '${c.age} ${_ageSuffix(c.age!)}',
+                                            style: AppTheme.body(
+                                                size: 12,
+                                                color: AppTheme
+                                                    .textSecondary)),
+                                      ],
+                                    ]),
+                                  ],
+                                ),
+                              ),
+                              AnimatedContainer(
+                                duration:
+                                    const Duration(milliseconds: 200),
+                                width: 28,
+                                height: 28,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: sel
+                                      ? AppTheme.primaryColor
+                                      : AppTheme.fillColor,
+                                  border: sel
+                                      ? null
+                                      : Border.all(
+                                          color: AppTheme.borderColor,
+                                          width: 1.5),
+                                ),
+                                child: sel
+                                    ? const Icon(Icons.check_rounded,
+                                        size: 16, color: Colors.white)
+                                    : null,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
+                loading: () => Column(
+                  children: List.generate(
+                      3,
+                      (_) => const Padding(
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: ShimmerCard(height: 72))),
+                ),
+                error: (e, _) => _ErrorRetry(
+                    message: 'Ошибка загрузки: $e',
+                    onRetry: () => ref.invalidate(charactersProvider)),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
+
+  Widget _emptyState() => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child: Center(
+          child: Column(children: [
+            Icon(Icons.people_outline,
+                size: 64,
+                color: AppTheme.textLight.withValues(alpha: 0.5)),
+            const SizedBox(height: 12),
+            Text('У вас пока нет персонажей',
+                style: AppTheme.body(
+                    size: 15, color: AppTheme.textSecondary)),
+            const SizedBox(height: 4),
+            Text('Создайте хотя бы одного персонажа',
+                style:
+                    AppTheme.body(size: 13, color: AppTheme.textLight)),
+          ]),
+        ),
+      );
 }
 
-// =============================================================================
-// Step 2: Settings
-// =============================================================================
+// ═════════════════════════════════════════════════════════════════════════
+// Step 2 — Settings
+// ═════════════════════════════════════════════════════════════════════════
 
 class _Step2Settings extends ConsumerWidget {
   final String ageRange;
@@ -444,114 +516,95 @@ class _Step2Settings extends ConsumerWidget {
     final baseTalesAsync = ref.watch(baseTalesProvider);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppTheme.spacingLg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Age Range
-          Text('Возрастная группа',
-              style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: AppTheme.spacingSm),
-          _AgeRangeSelector(
-            selected: ageRange,
-            onChanged: onAgeRangeChanged,
-          ),
-          const SizedBox(height: AppTheme.spacingLg),
-
-          // Education Level
-          Text('Уровень образовательности',
-              style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: AppTheme.spacingSm),
-          _EducationSlider(
-            value: educationLevel,
-            onChanged: onEducationLevelChanged,
-          ),
-          const SizedBox(height: AppTheme.spacingLg),
-
-          // Genre
-          Text('Жанр *', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: AppTheme.spacingSm),
-          genresAsync.when(
-            data: (genres) => _CatalogGrid<Genre>(
-              items: genres,
-              selectedId: selectedGenreId,
-              onSelected: onGenreChanged,
-              labelOf: (g) => g.nameRu,
-              idOf: (g) => g.id,
-            ),
-            loading: () => const _LoadingShimmer(),
-            error: (e, _) => _ErrorRetry(
-              message: 'Ошибка загрузки жанров',
-              onRetry: () => ref.invalidate(genresProvider),
-            ),
-          ),
-          const SizedBox(height: AppTheme.spacingLg),
-
-          // World
-          Text('Мир *', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: AppTheme.spacingSm),
-          worldsAsync.when(
-            data: (worlds) => _CatalogGrid<World>(
-              items: worlds,
-              selectedId: selectedWorldId,
-              onSelected: onWorldChanged,
-              labelOf: (w) => w.nameRu,
-              idOf: (w) => w.id,
-            ),
-            loading: () => const _LoadingShimmer(),
-            error: (e, _) => _ErrorRetry(
-              message: 'Ошибка загрузки миров',
-              onRetry: () => ref.invalidate(worldsProvider),
-            ),
-          ),
-          const SizedBox(height: AppTheme.spacingLg),
-
-          // Base Tale (optional)
-          Row(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 640),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Сказка-основа',
-                  style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(width: AppTheme.spacingSm),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: AppTheme.textLight.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                ),
-                child: Text(
-                  'необязательно',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.textSecondary,
-                      ),
-                ),
+              // Age
+              Text('Возрастная группа',
+                  style: AppTheme.heading(size: 17)),
+              const SizedBox(height: 12),
+              _AgeCards(
+                  selected: ageRange, onChanged: onAgeRangeChanged),
+              const SizedBox(height: 28),
+              // Education
+              Text('Уровень образовательности',
+                  style: AppTheme.heading(size: 17)),
+              const SizedBox(height: 12),
+              _EduSlider(
+                  value: educationLevel,
+                  onChanged: onEducationLevelChanged),
+              const SizedBox(height: 28),
+              // Genre
+              Text('Жанр *', style: AppTheme.heading(size: 17)),
+              const SizedBox(height: 12),
+              genresAsync.when(
+                data: (g) => _GenreCards(
+                    genres: g,
+                    selectedId: selectedGenreId,
+                    onSelected: onGenreChanged),
+                loading: () => const _ShimmerRow(),
+                error: (_, __) => _ErrorRetry(
+                    message: 'Ошибка загрузки жанров',
+                    onRetry: () => ref.invalidate(genresProvider)),
               ),
+              const SizedBox(height: 28),
+              // World
+              Text('Мир *', style: AppTheme.heading(size: 17)),
+              const SizedBox(height: 12),
+              worldsAsync.when(
+                data: (w) => _WorldGrid(
+                    worlds: w,
+                    selectedId: selectedWorldId,
+                    onSelected: onWorldChanged),
+                loading: () => const _ShimmerRow(),
+                error: (_, __) => _ErrorRetry(
+                    message: 'Ошибка загрузки миров',
+                    onRetry: () => ref.invalidate(worldsProvider)),
+              ),
+              const SizedBox(height: 28),
+              // Base tale
+              Row(children: [
+                Text('Сказка-основа',
+                    style: AppTheme.heading(size: 17)),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                      color: AppTheme.fillColor,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Text('необязательно',
+                      style: AppTheme.body(
+                          size: 11, color: AppTheme.textSecondary)),
+                ),
+              ]),
+              const SizedBox(height: 12),
+              baseTalesAsync.when(
+                data: (t) => _BaseTaleSel(
+                    tales: t,
+                    selectedId: selectedBaseTaleId,
+                    onSelected: onBaseTaleChanged),
+                loading: () => const _ShimmerRow(),
+                error: (_, __) => _ErrorRetry(
+                    message: 'Ошибка загрузки сказок',
+                    onRetry: () => ref.invalidate(baseTalesProvider)),
+              ),
+              const SizedBox(height: 40),
             ],
           ),
-          const SizedBox(height: AppTheme.spacingSm),
-          baseTalesAsync.when(
-            data: (tales) => _BaseTaleSelector(
-              tales: tales,
-              selectedId: selectedBaseTaleId,
-              onSelected: onBaseTaleChanged,
-            ),
-            loading: () => const _LoadingShimmer(),
-            error: (e, _) => _ErrorRetry(
-              message: 'Ошибка загрузки сказок',
-              onRetry: () => ref.invalidate(baseTalesProvider),
-            ),
-          ),
-
-          // Extra padding at the bottom for scroll
-          const SizedBox(height: AppTheme.spacingXl),
-        ],
+        ),
       ),
     );
   }
 }
 
-// =============================================================================
-// Step 3: Format
-// =============================================================================
+// ═════════════════════════════════════════════════════════════════════════
+// Step 3 — Format
+// ═════════════════════════════════════════════════════════════════════════
 
 class _Step3Format extends StatelessWidget {
   final int pageCount;
@@ -570,170 +623,168 @@ class _Step3Format extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppTheme.spacingLg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Формат сказки',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: AppTheme.spacingSm),
-          Text(
-            'Настройте длину и время чтения',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
-                ),
-          ),
-          const SizedBox(height: AppTheme.spacingXl),
-
-          // Page count
-          Text('Количество страниц',
-              style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: AppTheme.spacingSm),
-          Row(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 640),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Slider(
-                  value: pageCount.toDouble(),
-                  min: 5,
-                  max: 30,
-                  divisions: 25,
-                  label: '$pageCount',
-                  onChanged: (v) => onPageCountChanged(v.round()),
-                ),
+              Text('Формат сказки', style: AppTheme.heading(size: 22)),
+              const SizedBox(height: 4),
+              Text('Настройте длину и время чтения',
+                  style: AppTheme.body(
+                      size: 14, color: AppTheme.textSecondary)),
+              const SizedBox(height: 28),
+              Text('Количество страниц',
+                  style: AppTheme.heading(size: 17)),
+              const SizedBox(height: 12),
+              Slider(
+                value: pageCount.toDouble(),
+                min: 5,
+                max: 30,
+                divisions: 25,
+                label: '$pageCount',
+                onChanged: (v) => onPageCountChanged(v.round()),
               ),
-              SizedBox(
-                width: 60,
-                child: Text(
-                  '$pageCount стр.',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppTheme.primaryColor,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
+              _PresetRow(
+                  values: const [5, 10, 15, 20, 25, 30],
+                  selected: pageCount,
+                  onSelected: onPageCountChanged),
+              const SizedBox(height: 28),
+              Text('Время чтения',
+                  style: AppTheme.heading(size: 17)),
+              const SizedBox(height: 12),
+              Slider(
+                value: readingDuration.toDouble(),
+                min: 5,
+                max: 30,
+                divisions: 25,
+                label: '$readingDuration мин',
+                onChanged: (v) =>
+                    onReadingDurationChanged(v.round()),
               ),
-            ],
-          ),
-          _PageCountPresets(
-            selected: pageCount,
-            onSelected: onPageCountChanged,
-          ),
-          const SizedBox(height: AppTheme.spacingXl),
-
-          // Reading duration
-          Text('Время чтения',
-              style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: AppTheme.spacingSm),
-          Row(
-            children: [
-              Expanded(
-                child: Slider(
-                  value: readingDuration.toDouble(),
-                  min: 5,
-                  max: 30,
-                  divisions: 25,
-                  label: '$readingDuration мин',
-                  onChanged: (v) => onReadingDurationChanged(v.round()),
-                ),
-              ),
-              SizedBox(
-                width: 70,
-                child: Text(
-                  '$readingDuration мин.',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppTheme.primaryColor,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-          _DurationPresets(
-            selected: readingDuration,
-            onSelected: onReadingDurationChanged,
-          ),
-          const SizedBox(height: AppTheme.spacingXl),
-
-          // Summary card
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(AppTheme.spacingLg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.info_outline,
+              _PresetRow(
+                  values: const [5, 10, 15, 20, 30],
+                  selected: readingDuration,
+                  onSelected: onReadingDurationChanged,
+                  suffix: ' мин'),
+              const SizedBox(height: 28),
+              AppCard(
+                color: AppTheme.fillColor,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(children: [
+                      const Icon(Icons.info_outline_rounded,
                           color: AppTheme.infoColor, size: 20),
-                      const SizedBox(width: AppTheme.spacingSm),
-                      Text(
-                        'Параметры сказки',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppTheme.spacingMd),
-                  _InfoRow(label: 'Страниц', value: '$pageCount'),
-                  _InfoRow(
-                      label: 'Время чтения', value: '$readingDuration мин'),
-                  _InfoRow(
-                    label: 'Иллюстраций',
-                    value: '$pageCount',
-                  ),
-                ],
+                      const SizedBox(width: 8),
+                      Text('Параметры сказки',
+                          style: AppTheme.body(
+                              size: 15, weight: FontWeight.w700)),
+                    ]),
+                    const SizedBox(height: 14),
+                    _sRow('Страниц', '$pageCount'),
+                    _sRow('Время чтения', '$readingDuration мин'),
+                    _sRow('Иллюстраций', '$pageCount'),
+                  ],
+                ),
               ),
-            ),
+              const SizedBox(height: 32),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
+
+  Widget _sRow(String l, String v) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(l,
+                style: AppTheme.body(
+                    size: 14, color: AppTheme.textSecondary)),
+            Text(v,
+                style:
+                    AppTheme.body(size: 14, weight: FontWeight.w700)),
+          ],
+        ),
+      );
 }
 
-// =============================================================================
+// ═════════════════════════════════════════════════════════════════════════
 // Sub-widgets
-// =============================================================================
+// ═════════════════════════════════════════════════════════════════════════
 
-class _AgeRangeSelector extends StatelessWidget {
+class _AgeCards extends StatelessWidget {
   final String selected;
   final ValueChanged<String> onChanged;
-
-  const _AgeRangeSelector({required this.selected, required this.onChanged});
+  const _AgeCards({required this.selected, required this.onChanged});
 
   static const _ranges = [
-    _AgeOption(value: '3-5', label: '3-5 лет', icon: Icons.child_friendly),
-    _AgeOption(value: '6-8', label: '6-8 лет', icon: Icons.child_care),
-    _AgeOption(value: '9-12', label: '9-12 лет', icon: Icons.school),
+    ('3-5', '3–5 лет', 'Малыши'),
+    ('6-8', '6–8 лет', 'Юные читатели'),
+    ('9-12', '9–12 лет', 'Подростки'),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: _ranges.map((r) {
-        final isSelected = r.value == selected;
+        final sel = r.$1 == selected;
+        final url = _ageAssets[r.$1] ?? '';
         return Expanded(
           child: Padding(
             padding: EdgeInsets.only(
-              right: r.value != _ranges.last.value ? AppTheme.spacingSm : 0,
-            ),
-            child: ChoiceChip(
-              label: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(r.icon,
-                      size: 16,
-                      color: isSelected
+                right: r.$1 != _ranges.last.$1 ? 12 : 0),
+            child: GestureDetector(
+              onTap: () => onChanged(r.$1),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                      color: sel
                           ? AppTheme.primaryColor
-                          : AppTheme.textSecondary),
-                  const SizedBox(width: 4),
-                  Text(r.label, style: const TextStyle(fontSize: 13)),
-                ],
+                          : AppTheme.borderColor,
+                      width: sel ? 2.5 : 1),
+                  boxShadow: sel ? AppTheme.cardShadow : null,
+                  color: Colors.white,
+                ),
+                child: Column(children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(16)),
+                    child: url.isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: url,
+                            height: 90,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            placeholder: (_, __) => Container(
+                                height: 90, color: AppTheme.fillColor),
+                            errorWidget: (_, __, ___) => Container(
+                                height: 90, color: AppTheme.fillColor),
+                          )
+                        : Container(
+                            height: 90, color: AppTheme.fillColor),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(children: [
+                      Text(r.$2,
+                          style: AppTheme.body(
+                              size: 13, weight: FontWeight.w700)),
+                      Text(r.$3,
+                          style: AppTheme.body(
+                              size: 11,
+                              color: AppTheme.textSecondary)),
+                    ]),
+                  ),
+                ]),
               ),
-              selected: isSelected,
-              onSelected: (_) => onChanged(r.value),
-              showCheckmark: false,
-              selectedColor: AppTheme.primaryLight.withValues(alpha: 0.3),
             ),
           ),
         );
@@ -742,11 +793,10 @@ class _AgeRangeSelector extends StatelessWidget {
   }
 }
 
-class _EducationSlider extends StatelessWidget {
+class _EduSlider extends StatelessWidget {
   final double value;
   final ValueChanged<double> onChanged;
-
-  const _EducationSlider({required this.value, required this.onChanged});
+  const _EduSlider({required this.value, required this.onChanged});
 
   String get _label {
     if (value < 0.3) return 'Минимум фактов';
@@ -756,96 +806,213 @@ class _EducationSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Slider(
+    return Column(children: [
+      Slider(
           value: value,
-          min: 0.0,
-          max: 1.0,
+          min: 0,
+          max: 1,
           divisions: 10,
           label: _label,
-          onChanged: onChanged,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingMd),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Развлечение',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.textSecondary,
-                      )),
-              Text(
-                _label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppTheme.primaryColor,
-                      fontWeight: FontWeight.w600,
-                    ),
+          onChanged: onChanged),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Развлечение',
+                style: AppTheme.body(
+                    size: 12, color: AppTheme.textSecondary)),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: Container(
+                key: ValueKey(_label),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                    color:
+                        AppTheme.primaryColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8)),
+                child: Text(_label,
+                    style: AppTheme.body(
+                        size: 12,
+                        weight: FontWeight.w600,
+                        color: AppTheme.primaryColor)),
               ),
-              Text('Обучение',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.textSecondary,
-                      )),
-            ],
-          ),
+            ),
+            Text('Обучение',
+                style: AppTheme.body(
+                    size: 12, color: AppTheme.textSecondary)),
+          ],
         ),
-      ],
-    );
+      ),
+    ]);
   }
 }
 
-class _CatalogGrid<T> extends StatelessWidget {
-  final List<T> items;
+class _GenreCards extends StatelessWidget {
+  final List<Genre> genres;
   final int? selectedId;
   final ValueChanged<int?> onSelected;
-  final String Function(T) labelOf;
-  final int Function(T) idOf;
-
-  const _CatalogGrid({
-    required this.items,
-    required this.selectedId,
-    required this.onSelected,
-    required this.labelOf,
-    required this.idOf,
-  });
+  const _GenreCards(
+      {required this.genres,
+      required this.selectedId,
+      required this.onSelected});
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: AppTheme.spacingSm,
-      runSpacing: AppTheme.spacingSm,
-      children: items.map((item) {
-        final id = idOf(item);
-        final isSelected = id == selectedId;
-        return ChoiceChip(
-          label: Text(labelOf(item)),
-          selected: isSelected,
-          onSelected: (_) => onSelected(isSelected ? null : id),
-          showCheckmark: false,
-          selectedColor: AppTheme.primaryLight.withValues(alpha: 0.3),
+      spacing: 10,
+      runSpacing: 10,
+      children: genres.map((g) {
+        final sel = g.id == selectedId;
+        final url = _genreAssets[g.slug] ?? '';
+        return GestureDetector(
+          onTap: () => onSelected(sel ? null : g.id),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 170,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                  color: sel
+                      ? AppTheme.primaryColor
+                      : AppTheme.borderColor,
+                  width: sel ? 2 : 1),
+              color: Colors.white,
+            ),
+            child: Column(children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(13)),
+                child: url.isNotEmpty
+                    ? CachedNetworkImage(
+                        imageUrl: url,
+                        height: 80,
+                        width: 170,
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) => Container(
+                            height: 80,
+                            width: 170,
+                            color: AppTheme.fillColor),
+                        errorWidget: (_, __, ___) => Container(
+                            height: 80,
+                            width: 170,
+                            color: AppTheme.fillColor),
+                      )
+                    : Container(
+                        height: 80,
+                        width: 170,
+                        color: AppTheme.fillColor),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(g.nameRu,
+                    style: AppTheme.body(
+                        size: 13, weight: FontWeight.w600),
+                    textAlign: TextAlign.center),
+              ),
+            ]),
+          ),
         );
       }).toList(),
     );
   }
 }
 
-class _BaseTaleSelector extends StatelessWidget {
+class _WorldGrid extends StatelessWidget {
+  final List<World> worlds;
+  final int? selectedId;
+  final ValueChanged<int?> onSelected;
+  const _WorldGrid(
+      {required this.worlds,
+      required this.selectedId,
+      required this.onSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (ctx, box) {
+      final cols = box.maxWidth > 500 ? 3 : 2;
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: worlds.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: cols,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 0.82),
+        itemBuilder: (_, i) {
+          final w = worlds[i];
+          final sel = w.id == selectedId;
+          final url = _worldAssets[w.slug] ?? '';
+          return GestureDetector(
+            onTap: () => onSelected(sel ? null : w.id),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              transform: sel
+                  ? (Matrix4.identity()..scale(1.02, 1.02))
+                  : Matrix4.identity(),
+              transformAlignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                    color: sel
+                        ? AppTheme.primaryColor
+                        : AppTheme.borderColor,
+                    width: sel ? 2.5 : 1),
+                boxShadow: sel ? AppTheme.cardShadow : null,
+                color: Colors.white,
+              ),
+              child: Column(children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(16)),
+                    child: url.isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: url,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            placeholder: (_, __) =>
+                                Container(color: AppTheme.fillColor),
+                            errorWidget: (_, __, ___) =>
+                                Container(color: AppTheme.fillColor),
+                          )
+                        : Container(color: AppTheme.fillColor),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Text(w.nameRu,
+                      style: AppTheme.body(
+                          size: 13, weight: FontWeight.w600),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis),
+                ),
+              ]),
+            ),
+          );
+        },
+      );
+    });
+  }
+}
+
+class _BaseTaleSel extends StatelessWidget {
   final List<BaseTale> tales;
   final int? selectedId;
   final ValueChanged<int?> onSelected;
-
-  const _BaseTaleSelector({
-    required this.tales,
-    required this.selectedId,
-    required this.onSelected,
-  });
+  const _BaseTaleSel(
+      {required this.tales,
+      required this.selectedId,
+      required this.onSelected});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // "No base tale" option
         ChoiceChip(
           label: const Text('Оригинальный сюжет'),
           avatar: const Icon(Icons.auto_awesome, size: 18),
@@ -854,18 +1021,19 @@ class _BaseTaleSelector extends StatelessWidget {
           showCheckmark: false,
           selectedColor: AppTheme.accentLight.withValues(alpha: 0.3),
         ),
-        const SizedBox(height: AppTheme.spacingSm),
+        const SizedBox(height: 8),
         Wrap(
-          spacing: AppTheme.spacingSm,
-          runSpacing: AppTheme.spacingSm,
-          children: tales.map((tale) {
-            final isSelected = tale.id == selectedId;
+          spacing: 8,
+          runSpacing: 8,
+          children: tales.map((t) {
+            final sel = t.id == selectedId;
             return ChoiceChip(
-              label: Text(tale.nameRu),
-              selected: isSelected,
-              onSelected: (_) => onSelected(isSelected ? null : tale.id),
+              label: Text(t.nameRu),
+              selected: sel,
+              onSelected: (_) => onSelected(sel ? null : t.id),
               showCheckmark: false,
-              selectedColor: AppTheme.primaryLight.withValues(alpha: 0.3),
+              selectedColor:
+                  AppTheme.primaryLight.withValues(alpha: 0.25),
             );
           }).toList(),
         ),
@@ -874,115 +1042,55 @@ class _BaseTaleSelector extends StatelessWidget {
   }
 }
 
-class _PageCountPresets extends StatelessWidget {
+class _PresetRow extends StatelessWidget {
+  final List<int> values;
   final int selected;
   final ValueChanged<int> onSelected;
-
-  const _PageCountPresets({required this.selected, required this.onSelected});
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: AppTheme.spacingSm,
-      children: [5, 10, 15, 20, 25, 30].map((count) {
-        return ActionChip(
-          label: Text('$count'),
-          backgroundColor: selected == count
-              ? AppTheme.primaryLight.withValues(alpha: 0.3)
-              : null,
-          onPressed: () => onSelected(count),
-        );
-      }).toList(),
-    );
-  }
-}
-
-class _DurationPresets extends StatelessWidget {
-  final int selected;
-  final ValueChanged<int> onSelected;
-
-  const _DurationPresets({required this.selected, required this.onSelected});
+  final String suffix;
+  const _PresetRow(
+      {required this.values,
+      required this.selected,
+      required this.onSelected,
+      this.suffix = ''});
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: AppTheme.spacingSm,
-      children: [5, 10, 15, 20, 30].map((min) {
-        return ActionChip(
-          label: Text('$min мин'),
-          backgroundColor: selected == min
-              ? AppTheme.primaryLight.withValues(alpha: 0.3)
-              : null,
-          onPressed: () => onSelected(min),
-        );
-      }).toList(),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _InfoRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.textSecondary,
-                  )),
-          Text(value,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  )),
-        ],
-      ),
-    );
-  }
-}
-
-class _LoadingShimmer extends StatelessWidget {
-  const _LoadingShimmer();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: AppTheme.spacingMd),
-      child: Center(child: CircularProgressIndicator()),
-    );
-  }
-}
-
-class _ErrorRetry extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-
-  const _ErrorRetry({required this.message, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingMd),
-      child: Column(
-        children: [
-          Text(message, style: const TextStyle(color: AppTheme.errorColor)),
-          TextButton(
-            onPressed: onRetry,
-            child: const Text('Повторить'),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: values.map((v) {
+        final sel = v == selected;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: GestureDetector(
+            onTap: () => onSelected(v),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: sel
+                    ? AppTheme.primaryColor
+                    : AppTheme.fillColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text('$v$suffix',
+                  style: AppTheme.body(
+                      size: 13,
+                      weight: FontWeight.w600,
+                      color: sel
+                          ? Colors.white
+                          : AppTheme.textSecondary)),
+            ),
           ),
-        ],
-      ),
+        );
+      }).toList(),
     );
   }
 }
 
-class _BottomNavigation extends StatelessWidget {
+// ── Bottom Navigation ───────────────────────────────────────────────────
+
+class _BottomNav extends StatelessWidget {
   final int currentStep;
   final bool canProceed;
   final bool isSubmitting;
@@ -990,7 +1098,7 @@ class _BottomNavigation extends StatelessWidget {
   final VoidCallback? onNext;
   final VoidCallback? onSubmit;
 
-  const _BottomNavigation({
+  const _BottomNav({
     required this.currentStep,
     required this.canProceed,
     required this.isSubmitting,
@@ -1003,62 +1111,124 @@ class _BottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-        left: AppTheme.spacingLg,
-        right: AppTheme.spacingLg,
-        top: AppTheme.spacingMd,
-        bottom: MediaQuery.of(context).padding.bottom + AppTheme.spacingMd,
-      ),
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
-        boxShadow: [
-          BoxShadow(
+          left: 24,
+          right: 24,
+          top: 14,
+          bottom: MediaQuery.of(context).padding.bottom + 14),
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+        BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          if (onBack != null)
+            offset: const Offset(0, -2)),
+      ]),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 640),
+          child: Row(children: [
+            if (onBack != null)
+              Expanded(
+                  child: OutlinedButton(
+                      onPressed: onBack,
+                      child: const Text('Назад'))),
+            if (onBack != null) const SizedBox(width: 14),
             Expanded(
-              child: OutlinedButton(
-                onPressed: onBack,
-                child: const Text('Назад'),
+              flex: onBack != null ? 2 : 1,
+              child: GradientButton(
+                text:
+                    currentStep == 2 ? 'Создать сказку' : 'Далее',
+                icon: currentStep == 2 ? Icons.auto_stories : null,
+                onPressed:
+                    canProceed ? (onSubmit ?? onNext) : null,
+                isLoading: isSubmitting,
               ),
             ),
-          if (onBack != null) const SizedBox(width: AppTheme.spacingMd),
-          Expanded(
-            flex: onBack != null ? 2 : 1,
-            child: ElevatedButton(
-              onPressed: canProceed
-                  ? (onSubmit ?? onNext)
-                  : null,
-              child: isSubmitting
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : Text(
-                      currentStep == 2 ? 'Создать сказку' : 'Далее',
-                    ),
-            ),
-          ),
-        ],
+          ]),
+        ),
       ),
     );
   }
 }
 
-// Value classes
-class _AgeOption {
-  final String value;
-  final String label;
-  final IconData icon;
-  const _AgeOption(
-      {required this.value, required this.label, required this.icon});
+// ── Helpers ─────────────────────────────────────────────────────────────
+
+Widget _charAvatar(dynamic c) {
+  final url = c.avatarUrl;
+  final initial =
+      (c.name as String).isNotEmpty ? c.name[0].toUpperCase() : '?';
+  return Container(
+    width: 52,
+    height: 52,
+    decoration: const BoxDecoration(
+        shape: BoxShape.circle, gradient: AppTheme.primaryGradient),
+    clipBehavior: Clip.antiAlias,
+    child: url != null
+        ? CachedNetworkImage(
+            imageUrl: url,
+            fit: BoxFit.cover,
+            errorWidget: (_, __, ___) => Center(
+                child: Text(initial,
+                    style: AppTheme.body(
+                        size: 20,
+                        weight: FontWeight.w700,
+                        color: Colors.white))),
+          )
+        : Center(
+            child: Text(initial,
+                style: AppTheme.body(
+                    size: 20,
+                    weight: FontWeight.w700,
+                    color: Colors.white))),
+  );
+}
+
+Widget _badge(String label) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+          color: AppTheme.primaryColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(8)),
+      child: Text(label,
+          style: AppTheme.body(
+              size: 11,
+              weight: FontWeight.w600,
+              color: AppTheme.primaryColor)),
+    );
+
+String _ageSuffix(int age) {
+  final m10 = age % 10, m100 = age % 100;
+  if (m100 >= 11 && m100 <= 19) return 'лет';
+  if (m10 == 1) return 'год';
+  if (m10 >= 2 && m10 <= 4) return 'года';
+  return 'лет';
+}
+
+class _ErrorRetry extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+  const _ErrorRetry({required this.message, required this.onRetry});
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(children: [
+          Text(message,
+              style:
+                  AppTheme.body(size: 14, color: AppTheme.errorColor)),
+          const SizedBox(height: 8),
+          TextButton(
+              onPressed: onRetry, child: const Text('Повторить')),
+        ]),
+      );
+}
+
+class _ShimmerRow extends StatelessWidget {
+  const _ShimmerRow();
+  @override
+  Widget build(BuildContext context) => Row(
+        children: List.generate(
+            3,
+            (_) => const Expanded(
+                child: Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child:
+                        ShimmerBox(height: 100, borderRadius: 14)))),
+      );
 }

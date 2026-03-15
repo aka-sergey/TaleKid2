@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../config/router.dart';
 import '../../config/theme.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/gradient_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -47,6 +49,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           SnackBar(
             content: Text(e.toString()),
             backgroundColor: AppTheme.errorColor,
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         );
       }
@@ -57,120 +62,140 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWide = screenWidth > 600;
-
     return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppTheme.spacingLg),
+            padding: const EdgeInsets.all(24),
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: isWide ? 440 : double.infinity),
+              constraints: const BoxConstraints(maxWidth: 420),
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Logo / Title
-                    const Icon(
-                      Icons.auto_stories,
-                      size: 72,
-                      color: AppTheme.primaryColor,
+                    // Logo area with gradient circle
+                    Center(
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          gradient: AppTheme.primaryGradient,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.primaryColor
+                                  .withValues(alpha: 0.3),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(Icons.auto_stories,
+                            size: 40, color: Colors.white),
+                      ),
                     ),
-                    const SizedBox(height: AppTheme.spacingMd),
+                    const SizedBox(height: 20),
                     Text(
                       'TaleKID',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                            color: AppTheme.primaryColor,
-                            fontWeight: FontWeight.w800,
-                          ),
+                      style: GoogleFonts.comfortaa(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w800,
+                        color: AppTheme.primaryColor,
+                      ),
                     ),
-                    const SizedBox(height: AppTheme.spacingSm),
+                    const SizedBox(height: 6),
                     Text(
                       'Войдите в аккаунт',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: AppTheme.textSecondary,
-                          ),
-                    ),
-                    const SizedBox(height: AppTheme.spacingXl),
-
-                    // Email field
-                    TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      autofillHints: const [AutofillHints.email],
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        hintText: 'example@mail.com',
-                        prefixIcon: Icon(Icons.email_outlined),
+                      style: AppTheme.body(
+                        size: 15,
+                        color: AppTheme.textSecondary,
                       ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Введите email';
-                        }
-                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                            .hasMatch(value.trim())) {
-                          return 'Некорректный email';
-                        }
-                        return null;
-                      },
                     ),
-                    const SizedBox(height: AppTheme.spacingMd),
+                    const SizedBox(height: 36),
 
-                    // Password field
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: _obscurePassword,
-                      autofillHints: const [AutofillHints.password],
-                      decoration: InputDecoration(
-                        labelText: 'Пароль',
-                        hintText: 'Введите пароль',
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                          ),
-                          onPressed: () {
-                            setState(() => _obscurePassword = !_obscurePassword);
-                          },
-                        ),
+                    // Form card
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: AppTheme.cardShadow,
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Введите пароль';
-                        }
-                        if (value.length < 6) {
-                          return 'Пароль должен быть не менее 6 символов';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: AppTheme.spacingLg),
+                      child: Column(
+                        children: [
+                          // Email field
+                          TextFormField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            autofillHints: const [AutofillHints.email],
+                            decoration: const InputDecoration(
+                              labelText: 'Email',
+                              hintText: 'example@mail.com',
+                              prefixIcon: Icon(Icons.email_outlined),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Введите email';
+                              }
+                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                  .hasMatch(value.trim())) {
+                                return 'Некорректный email';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
 
-                    // Login button
-                    SizedBox(
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _handleLogin,
-                        child: _isLoading
-                            ? const SizedBox(
-                                height: 24,
-                                width: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
+                          // Password field
+                          TextFormField(
+                            controller: _passwordController,
+                            obscureText: _obscurePassword,
+                            autofillHints: const [AutofillHints.password],
+                            decoration: InputDecoration(
+                              labelText: 'Пароль',
+                              hintText: 'Введите пароль',
+                              prefixIcon: const Icon(Icons.lock_outline),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_outlined
+                                      : Icons.visibility_off_outlined,
+                                  color: AppTheme.textLight,
                                 ),
-                              )
-                            : const Text('Войти'),
+                                onPressed: () {
+                                  setState(() =>
+                                      _obscurePassword = !_obscurePassword);
+                                },
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Введите пароль';
+                              }
+                              if (value.length < 6) {
+                                return 'Пароль должен быть не менее 6 символов';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 24),
+
+                          // Login button
+                          GradientButton(
+                            text: 'Войти',
+                            icon: Icons.login,
+                            isLoading: _isLoading,
+                            onPressed: _isLoading ? null : _handleLogin,
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: AppTheme.spacingMd),
+                    const SizedBox(height: 20),
 
                     // Register link
                     Row(
@@ -178,19 +203,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       children: [
                         Text(
                           'Нет аккаунта? ',
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style: AppTheme.body(
+                            size: 14,
+                            color: AppTheme.textSecondary,
+                          ),
                         ),
-                        TextButton(
-                          onPressed: () => context.go(AppRoutes.register),
-                          child: const Text('Зарегистрироваться'),
+                        GestureDetector(
+                          onTap: () => context.go(AppRoutes.register),
+                          child: Text(
+                            'Зарегистрироваться',
+                            style: GoogleFonts.nunitoSans(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.primaryColor,
+                            ),
+                          ),
                         ),
                       ],
                     ),
+                    const SizedBox(height: 12),
 
                     // Back to landing
-                    TextButton(
-                      onPressed: () => context.go(AppRoutes.landing),
-                      child: const Text('На главную'),
+                    Center(
+                      child: TextButton(
+                        onPressed: () => context.go(AppRoutes.landing),
+                        style: TextButton.styleFrom(
+                          foregroundColor: AppTheme.textLight,
+                        ),
+                        child: const Text('На главную'),
+                      ),
                     ),
                   ],
                 ),
