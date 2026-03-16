@@ -21,33 +21,145 @@ class LandingAssets {
   static const String tale3Cover = 'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/cover.png';
   static const String tale4Cover = 'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/cover.png';
 
-  // ── Showcase page images (pages 3 and 7) ──
-  static const String tale1Page3 = 'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/e85f654c-d2d5-44e6-8160-8861bded01c0/pages/3.png';
-  static const String tale1Page7 = 'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/e85f654c-d2d5-44e6-8160-8861bded01c0/pages/7.png';
-  static const String tale2Page3 = 'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/c7d27217-0c83-47a4-abfe-903aafaed86b/pages/3.png';
-  static const String tale2Page7 = 'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/c7d27217-0c83-47a4-abfe-903aafaed86b/pages/7.png';
-  static const String tale3Page3 = 'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/pages/3.png';
-  static const String tale3Page7 = 'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/pages/7.png';
-  static const String tale4Page3 = 'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/pages/3.png';
-  static const String tale4Page7 = 'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/pages/7.png';
+  // ── Showcase ALL page images (pages 1–10) ──
+  // Tale 1 — Маша и Двенадцать Месяцев
+  static const List<String> tale1Pages = [
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/e85f654c-d2d5-44e6-8160-8861bded01c0/pages/1.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/e85f654c-d2d5-44e6-8160-8861bded01c0/pages/2.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/e85f654c-d2d5-44e6-8160-8861bded01c0/pages/3.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/e85f654c-d2d5-44e6-8160-8861bded01c0/pages/4.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/e85f654c-d2d5-44e6-8160-8861bded01c0/pages/5.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/e85f654c-d2d5-44e6-8160-8861bded01c0/pages/6.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/e85f654c-d2d5-44e6-8160-8861bded01c0/pages/7.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/e85f654c-d2d5-44e6-8160-8861bded01c0/pages/8.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/e85f654c-d2d5-44e6-8160-8861bded01c0/pages/9.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/e85f654c-d2d5-44e6-8160-8861bded01c0/pages/10.png',
+  ];
 
-  // ── Showcase page texts (pages 1, 3, 7) ──
-  static const String tale1Text1 = 'Жила-была девочка Маша. Ей было четыре года, и она носила красное пальто с мехом. Однажды мама попросила её принести подснежники из зимнего леса.';
-  static const String tale1Text3 = 'Вдруг она увидела костёр и вокруг него двенадцать людей. Это были братья-Месяцы, каждый со своей волшебной силой.';
-  static const String tale1Text7 = 'Девочка побежала домой, держа цветы в руках. Лес теперь казался ей волшебным.';
-  static const String tale2Text1 = 'Жил-был мальчик Дима. У него были рыжие вихрастые волосы, веснушки и зелёные глаза. Он очень любил играть со своим пушистым серым котом Барсиком.';
-  static const String tale2Text3 = 'Когда ракета была готова, она вдруг ожила! Дима и Барсик сели внутрь и полетели в космос.';
-  static const String tale2Text7 = 'Дима и Барсик полетели к звезде и нашли, что она просто устала светить. Они её развеселили, и она снова засияла.';
-  static const String tale3Text1 = 'В глубоком океане жила маленькая русалочка Алиса. У неё были длинные тёмные волосы и карие глаза. Однажды она заметила, что коралловый дворец стал терять свои яркие краски.';
-  static const String tale3Text3 = 'Первым делом они встретили мудрую черепаху Торту. Она рассказала, что волшебные жемчужины помогут вернуть цвета.';
-  static const String tale3Text7 = 'Когда они собрали все жемчужины, Алиса вернулась к дворцу. Она разложила их вокруг, и дворец снова засиял яркими красками.';
-  static const String tale4Text1 = 'Жил-был мальчик Тимофей. У него были короткие чёрные волосы и смелые тёмные глаза. Однажды он нашёл в шкафу дедушки волшебный плащ.';
-  static const String tale4Text3 = 'Сначала Тимофей решил испытать свою суперсилу на улице. Он увидел котёнка, который застрял на дереве. Тимофей взлетел и аккуратно снял котёнка.';
-  static const String tale4Text7 = 'Тимофей задумался, что значит быть настоящим супергероем. Он понял, что суперсила — это доброе сердце и помощь другим.';
+  // Tale 2 — Дима и Звёздный Кот
+  static const List<String> tale2Pages = [
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/c7d27217-0c83-47a4-abfe-903aafaed86b/pages/1.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/c7d27217-0c83-47a4-abfe-903aafaed86b/pages/2.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/c7d27217-0c83-47a4-abfe-903aafaed86b/pages/3.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/c7d27217-0c83-47a4-abfe-903aafaed86b/pages/4.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/c7d27217-0c83-47a4-abfe-903aafaed86b/pages/5.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/c7d27217-0c83-47a4-abfe-903aafaed86b/pages/6.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/c7d27217-0c83-47a4-abfe-903aafaed86b/pages/7.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/c7d27217-0c83-47a4-abfe-903aafaed86b/pages/8.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/c7d27217-0c83-47a4-abfe-903aafaed86b/pages/9.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/c7d27217-0c83-47a4-abfe-903aafaed86b/pages/10.png',
+  ];
+
+  // Tale 3 — Алиса и Коралловое Королевство
+  static const List<String> tale3Pages = [
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/pages/1.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/pages/2.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/pages/3.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/pages/4.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/pages/5.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/pages/6.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/pages/7.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/pages/8.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/pages/9.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/1a31734f-350b-4247-8acd-473dd3f2550d/pages/10.png',
+  ];
+
+  // Tale 4 — Супергерой Тимофей
+  static const List<String> tale4Pages = [
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/pages/1.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/pages/2.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/pages/3.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/pages/4.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/pages/5.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/pages/6.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/pages/7.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/pages/8.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/pages/9.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/stories/5a24c43f-1822-4d5c-aa14-bbf81016f1da/pages/10.png',
+  ];
+
+  // ── Showcase ALL page texts (pages 1–10) ──
+  // Tale 1 — Маша и Двенадцать Месяцев
+  static const List<String> tale1Texts = [
+    'Жила-была девочка Маша. Ей было четыре года, и она носила красное пальто с мехом. Однажды мама попросила её принести подснежники из зимнего леса.',
+    'Маша одела красные варежки и пошла в лес. Вокруг было много снега и очень холодно. Девочка шла, любуясь белыми снежинками.',
+    'Вдруг она увидела костёр и вокруг него двенадцать людей. Это были братья-Месяцы, каждый со своей волшебной силой.',
+    'Маша поздоровалась со всеми и спросила, могут ли они помочь ей найти подснежники. Месяцы улыбнулись и вызвали апрель.',
+    'Апрель взмахнул рукой, и снег начал таять. Подснежники выглянули из-под снега, расцветая вокруг.',
+    'Маша поблагодарила братьев и собрала букет цветов. Она чувствовала себя очень счастливой.',
+    'Девочка побежала домой, держа цветы в руках. Лес теперь казался ей волшебным.',
+    'Когда Маша вернулась домой, мама была очень удивлена. Подснежники были такими красивыми!',
+    'Мама похвалила Машу за её доброту и смелость. Девочка улыбалась и думала о новых друзьях из леса.',
+    'С тех пор Маша всегда верила в чудеса. Ведь главное — это доброта и верность своим друзьям.',
+  ];
+
+  // Tale 2 — Дима и Звёздный Кот
+  static const List<String> tale2Texts = [
+    'Жил-был мальчик Дима. У него были рыжие вихрастые волосы, веснушки и зелёные глаза. Он очень любил играть со своим пушистым серым котом Барсиком.',
+    'Однажды Дима решил построить ракету из большой картонной коробки. Он позвал Барсика, и они начали строить.',
+    'Когда ракета была готова, она вдруг ожила! Дима и Барсик сели внутрь и полетели в космос.',
+    'Ракета мчалась мимо планет и звёзд. Дима увидел красную планету — это Марс!',
+    'Вдруг они встретили добрых инопланетян. Инопланетяне помахали Диме и Барсику и пригласили их на пикник.',
+    'На пикнике Дима узнал, что одна из звёзд сломалась и больше не светит. Он решил помочь её починить.',
+    'Дима и Барсик полетели к звезде и нашли, что она просто устала светить. Они её развеселили, и она снова засияла.',
+    'Настало время возвращаться домой, но Дима не знал дорогу. Инопланетяне подсказали найти Полярную звезду.',
+    'Следуя за Полярной звездой, ракета быстро добралась до дома. Дима и Барсик были счастливы вернуться.',
+    'Дома Дима и Барсик уснули, мечтая о новых приключениях. Ведь космос — такой удивительный!',
+  ];
+
+  // Tale 3 — Алиса и Коралловое Королевство
+  static const List<String> tale3Texts = [
+    'В глубоком океане жила маленькая русалочка Алиса. У неё были длинные тёмные волосы и карие глаза. Однажды она заметила, что коралловый дворец стал терять свои яркие краски.',
+    'Алиса решила помочь дворцу вернуть его цвета. Её верный друг, золотистый морской конёк Лучик, согласился отправиться с ней в путешествие.',
+    'Первым делом они встретили мудрую черепаху Торту. Она рассказала, что волшебные жемчужины помогут вернуть цвета.',
+    'Алиса и Лучик поплыли дальше и встретили осьминога Оливера. Он подарил им первую жемчужину.',
+    'Затем они встретили дельфина Дэна, который тоже подарил им жемчужину. Дэн любил играть и прыгать из воды.',
+    'В пути Алиса узнала, что звезда морская по имени Зара прячет свои жемчужины под песком. Она поделилась одной с Алисой.',
+    'Когда они собрали все жемчужины, Алиса вернулась к дворцу. Она разложила их вокруг, и дворец снова засиял яркими красками.',
+    'Все обитатели моря собрались полюбоваться красотой дворца. Они благодарили Алису и Лучика за помощь.',
+    'Алиса предложила устроить праздник. Все веселились, танцевали и играли в прятки среди разноцветных кораллов.',
+    'После праздника Алиса и Лучик попрощались с друзьями. Они вернулись домой, зная, что теперь коралловый дворец снова радует всех.',
+  ];
+
+  // Tale 4 — Супергерой Тимофей
+  static const List<String> tale4Texts = [
+    'Жил-был мальчик Тимофей. У него были короткие чёрные волосы и смелые тёмные глаза. Однажды он нашёл в шкафу дедушки волшебный плащ.',
+    'Тимофей надел плащ и почувствовал себя сильным и лёгким. Он надел жёлто-синий костюм с буквой \u00abТ\u00bb на груди и синюю маску. Теперь он выглядел как настоящий супергерой!',
+    'Сначала Тимофей решил испытать свою суперсилу на улице. Он увидел котёнка, который застрял на дереве. Тимофей взлетел и аккуратно снял котёнка.',
+    'На другой улице Тимофей увидел бабушку, которой было тяжело нести сумки. Он помог ей донести их до дома.',
+    'Потом Тимофей заметил маленькую девочку, у которой улетел воздушный шарик. Он догнал шарик и вернул его девочке.',
+    'Вечером Тимофей вернулся домой. Он рассказал маме о своих подвигах. Мама обняла его и сказала, что у него доброе сердце.',
+    'Тимофей задумался, что значит быть настоящим супергероем. Он понял, что суперсила — это доброе сердце и помощь другим.',
+    'Теперь Тимофей знал, что даже без плаща он может быть супергероем. Главное — помогать и заботиться о других.',
+    'Каждый день приносил новые приключения и новые возможности для добрых дел. Тимофей был готов помогать снова и снова.',
+    'Так Тимофей стал самым добрым супергероем в городе. И все знали, что у него самое доброе сердце.',
+  ];
 
   // ── Showcase titles ──
   static const String tale1Title = 'Маша и Двенадцать Месяцев';
   static const String tale2Title = 'Дима и Звёздный Кот';
   static const String tale3Title = 'Алиса и Коралловое Королевство';
   static const String tale4Title = 'Супергерой Тимофей';
+
+  // ── Illustration style covers (for styles section) ──
+  static const List<String> styleCovers = [
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/landing-assets/styles/watercolor.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/landing-assets/styles/3d-pixar.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/landing-assets/styles/disney.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/landing-assets/styles/comic.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/landing-assets/styles/anime.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/landing-assets/styles/pastel.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/landing-assets/styles/classic-book.png',
+    'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/landing-assets/styles/pop-art.png',
+  ];
+  static const List<String> styleNames = [
+    'Акварель',
+    '3D Анимация (Pixar)',
+    'Disney',
+    'Комикс',
+    'Аниме',
+    'Пастель',
+    'Книжная классика',
+    'Поп-арт',
+  ];
 }

@@ -27,6 +27,7 @@ class LandingScreen extends StatelessWidget {
           children: [
             _HeroSection(isWide: isWide),
             _ShowcaseSection(isWide: isWide),
+            _StylesSection(isWide: isWide),
             _HowItWorksSection(isWide: isWide),
             _WhyTaleKidSection(isWide: isWide),
             _ReviewsSection(isWide: isWide),
@@ -289,11 +290,8 @@ class _ShowcaseStoryData {
   final String badge;
   final Color badgeColor;
   final String coverUrl;
-  final String page3Url;
-  final String page7Url;
-  final String text1;
-  final String text3;
-  final String text7;
+  final List<String> pageUrls;
+  final List<String> pageTexts;
 
   const _ShowcaseStoryData({
     required this.title,
@@ -301,11 +299,8 @@ class _ShowcaseStoryData {
     required this.badge,
     required this.badgeColor,
     required this.coverUrl,
-    required this.page3Url,
-    required this.page7Url,
-    required this.text1,
-    required this.text3,
-    required this.text7,
+    required this.pageUrls,
+    required this.pageTexts,
   });
 }
 
@@ -323,39 +318,30 @@ class _ShowcaseSectionState extends State<_ShowcaseSection> {
   static final _stories = [
     _ShowcaseStoryData(
       title: LandingAssets.tale1Title,
-      description: 'Маша отправляется в зимний лес и встречает волшебных братьев-Месяцев, которые дарят ей весну посреди зимы',
+      description: 'Маша отправляется в зимний лес и встречает волшебных братьев-Месяцев',
       badge: 'Акварель',
       badgeColor: const Color(0xFF059669),
       coverUrl: LandingAssets.tale1Cover,
-      page3Url: LandingAssets.tale1Page3,
-      page7Url: LandingAssets.tale1Page7,
-      text1: LandingAssets.tale1Text1,
-      text3: LandingAssets.tale1Text3,
-      text7: LandingAssets.tale1Text7,
+      pageUrls: LandingAssets.tale1Pages,
+      pageTexts: LandingAssets.tale1Texts,
     ),
     _ShowcaseStoryData(
       title: LandingAssets.tale2Title,
-      description: 'Дима и кот Барсик летят в космос, знакомятся с инопланетянами и находят дорогу домой по звёздам',
+      description: 'Дима и кот Барсик летят в космос и находят дорогу домой по звёздам',
       badge: '3D Анимация',
       badgeColor: const Color(0xFF6366F1),
       coverUrl: LandingAssets.tale2Cover,
-      page3Url: LandingAssets.tale2Page3,
-      page7Url: LandingAssets.tale2Page7,
-      text1: LandingAssets.tale2Text1,
-      text3: LandingAssets.tale2Text3,
-      text7: LandingAssets.tale2Text7,
+      pageUrls: LandingAssets.tale2Pages,
+      pageTexts: LandingAssets.tale2Texts,
     ),
     _ShowcaseStoryData(
       title: LandingAssets.tale3Title,
-      description: 'Русалочка Алиса спасает подводное королевство и устраивает праздник для обитателей океана',
+      description: 'Русалочка Алиса спасает подводное королевство с помощью волшебных жемчужин',
       badge: 'Disney',
       badgeColor: const Color(0xFFDB2777),
       coverUrl: LandingAssets.tale3Cover,
-      page3Url: LandingAssets.tale3Page3,
-      page7Url: LandingAssets.tale3Page7,
-      text1: LandingAssets.tale3Text1,
-      text3: LandingAssets.tale3Text3,
-      text7: LandingAssets.tale3Text7,
+      pageUrls: LandingAssets.tale3Pages,
+      pageTexts: LandingAssets.tale3Texts,
     ),
     _ShowcaseStoryData(
       title: LandingAssets.tale4Title,
@@ -363,11 +349,8 @@ class _ShowcaseSectionState extends State<_ShowcaseSection> {
       badge: 'Комикс',
       badgeColor: const Color(0xFFD97706),
       coverUrl: LandingAssets.tale4Cover,
-      page3Url: LandingAssets.tale4Page3,
-      page7Url: LandingAssets.tale4Page7,
-      text1: LandingAssets.tale4Text1,
-      text3: LandingAssets.tale4Text3,
-      text7: LandingAssets.tale4Text7,
+      pageUrls: LandingAssets.tale4Pages,
+      pageTexts: LandingAssets.tale4Texts,
     ),
   ];
 
@@ -397,16 +380,14 @@ class _ShowcaseSectionState extends State<_ShowcaseSection> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     final cardWidth = widget.isWide
         ? screenWidth * 0.42
         : screenWidth * 0.88;
 
     return Container(
       width: double.infinity,
-      constraints: BoxConstraints(minHeight: screenHeight),
       color: const Color(0xFFFFFBF5),
-      padding: EdgeInsets.symmetric(vertical: widget.isWide ? 80 : 56),
+      padding: EdgeInsets.symmetric(vertical: widget.isWide ? 56 : 40),
       child: Column(
         children: [
           // Header
@@ -415,7 +396,7 @@ class _ShowcaseSectionState extends State<_ShowcaseSection> {
             child: Column(
               children: [
                 Text(
-                  'Четыре стиля — бесконечные истории',
+                  'Примеры сказок',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.comfortaa(
                     fontSize: widget.isWide ? 40 : 28,
@@ -423,7 +404,7 @@ class _ShowcaseSectionState extends State<_ShowcaseSection> {
                     color: const Color(0xFF1C1917),
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 Text(
                   'Каждая сказка уникальна. Ваш ребёнок — главный герой.',
                   textAlign: TextAlign.center,
@@ -435,14 +416,14 @@ class _ShowcaseSectionState extends State<_ShowcaseSection> {
               ],
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 32),
 
           // Cards — horizontal scroll on desktop, vertical on mobile
           if (widget.isWide)
             Stack(
               children: [
                 SizedBox(
-                  height: 620,
+                  height: 540,
                   child: ListView.separated(
                     controller: _scrollController,
                     scrollDirection: Axis.horizontal,
@@ -491,7 +472,7 @@ class _ShowcaseSectionState extends State<_ShowcaseSection> {
               child: Column(
                 children: _stories
                     .map((s) => Padding(
-                          padding: const EdgeInsets.only(bottom: 24),
+                          padding: const EdgeInsets.only(bottom: 20),
                           child: _ShowcaseCard(
                             data: s,
                             isWide: widget.isWide,
@@ -545,7 +526,7 @@ class _ShowcaseCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.06),
@@ -562,56 +543,56 @@ class _ShowcaseCard extends StatelessWidget {
           // Cover image
           ClipRRect(
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(28)),
+                const BorderRadius.vertical(top: Radius.circular(24)),
             child: data.coverUrl.isNotEmpty
                 ? CachedNetworkImage(
                     imageUrl: data.coverUrl,
-                    height: isWide ? 300 : 220,
+                    height: isWide ? 260 : 200,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    placeholder: (_, __) => _imagePlaceholder(isWide ? 300 : 220),
+                    placeholder: (_, __) => _imagePlaceholder(isWide ? 260 : 200),
                     errorWidget: (_, __, ___) =>
-                        _imagePlaceholder(isWide ? 300 : 220),
+                        _imagePlaceholder(isWide ? 260 : 200),
                   )
-                : _imagePlaceholder(isWide ? 300 : 220),
+                : _imagePlaceholder(isWide ? 260 : 200),
           ),
 
-          // Two page previews
+          // Two page previews (pages 3 and 7)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             child: Row(
               children: [
                 Expanded(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: data.page3Url.isNotEmpty
+                    borderRadius: BorderRadius.circular(12),
+                    child: data.pageUrls.length > 2
                         ? CachedNetworkImage(
-                            imageUrl: data.page3Url,
-                            height: isWide ? 140 : 100,
+                            imageUrl: data.pageUrls[2],
+                            height: isWide ? 110 : 80,
                             fit: BoxFit.cover,
                             placeholder: (_, __) =>
-                                _imagePlaceholder(isWide ? 140 : 100),
+                                _imagePlaceholder(isWide ? 110 : 80),
                             errorWidget: (_, __, ___) =>
-                                _imagePlaceholder(isWide ? 140 : 100),
+                                _imagePlaceholder(isWide ? 110 : 80),
                           )
-                        : _imagePlaceholder(isWide ? 140 : 100),
+                        : _imagePlaceholder(isWide ? 110 : 80),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 Expanded(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: data.page7Url.isNotEmpty
+                    borderRadius: BorderRadius.circular(12),
+                    child: data.pageUrls.length > 6
                         ? CachedNetworkImage(
-                            imageUrl: data.page7Url,
-                            height: isWide ? 140 : 100,
+                            imageUrl: data.pageUrls[6],
+                            height: isWide ? 110 : 80,
                             fit: BoxFit.cover,
                             placeholder: (_, __) =>
-                                _imagePlaceholder(isWide ? 140 : 100),
+                                _imagePlaceholder(isWide ? 110 : 80),
                             errorWidget: (_, __, ___) =>
-                                _imagePlaceholder(isWide ? 140 : 100),
+                                _imagePlaceholder(isWide ? 110 : 80),
                           )
-                        : _imagePlaceholder(isWide ? 140 : 100),
+                        : _imagePlaceholder(isWide ? 110 : 80),
                   ),
                 ),
               ],
@@ -620,7 +601,7 @@ class _ShowcaseCard extends StatelessWidget {
 
           // Info
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
+            padding: const EdgeInsets.fromLTRB(16, 2, 16, 14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -644,7 +625,7 @@ class _ShowcaseCard extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      '10 страниц \u00b7 10 мин',
+                      '${data.pageUrls.length} страниц',
                       style: GoogleFonts.nunitoSans(
                         fontSize: 12,
                         color: const Color(0xFFA8A29E),
@@ -652,32 +633,32 @@ class _ShowcaseCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Text(
                   data.title,
                   style: GoogleFonts.comfortaa(
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: const Color(0xFF1C1917),
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   data.description,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.nunitoSans(
-                    fontSize: 14,
+                    fontSize: 13,
                     color: const Color(0xFF78716C),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 10),
                 // "Посмотреть" button
                 GestureDetector(
                   onTap: () => _openPreview(context, data),
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
@@ -685,9 +666,9 @@ class _ShowcaseCard extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        'Посмотреть',
+                        'Листать сказку',
                         style: GoogleFonts.nunitoSans(
-                          fontSize: 15,
+                          fontSize: 14,
                           fontWeight: FontWeight.w700,
                           color: AppTheme.primaryColor,
                         ),
@@ -723,7 +704,7 @@ class _ShowcaseCard extends StatelessWidget {
 }
 
 // =============================================================================
-// Story Preview Dialog — fullscreen with PageView
+// Story Preview Dialog — fullscreen with all 10 pages
 // =============================================================================
 class _StoryPreviewDialog extends StatefulWidget {
   final _ShowcaseStoryData data;
@@ -736,34 +717,37 @@ class _StoryPreviewDialog extends StatefulWidget {
 class _StoryPreviewDialogState extends State<_StoryPreviewDialog> {
   int _current = 0;
 
-  List<_PreviewPage> get _pages => [
-        _PreviewPage(widget.data.coverUrl, widget.data.text1),
-        _PreviewPage(widget.data.page3Url, widget.data.text3),
-        _PreviewPage(widget.data.page7Url, widget.data.text7),
-      ];
+  int get _totalPages => widget.data.pageUrls.length;
+
+  String get _currentImageUrl =>
+      _current < _totalPages ? widget.data.pageUrls[_current] : '';
+
+  String get _currentText =>
+      _current < widget.data.pageTexts.length
+          ? widget.data.pageTexts[_current]
+          : '';
 
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.of(context).size.width > 700;
-    final pages = _pages;
-    final page = pages[_current];
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.all(isWide ? 40 : 0),
+      insetPadding: EdgeInsets.all(isWide ? 24 : 0),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(isWide ? 24 : 0),
+        borderRadius: BorderRadius.circular(isWide ? 20 : 0),
         child: Container(
-          width: isWide ? 700 : double.infinity,
-          height: isWide ? 550 : double.infinity,
+          width: isWide ? 900 : double.infinity,
+          height: isWide ? (screenHeight * 0.85).clamp(500.0, 750.0) : double.infinity,
           color: const Color(0xFF0C0A1D),
           child: Stack(
             fit: StackFit.expand,
             children: [
               // Background image
-              if (page.imageUrl.isNotEmpty)
+              if (_currentImageUrl.isNotEmpty)
                 CachedNetworkImage(
-                  imageUrl: page.imageUrl,
+                  imageUrl: _currentImageUrl,
                   fit: BoxFit.cover,
                   placeholder: (_, __) =>
                       Container(color: const Color(0xFF0C0A1D)),
@@ -834,7 +818,7 @@ class _StoryPreviewDialogState extends State<_StoryPreviewDialog> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
-                              '${_current + 1} / ${pages.length}',
+                              '${_current + 1} / $_totalPages',
                               style: GoogleFonts.nunitoSans(
                                 color: Colors.white,
                                 fontSize: 12,
@@ -850,29 +834,46 @@ class _StoryPreviewDialogState extends State<_StoryPreviewDialog> {
               ),
 
               // Text overlay at bottom
-              if (page.text.isNotEmpty)
+              if (_currentText.isNotEmpty)
                 Positioned(
-                  bottom: 70,
+                  bottom: 60,
                   left: 0,
                   right: 0,
-                  child: ClipRRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                      child: Container(
-                        constraints: BoxConstraints(
-                          maxHeight:
-                              MediaQuery.of(context).size.height * 0.20,
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
-                        color: Colors.black.withValues(alpha: 0.45),
-                        child: SingleChildScrollView(
-                          child: Text(
-                            page.text,
-                            style: GoogleFonts.nunitoSans(
-                              color: Colors.white,
-                              fontSize: 15,
-                              height: 1.4,
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: isWide ? 700 : double.infinity,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                maxHeight:
+                                    MediaQuery.of(context).size.height * 0.20,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.45),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                ),
+                              ),
+                              child: SingleChildScrollView(
+                                child: Text(
+                                  _currentText,
+                                  style: GoogleFonts.nunitoSans(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    height: 1.4,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -894,7 +895,7 @@ class _StoryPreviewDialogState extends State<_StoryPreviewDialog> {
                     ),
                   ),
                 ),
-              if (_current < pages.length - 1)
+              if (_current < _totalPages - 1)
                 Positioned(
                   right: 12,
                   top: 0,
@@ -907,14 +908,14 @@ class _StoryPreviewDialogState extends State<_StoryPreviewDialog> {
                   ),
                 ),
 
-              // Bottom — CTA + dots
+              // Bottom — page indicator + CTA
               Positioned(
                 bottom: 0,
                 left: 0,
                 right: 0,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 12),
+                      horizontal: 24, vertical: 10),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
@@ -928,20 +929,12 @@ class _StoryPreviewDialogState extends State<_StoryPreviewDialog> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Page dots
-                      for (int i = 0; i < pages.length; i++)
-                        Container(
-                          width: i == _current ? 20 : 6,
-                          height: 6,
-                          margin: const EdgeInsets.symmetric(horizontal: 3),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            color: i == _current
-                                ? AppTheme.primaryColor
-                                : Colors.white.withValues(alpha: 0.4),
-                          ),
-                        ),
-                      const SizedBox(width: 24),
+                      // Compact page dots (show current region)
+                      _CompactPageDots(
+                        total: _totalPages,
+                        current: _current,
+                      ),
+                      const SizedBox(width: 20),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).pop();
@@ -976,10 +969,32 @@ class _StoryPreviewDialogState extends State<_StoryPreviewDialog> {
   }
 }
 
-class _PreviewPage {
-  final String imageUrl;
-  final String text;
-  const _PreviewPage(this.imageUrl, this.text);
+/// Compact page dots that work well with 10 pages
+class _CompactPageDots extends StatelessWidget {
+  final int total;
+  final int current;
+  const _CompactPageDots({required this.total, required this.current});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(total, (i) {
+        final isActive = i == current;
+        return Container(
+          width: isActive ? 16 : 5,
+          height: 5,
+          margin: const EdgeInsets.symmetric(horizontal: 2),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(3),
+            color: isActive
+                ? AppTheme.primaryColor
+                : Colors.white.withValues(alpha: 0.35),
+          ),
+        );
+      }),
+    );
+  }
 }
 
 class _DialogArrow extends StatelessWidget {
@@ -1008,6 +1023,222 @@ class _DialogArrow extends StatelessWidget {
 }
 
 // =============================================================================
+// SECTION 2.5: ILLUSTRATION STYLES — 8 styles
+// =============================================================================
+class _StylesSection extends StatelessWidget {
+  final bool isWide;
+  const _StylesSection({required this.isWide});
+
+  static const _styles = [
+    _StyleData('Акварель', Color(0xFF059669),
+        'Мягкие цвета и нежные переходы'),
+    _StyleData('3D Анимация (Pixar)', Color(0xFF6366F1),
+        'Яркий мир как в мультфильмах Pixar'),
+    _StyleData('Disney', Color(0xFFDB2777),
+        'Волшебство в стиле Disney'),
+    _StyleData('Комикс', Color(0xFFD97706),
+        'Динамичные сцены с яркими контурами'),
+    _StyleData('Аниме', Color(0xFF8B5CF6),
+        'Японский стиль с большими глазами'),
+    _StyleData('Пастель', Color(0xFF14B8A6),
+        'Нежные пастельные тона для малышей'),
+    _StyleData('Книжная классика', Color(0xFF0EA5E9),
+        'Тёплый стиль классических иллюстраций'),
+    _StyleData('Поп-арт', Color(0xFFF43F5E),
+        'Смелые цвета и современный дизайн'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFFFFFBF5), Colors.white],
+        ),
+      ),
+      padding: EdgeInsets.symmetric(
+          horizontal: 24, vertical: isWide ? 48 : 36),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1100),
+          child: Column(
+            children: [
+              Text(
+                'Множество стилей иллюстраций',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.comfortaa(
+                  fontSize: isWide ? 36 : 26,
+                  fontWeight: FontWeight.w800,
+                  color: const Color(0xFF1C1917),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Выберите стиль, который понравится вашему ребёнку',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.nunitoSans(
+                  fontSize: 16,
+                  color: const Color(0xFF78716C),
+                ),
+              ),
+              const SizedBox(height: 28),
+              // Grid of style cards
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final crossAxisCount = isWide ? 4 : 2;
+                  final spacing = isWide ? 16.0 : 12.0;
+                  final itemWidth =
+                      (constraints.maxWidth - spacing * (crossAxisCount - 1)) /
+                          crossAxisCount;
+                  final itemHeight = itemWidth * 0.85;
+
+                  return Wrap(
+                    spacing: spacing,
+                    runSpacing: spacing,
+                    children: List.generate(_styles.length, (i) {
+                      final style = _styles[i];
+                      final hasImage = LandingAssets.styleCovers.length > i &&
+                          LandingAssets.styleCovers[i].isNotEmpty;
+
+                      return SizedBox(
+                        width: itemWidth,
+                        height: itemHeight,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.06),
+                                blurRadius: 16,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              // Background — image or gradient
+                              if (hasImage)
+                                CachedNetworkImage(
+                                  imageUrl: LandingAssets.styleCovers[i],
+                                  fit: BoxFit.cover,
+                                  placeholder: (_, __) => Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          style.color.withValues(alpha: 0.15),
+                                          style.color.withValues(alpha: 0.05),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  errorWidget: (_, __, ___) => Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          style.color.withValues(alpha: 0.15),
+                                          style.color.withValues(alpha: 0.05),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              else
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        style.color.withValues(alpha: 0.15),
+                                        style.color.withValues(alpha: 0.05),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                              // Dark overlay for text readability
+                              if (hasImage)
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.black.withValues(alpha: 0.7),
+                                      ],
+                                      stops: const [0.3, 1.0],
+                                    ),
+                                  ),
+                                ),
+
+                              // Label
+                              Positioned(
+                                bottom: 12,
+                                left: 12,
+                                right: 12,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      style.name,
+                                      style: GoogleFonts.comfortaa(
+                                        fontSize: isWide ? 14 : 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: hasImage
+                                            ? Colors.white
+                                            : const Color(0xFF1C1917),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      style.description,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.nunitoSans(
+                                        fontSize: 11,
+                                        color: hasImage
+                                            ? Colors.white.withValues(alpha: 0.8)
+                                            : const Color(0xFF78716C),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StyleData {
+  final String name;
+  final Color color;
+  final String description;
+  const _StyleData(this.name, this.color, this.description);
+}
+
+// =============================================================================
 // SECTION 3: HOW IT WORKS — 3 steps
 // =============================================================================
 class _HowItWorksSection extends StatelessWidget {
@@ -1016,11 +1247,8 @@ class _HowItWorksSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return Container(
       width: double.infinity,
-      constraints: BoxConstraints(minHeight: screenHeight),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -1029,7 +1257,7 @@ class _HowItWorksSection extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.symmetric(
-          horizontal: 24, vertical: isWide ? 80 : 56),
+          horizontal: 24, vertical: isWide ? 56 : 40),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1000),
@@ -1044,7 +1272,7 @@ class _HowItWorksSection extends StatelessWidget {
                   color: const Color(0xFF1C1917),
                 ),
               ),
-              SizedBox(height: isWide ? 56 : 40),
+              SizedBox(height: isWide ? 40 : 28),
               if (isWide)
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1056,7 +1284,7 @@ class _HowItWorksSection extends StatelessWidget {
                       description: 'Загрузите фото и имя. AI создаст героя, похожего на вашего малыша',
                       color: AppTheme.primaryColor,
                     )),
-                    const SizedBox(width: 24),
+                    const SizedBox(width: 20),
                     Expanded(child: _StepCard(
                       step: '2',
                       imageUrl: LandingAssets.howStep2,
@@ -1064,7 +1292,7 @@ class _HowItWorksSection extends StatelessWidget {
                       description: 'Выберите стиль, жанр и мир — от акварели до комикса',
                       color: AppTheme.secondaryColor,
                     )),
-                    const SizedBox(width: 24),
+                    const SizedBox(width: 20),
                     Expanded(child: _StepCard(
                       step: '3',
                       imageUrl: LandingAssets.howStep3,
@@ -1084,7 +1312,7 @@ class _HowItWorksSection extends StatelessWidget {
                       description: 'Загрузите фото и имя. AI создаст героя, похожего на вашего малыша',
                       color: AppTheme.primaryColor,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
                     _StepCard(
                       step: '2',
                       imageUrl: LandingAssets.howStep2,
@@ -1092,7 +1320,7 @@ class _HowItWorksSection extends StatelessWidget {
                       description: 'Выберите стиль, жанр и мир — от акварели до комикса',
                       color: AppTheme.secondaryColor,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
                     _StepCard(
                       step: '3',
                       imageUrl: LandingAssets.howStep3,
@@ -1146,15 +1374,15 @@ class _StepCard extends StatelessWidget {
           if (imageUrl.isNotEmpty)
             CachedNetworkImage(
               imageUrl: imageUrl,
-              height: 200,
+              height: 180,
               width: double.infinity,
               fit: BoxFit.cover,
               placeholder: (_, __) => Container(
-                height: 200,
+                height: 180,
                 color: color.withValues(alpha: 0.08),
               ),
               errorWidget: (_, __, ___) => Container(
-                height: 200,
+                height: 180,
                 color: color.withValues(alpha: 0.08),
                 child: Icon(Icons.image, size: 40,
                     color: color.withValues(alpha: 0.3)),
@@ -1162,19 +1390,19 @@ class _StepCard extends StatelessWidget {
             )
           else
             Container(
-              height: 200,
+              height: 180,
               color: color.withValues(alpha: 0.08),
               child: Icon(Icons.image, size: 40,
                   color: color.withValues(alpha: 0.3)),
             ),
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             child: Column(
               children: [
                 // Step number circle
                 Container(
-                  width: 36,
-                  height: 36,
+                  width: 34,
+                  height: 34,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [color, color.withValues(alpha: 0.7)],
@@ -1186,30 +1414,30 @@ class _StepCard extends StatelessWidget {
                       step,
                       style: GoogleFonts.comfortaa(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 Text(
                   title,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.comfortaa(
-                    fontSize: 17,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: const Color(0xFF1C1917),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Text(
                   description,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.nunitoSans(
-                    fontSize: 14,
+                    fontSize: 13,
                     color: const Color(0xFF78716C),
-                    height: 1.5,
+                    height: 1.4,
                   ),
                 ),
               ],
@@ -1231,8 +1459,8 @@ class _WhyTaleKidSection extends StatelessWidget {
   static const _features = [
     _FeatureData(Icons.face, Color(0xFF6366F1), 'Ребёнок — главный герой',
         'AI вплетает малыша в иллюстрации'),
-    _FeatureData(Icons.palette, Color(0xFF8B5CF6), '4 стиля иллюстраций',
-        'Акварель, 3D, Disney, комикс'),
+    _FeatureData(Icons.palette, Color(0xFF8B5CF6), 'Множество стилей',
+        'Акварель, 3D, Disney, аниме и другие'),
     _FeatureData(Icons.school, Color(0xFFF59E0B), 'Обучает играючи',
         'Факты и вопросы на каждой странице'),
     _FeatureData(Icons.bolt, Color(0xFF34D399), 'Готово за 5 минут',
@@ -1245,14 +1473,11 @@ class _WhyTaleKidSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return Container(
       width: double.infinity,
-      constraints: BoxConstraints(minHeight: screenHeight),
       color: const Color(0xFFFDF8F3),
       padding: EdgeInsets.symmetric(
-          horizontal: 24, vertical: isWide ? 80 : 56),
+          horizontal: 24, vertical: isWide ? 56 : 40),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1000),
@@ -1267,11 +1492,11 @@ class _WhyTaleKidSection extends StatelessWidget {
                   color: const Color(0xFF1C1917),
                 ),
               ),
-              SizedBox(height: isWide ? 56 : 36),
+              SizedBox(height: isWide ? 36 : 24),
               if (isWide)
                 Wrap(
-                  spacing: 20,
-                  runSpacing: 20,
+                  spacing: 16,
+                  runSpacing: 16,
                   alignment: WrapAlignment.center,
                   children: _features
                       .map((f) => SizedBox(
@@ -1284,7 +1509,7 @@ class _WhyTaleKidSection extends StatelessWidget {
                 Column(
                   children: _features
                       .map((f) => Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
+                            padding: const EdgeInsets.only(bottom: 12),
                             child: _FeatureCard(data: f),
                           ))
                       .toList(),
@@ -1312,7 +1537,7 @@ class _FeatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -1327,15 +1552,15 @@ class _FeatureCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 52,
-            height: 52,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
               color: data.color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(data.icon, size: 26, color: data.color),
+            child: Icon(data.icon, size: 24, color: data.color),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1408,7 +1633,7 @@ class _ReviewsSection extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.symmetric(
-          horizontal: 24, vertical: isWide ? 80 : 56),
+          horizontal: 24, vertical: isWide ? 56 : 40),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1000),
@@ -1423,7 +1648,7 @@ class _ReviewsSection extends StatelessWidget {
                   color: const Color(0xFF1C1917),
                 ),
               ),
-              SizedBox(height: isWide ? 48 : 32),
+              SizedBox(height: isWide ? 36 : 24),
               if (isWide)
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1431,7 +1656,7 @@ class _ReviewsSection extends StatelessWidget {
                       .map((r) => Expanded(
                             child: Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
+                                  const EdgeInsets.symmetric(horizontal: 8),
                               child: _ReviewCard(data: r),
                             ),
                           ))
@@ -1441,7 +1666,7 @@ class _ReviewsSection extends StatelessWidget {
                 Column(
                   children: _reviews
                       .map((r) => Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
+                            padding: const EdgeInsets.only(bottom: 12),
                             child: _ReviewCard(data: r),
                           ))
                       .toList(),
@@ -1476,7 +1701,7 @@ class _ReviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -1498,27 +1723,27 @@ class _ReviewCard extends StatelessWidget {
               (_) => const Icon(Icons.star, color: Color(0xFFF59E0B), size: 18),
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
           Text(
             '\u00ab${data.text}\u00bb',
             style: GoogleFonts.nunitoSans(
-              fontSize: 15,
+              fontSize: 14,
               fontStyle: FontStyle.italic,
               color: const Color(0xFF44403C),
-              height: 1.6,
+              height: 1.5,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
           Row(
             children: [
               CircleAvatar(
-                radius: 18,
+                radius: 16,
                 backgroundColor: data.color,
                 child: Text(
                   data.initial,
                   style: GoogleFonts.comfortaa(
                     color: Colors.white,
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -1530,7 +1755,7 @@ class _ReviewCard extends StatelessWidget {
                   Text(
                     data.name,
                     style: GoogleFonts.nunitoSans(
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w700,
                       color: const Color(0xFF1C1917),
                     ),
@@ -1538,7 +1763,7 @@ class _ReviewCard extends StatelessWidget {
                   Text(
                     data.detail,
                     style: GoogleFonts.nunitoSans(
-                      fontSize: 12,
+                      fontSize: 11,
                       color: const Color(0xFFA8A29E),
                     ),
                   ),
@@ -1553,7 +1778,7 @@ class _ReviewCard extends StatelessWidget {
 }
 
 // =============================================================================
-// SECTION 6: CTA FINAL — 100vh, fullscreen background
+// SECTION 6: CTA FINAL
 // =============================================================================
 class _CtaSection extends StatelessWidget {
   final bool isWide;
@@ -1561,10 +1786,8 @@ class _CtaSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return SizedBox(
-      height: screenHeight,
+      height: 500,
       width: double.infinity,
       child: Stack(
         fit: StackFit.expand,
@@ -1626,7 +1849,7 @@ class _CtaSection extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.comfortaa(
                         color: Colors.white,
-                        fontSize: isWide ? 48 : 32,
+                        fontSize: isWide ? 44 : 30,
                         fontWeight: FontWeight.w800,
                         height: 1.15,
                         shadows: [
@@ -1637,13 +1860,13 @@ class _CtaSection extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     Text(
                       'Бесплатно. Регистрация за 30 секунд.',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.nunitoSans(
                         color: Colors.white.withValues(alpha: 0.85),
-                        fontSize: 18,
+                        fontSize: 17,
                         shadows: [
                           Shadow(
                             color: Colors.black.withValues(alpha: 0.4),
@@ -1652,7 +1875,7 @@ class _CtaSection extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 36),
+                    const SizedBox(height: 28),
                     GestureDetector(
                       onTap: () => context.go(AppRoutes.register),
                       child: Container(
@@ -1740,7 +1963,7 @@ class _Footer extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Wrap(
                 spacing: 12,
                 runSpacing: 8,
@@ -1769,7 +1992,7 @@ class _Footer extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Text(
                 '\u00a9 2026 TaleKID. Все права защищены.',
                 style: GoogleFonts.nunitoSans(
