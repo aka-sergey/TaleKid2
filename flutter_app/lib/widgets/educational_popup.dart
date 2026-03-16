@@ -36,13 +36,18 @@ class _EducationalPopupState extends State<EducationalPopup> {
       margin: const EdgeInsets.all(AppTheme.spacingMd),
       padding: const EdgeInsets.all(AppTheme.spacingLg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF1A1735),
         borderRadius: BorderRadius.circular(AppTheme.radiusXl),
+        border: Border.all(color: AppTheme.glassBorder, width: 0.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 20,
+            color: Colors.black.withValues(alpha: 0.4),
+            blurRadius: 24,
             offset: const Offset(0, -4),
+          ),
+          BoxShadow(
+            color: AppTheme.primaryColor.withValues(alpha: 0.05),
+            blurRadius: 40,
           ),
         ],
       ),

@@ -154,7 +154,7 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
             : _buildMobileReader(context, story, pages);
       },
       loading: () => Scaffold(
-        backgroundColor: const Color(0xFF1C1917),
+        backgroundColor: AppTheme.backgroundColor,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -270,222 +270,153 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
   }
 
   // ---------------------------------------------------------------------------
-  // Web Reader — vertical layout with navigation
+  // Web Reader — immersive fullscreen (mirrors mobile experience)
   // ---------------------------------------------------------------------------
   Widget _buildWebReader(
       BuildContext context, StoryDetail story, List<StoryPage> pages) {
     final page = pages[_currentPage];
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWide = screenWidth > 800;
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      body: Column(
-        children: [
-          // Custom top bar
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                bottom: BorderSide(color: AppTheme.borderColor, width: 0.5),
+      body: Focus(
+        autofocus: true,
+        onKeyEvent: (node, event) {
+          if (event is KeyDownEvent) {
+            if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
+                _currentPage > 0) {
+              setState(() => _currentPage--);
+              return KeyEventResult.handled;
+            }
+            if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
+                _currentPage < pages.length - 1) {
+              setState(() => _currentPage++);
+              return KeyEventResult.handled;
+            }
+          }
+          return KeyEventResult.ignored;
+        },
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // ── Fullscreen background image ──
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 400),
+              child: SizedBox.expand(
+                key: ValueKey(page.pageNumber),
+                child: _pageImage(page),
               ),
             ),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 1200),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => context.go(AppRoutes.library),
-                      child: Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: AppTheme.fillColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(Icons.arrow_back,
-                            size: 18, color: AppTheme.textSecondary),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        story.displayTitle,
-                        style: AppTheme.heading(size: 16),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    // Page counter pill
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        '${_currentPage + 1} / ${pages.length}',
-                        style: GoogleFonts.nunitoSans(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: AppTheme.primaryColor,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    // Lightbulb
-                    if (page.educationalContent != null)
-                      _ActionBtn(
-                        icon: Icons.lightbulb,
-                        color: AppTheme.accentColor,
-                        tooltip: 'Узнать интересное!',
-                        onTap: () => EducationalPopup.show(
-                            context, page.educationalContent!),
-                      ),
-                    // PDF
-                    _ActionBtn(
-                      icon: Icons.picture_as_pdf,
-                      tooltip: 'Скачать PDF',
-                      onTap: () => _exportPdf(story),
-                    ),
-                    // Share
-                    _ActionBtn(
-                      icon: Icons.share,
-                      tooltip: 'Поделиться',
-                      onTap: () => _shareStory(story),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
 
-          // Content
-          Expanded(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 1200),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    children: [
-                      // ── Image + Text: side-by-side on wide, stacked on narrow ──
-                      if (isWide)
-                        // Wide: image left, text right
-                        IntrinsicHeight(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Image — 55%
-                              Expanded(
-                                flex: 55,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: AspectRatio(
-                                    aspectRatio: 4 / 3,
-                                    child: _pageImage(page),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 24),
-                              // Text — 45%
-                              Expanded(
-                                flex: 45,
-                                child: page.textContent != null
-                                    ? Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 28,
-                                          vertical: 24,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          boxShadow: AppTheme.cardShadow,
-                                        ),
-                                        child: Text(
-                                          page.textContent!,
-                                          style: GoogleFonts.nunitoSans(
-                                            fontSize: 17,
-                                            height: 1.7,
-                                            color: AppTheme.textPrimary,
-                                          ),
-                                        ),
-                                      )
-                                    : const SizedBox.shrink(),
-                              ),
-                            ],
-                          ),
-                        )
-                      else ...[
-                        // Narrow: stacked vertically
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: AspectRatio(
-                            aspectRatio: 4 / 3,
-                            child: _pageImage(page),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        if (page.textContent != null)
-                          Container(
-                            width: double.infinity,
+            // ── Top overlay — frosted glass bar ──
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: _TopOverlay(
+                story: story,
+                currentPage: _currentPage,
+                totalPages: pages.length,
+                onBack: () => context.go(AppRoutes.library),
+                onPdf: () => _exportPdf(story),
+                onShare: () => _shareStory(story),
+                onLightbulb: page.educationalContent != null
+                    ? () => EducationalPopup.show(
+                        context, page.educationalContent!)
+                    : null,
+              ),
+            ),
+
+            // ── Frosted glass text overlay at bottom ──
+            if (page.textContent != null)
+              Positioned(
+                bottom: 80,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 700),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 24),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                          child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 28,
-                              vertical: 24,
+                              vertical: 20,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Colors.black.withValues(alpha: 0.4),
                               borderRadius: BorderRadius.circular(20),
-                              boxShadow: AppTheme.cardShadow,
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.15),
+                              ),
                             ),
                             child: Text(
                               page.textContent!,
                               style: GoogleFonts.nunitoSans(
-                                fontSize: 18,
+                                color: Colors.white,
+                                fontSize: 17,
                                 height: 1.7,
-                                color: AppTheme.textPrimary,
                               ),
                               textAlign: TextAlign.center,
                             ),
                           ),
-                      ],
-                      const SizedBox(height: 32),
-
-                      // Navigation arrows + page dots
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _NavArrow(
-                            icon: Icons.arrow_back_ios_new,
-                            enabled: _currentPage > 0,
-                            onTap: () => setState(() => _currentPage--),
-                          ),
-                          const SizedBox(width: 20),
-                          _PageDots(
-                            total: pages.length,
-                            current: _currentPage,
-                          ),
-                          const SizedBox(width: 20),
-                          _NavArrow(
-                            icon: Icons.arrow_forward_ios,
-                            enabled: _currentPage < pages.length - 1,
-                            onTap: () => setState(() => _currentPage++),
-                          ),
-                        ],
+                        ),
                       ),
-                      const SizedBox(height: 32),
-                    ],
+                    ),
                   ),
                 ),
               ),
+
+            // ── Floating left arrow ──
+            if (_currentPage > 0)
+              Positioned(
+                left: 20,
+                top: 0,
+                bottom: 0,
+                child: Center(
+                  child: _NavArrow(
+                    icon: Icons.arrow_back_ios_new,
+                    enabled: true,
+                    onTap: () => setState(() => _currentPage--),
+                  ),
+                ),
+              ),
+
+            // ── Floating right arrow ──
+            if (_currentPage < pages.length - 1)
+              Positioned(
+                right: 20,
+                top: 0,
+                bottom: 0,
+                child: Center(
+                  child: _NavArrow(
+                    icon: Icons.arrow_forward_ios,
+                    enabled: true,
+                    onTap: () => setState(() => _currentPage++),
+                  ),
+                ),
+              ),
+
+            // ── Bottom overlay — page dots + lightbulb ──
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: _BottomOverlay(
+                pages: pages,
+                currentPage: _currentPage,
+                onPageTap: (i) => setState(() => _currentPage = i),
+                onLightbulb: page.educationalContent != null
+                    ? () => EducationalPopup.show(
+                        context, page.educationalContent!)
+                    : null,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -603,17 +534,21 @@ class _NavArrow extends StatelessWidget {
       onTap: enabled ? onTap : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        width: 44,
-        height: 44,
+        width: 48,
+        height: 48,
         decoration: BoxDecoration(
           gradient: enabled ? AppTheme.primaryGradient : null,
-          color: enabled ? null : AppTheme.fillColor,
+          color: enabled ? null : Colors.black.withValues(alpha: 0.35),
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: enabled ? 0.2 : 0.1),
+            width: 0.5,
+          ),
           boxShadow: enabled
               ? [
                   BoxShadow(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.3),
-                    blurRadius: 8,
+                    color: AppTheme.primaryColor.withValues(alpha: 0.4),
+                    blurRadius: 12,
                     offset: const Offset(0, 2),
                   ),
                 ]
@@ -622,7 +557,7 @@ class _NavArrow extends StatelessWidget {
         child: Icon(
           icon,
           size: 18,
-          color: enabled ? Colors.white : AppTheme.textLight,
+          color: enabled ? Colors.white : Colors.white38,
         ),
       ),
     );
@@ -719,6 +654,7 @@ class _TopOverlay extends StatelessWidget {
   final VoidCallback onBack;
   final VoidCallback? onPdf;
   final VoidCallback? onShare;
+  final VoidCallback? onLightbulb;
 
   const _TopOverlay({
     required this.story,
@@ -727,6 +663,7 @@ class _TopOverlay extends StatelessWidget {
     required this.onBack,
     this.onPdf,
     this.onShare,
+    this.onLightbulb,
   });
 
   @override
@@ -763,6 +700,13 @@ class _TopOverlay extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+              if (onLightbulb != null)
+                IconButton(
+                  icon: const Icon(Icons.lightbulb,
+                      color: AppTheme.accentColor),
+                  onPressed: onLightbulb,
+                  tooltip: 'Узнать интересное!',
+                ),
               if (onPdf != null)
                 IconButton(
                   icon:

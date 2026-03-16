@@ -759,7 +759,7 @@ class _AgeCards extends StatelessWidget {
                           : AppTheme.borderColor,
                       width: sel ? 2.5 : 1),
                   boxShadow: sel ? AppTheme.cardShadow : null,
-                  color: Colors.white,
+                  color: AppTheme.glassLight,
                 ),
                 child: Column(children: [
                   ClipRRect(
@@ -886,7 +886,7 @@ class _GenreCards extends StatelessWidget {
                       ? AppTheme.primaryColor
                       : AppTheme.borderColor,
                   width: sel ? 2 : 1),
-              color: Colors.white,
+              color: AppTheme.glassLight,
             ),
             child: Column(children: [
               ClipRRect(
@@ -969,7 +969,7 @@ class _WorldGrid extends StatelessWidget {
                         : AppTheme.borderColor,
                     width: sel ? 2.5 : 1),
                 boxShadow: sel ? AppTheme.cardShadow : null,
-                color: Colors.white,
+                color: AppTheme.glassLight,
               ),
               child: Column(children: [
                 Expanded(
@@ -1123,12 +1123,18 @@ class _BottomNav extends StatelessWidget {
           right: 24,
           top: 14,
           bottom: MediaQuery.of(context).padding.bottom + 14),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2)),
-      ]),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceColor,
+        border: Border(
+          top: BorderSide(color: AppTheme.glassBorder, width: 0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 10,
+              offset: const Offset(0, -2)),
+        ],
+      ),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 640),

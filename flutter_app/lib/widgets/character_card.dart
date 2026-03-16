@@ -31,17 +31,22 @@ class CharacterCard extends StatelessWidget {
           color: AppTheme.cardColor,
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(
-            color: isSelected ? AppTheme.primaryColor : Colors.transparent,
-            width: 2,
+            color: isSelected ? AppTheme.primaryColor : AppTheme.glassBorder,
+            width: isSelected ? 2 : 0.5,
           ),
           boxShadow: [
             BoxShadow(
               color: isSelected
-                  ? AppTheme.primaryColor.withValues(alpha: 0.15)
-                  : Colors.black.withValues(alpha: 0.06),
-              blurRadius: isSelected ? 12 : 8,
-              offset: const Offset(0, 2),
+                  ? AppTheme.primaryColor.withValues(alpha: 0.25)
+                  : Colors.black.withValues(alpha: 0.3),
+              blurRadius: isSelected ? 16 : 10,
+              offset: const Offset(0, 4),
             ),
+            if (isSelected)
+              BoxShadow(
+                color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                blurRadius: 30,
+              ),
           ],
         ),
         child: Padding(

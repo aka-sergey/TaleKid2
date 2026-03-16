@@ -216,9 +216,9 @@ class _StoryCardState extends ConsumerState<_StoryCard> {
               : null,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppTheme.glassLight,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppTheme.borderColor, width: 0.5),
+              border: Border.all(color: AppTheme.glassBorder, width: 0.5),
               boxShadow: _hovering
                   ? AppTheme.cardShadowHover
                   : AppTheme.cardShadow,
@@ -525,9 +525,9 @@ class _PlaceholderCover extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFFE0E7FF), // indigo-100
-            Color(0xFFF5F3FF), // violet-50
-            Color(0xFFFFE4E6), // rose-100
+            Color(0xFF1E1A40), // deep indigo
+            Color(0xFF2A2050), // purple night
+            Color(0xFF2A1A35), // dark rose
           ],
         ),
       ),
@@ -539,7 +539,7 @@ class _PlaceholderCover extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.7),
+                color: Colors.white.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(Icons.auto_stories,

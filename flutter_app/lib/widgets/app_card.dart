@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../config/theme.dart';
 
-/// Soft-shadow card used throughout the app instead of Material [Card].
+/// Glass-morphism card used throughout the app — dark theme style.
 class AppCard extends StatefulWidget {
   const AppCard({
     super.key,
@@ -11,7 +11,7 @@ class AppCard extends StatefulWidget {
     this.borderRadius = 20,
     this.onTap,
     this.highlighted = false,
-    this.color = Colors.white,
+    this.color,
   });
 
   final Widget child;
@@ -20,7 +20,7 @@ class AppCard extends StatefulWidget {
   final double borderRadius;
   final VoidCallback? onTap;
   final bool highlighted;
-  final Color color;
+  final Color? color;
 
   @override
   State<AppCard> createState() => _AppCardState();
@@ -34,17 +34,18 @@ class _AppCardState extends State<AppCard> {
     final radius = BorderRadius.circular(widget.borderRadius);
     final shadow =
         _hovering ? AppTheme.cardShadowHover : AppTheme.cardShadow;
+    final cardBgColor = widget.color ?? AppTheme.glassLight;
 
     Widget card = AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOut,
       margin: widget.margin,
       decoration: BoxDecoration(
-        color: widget.color,
+        color: cardBgColor,
         borderRadius: radius,
         border: widget.highlighted
             ? null
-            : Border.all(color: AppTheme.borderColor, width: 0.5),
+            : Border.all(color: AppTheme.glassBorder, width: 0.5),
         boxShadow: shadow,
       ),
       child: widget.onTap != null
@@ -73,12 +74,15 @@ class _AppCardState extends State<AppCard> {
         decoration: BoxDecoration(
           gradient: AppTheme.primaryGradient,
           borderRadius: BorderRadius.circular(widget.borderRadius + 2),
-          boxShadow: shadow,
+          boxShadow: [
+            ...shadow,
+            ...AppTheme.primaryGlow,
+          ],
         ),
         child: Container(
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-            color: widget.color,
+            color: cardBgColor,
             borderRadius: radius,
           ),
           child: widget.onTap != null

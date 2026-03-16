@@ -572,9 +572,9 @@ class _GenerationProgressScreenState
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.glassLight,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppTheme.borderColor, width: 0.5),
+        border: Border.all(color: AppTheme.glassBorder, width: 0.5),
         boxShadow: AppTheme.cardShadow,
       ),
       child: Column(

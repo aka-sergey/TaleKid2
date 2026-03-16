@@ -412,8 +412,9 @@ class _StoryMiniCardState extends State<_StoryMiniCard> {
           width: 150,
           transform: Matrix4.translationValues(0, _hovering ? -4 : 0, 0),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppTheme.glassLight,
             borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppTheme.glassBorder, width: 0.5),
             boxShadow:
                 _hovering ? AppTheme.cardShadowHover : AppTheme.cardShadow,
           ),
@@ -468,7 +469,7 @@ class _StoryMiniCardState extends State<_StoryMiniCard> {
       width: 150,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFE0E7FF), Color(0xFFF5F3FF)],
+          colors: [Color(0xFF1E1A40), Color(0xFF2A2050)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

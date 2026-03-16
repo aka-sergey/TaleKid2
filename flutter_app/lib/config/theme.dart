@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/// «Зачарованная ночь» — dark fairy-tale design system.
 class AppTheme {
   // ── Brand Colors ──────────────────────────────────────────────────────
   static const Color primaryColor = Color(0xFF6366F1); // Indigo 500
@@ -13,15 +14,24 @@ class AppTheme {
   static const Color accentColor = Color(0xFFFBBF24); // Amber 400
   static const Color accentLight = Color(0xFFFDE68A);
 
+  // ── Enchanted Night — new accent colors ─────────────────────────────
+  static const Color accentGold = Color(0xFFFFD700);
+  static const Color accentPurple = Color(0xFFA78BFA);
+
   // ── Background & Surface ──────────────────────────────────────────────
-  static const Color backgroundColor = Color(0xFFFAFAF9); // Stone 50
-  static const Color surfaceColor = Colors.white;
-  static const Color cardColor = Colors.white;
+  static const Color backgroundColor = Color(0xFF0C0A1D); // Deep midnight
+  static const Color surfaceColor = Color(0xFF12102B); // Slightly lighter
+  static const Color cardColor = Color(0xFF161430); // Card background
+
+  // ── Glass-morphism ────────────────────────────────────────────────────
+  static const Color glassColor = Color(0x0FFFFFFF); // rgba(255,255,255,0.06)
+  static const Color glassBorder = Color(0x14FFFFFF); // rgba(255,255,255,0.08)
+  static const Color glassLight = Color(0x1AFFFFFF); // rgba(255,255,255,0.10)
 
   // ── Text Colors ───────────────────────────────────────────────────────
-  static const Color textPrimary = Color(0xFF1C1917); // Stone 900
-  static const Color textSecondary = Color(0xFF78716C); // Stone 500
-  static const Color textLight = Color(0xFFA8A29E); // Stone 400
+  static const Color textPrimary = Color(0xFFE8E5F0); // Soft lavender white
+  static const Color textSecondary = Color(0xFF9B95B0); // Muted lavender
+  static const Color textLight = Color(0xFF6B6580); // Dim lavender
 
   // ── Status Colors ─────────────────────────────────────────────────────
   static const Color successColor = Color(0xFF34D399);
@@ -30,8 +40,8 @@ class AppTheme {
   static const Color infoColor = Color(0xFF38BDF8);
 
   // ── Neutral borders / fills ───────────────────────────────────────────
-  static const Color borderColor = Color(0xFFE7E5E4); // Stone 200
-  static const Color fillColor = Color(0xFFF5F5F4); // Stone 100
+  static const Color borderColor = Color(0x14FFFFFF); // Same as glassBorder
+  static const Color fillColor = Color(0x0FFFFFFF); // Same as glassColor
 
   // ── Spacing ───────────────────────────────────────────────────────────
   static const double spacingXs = 4.0;
@@ -61,20 +71,60 @@ class AppTheme {
     end: Alignment.bottomRight,
   );
 
+  /// Background gradient — deep midnight blue with subtle variation.
+  static const LinearGradient backgroundGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF0C0A1D), Color(0xFF12102B), Color(0xFF0C0A1D)],
+  );
+
+  /// Glass card gradient — subtle shimmer on glass surfaces.
+  static const LinearGradient glassGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0x0AFFFFFF), Color(0x05FFFFFF)],
+  );
+
   // ── Shadows ───────────────────────────────────────────────────────────
   static List<BoxShadow> get cardShadow => [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.05),
+          color: Colors.black.withValues(alpha: 0.3),
           blurRadius: 20,
           offset: const Offset(0, 4),
+        ),
+        BoxShadow(
+          color: primaryColor.withValues(alpha: 0.05),
+          blurRadius: 40,
         ),
       ];
 
   static List<BoxShadow> get cardShadowHover => [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.08),
+          color: Colors.black.withValues(alpha: 0.4),
           blurRadius: 28,
           offset: const Offset(0, 8),
+        ),
+        BoxShadow(
+          color: primaryColor.withValues(alpha: 0.1),
+          blurRadius: 40,
+        ),
+      ];
+
+  /// Glow effect for primary-colored interactive elements.
+  static List<BoxShadow> get primaryGlow => [
+        BoxShadow(
+          color: primaryColor.withValues(alpha: 0.4),
+          blurRadius: 20,
+          spreadRadius: 2,
+        ),
+      ];
+
+  /// Glow effect for gold accent elements.
+  static List<BoxShadow> get accentGlow => [
+        BoxShadow(
+          color: accentGold.withValues(alpha: 0.3),
+          blurRadius: 16,
+          spreadRadius: 1,
         ),
       ];
 
@@ -107,17 +157,19 @@ class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.light,
+      brightness: Brightness.dark,
 
       // Color Scheme
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryColor,
+      colorScheme: const ColorScheme.dark(
         primary: primaryColor,
         secondary: secondaryColor,
         tertiary: accentColor,
         surface: surfaceColor,
         error: errorColor,
-        brightness: Brightness.light,
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        onSurface: textPrimary,
+        onError: Colors.white,
       ),
 
       // Scaffold
@@ -211,8 +263,8 @@ class AppTheme {
       // Outlined Button
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: primaryColor,
-          side: const BorderSide(color: borderColor, width: 1.5),
+          foregroundColor: primaryLight,
+          side: const BorderSide(color: glassBorder, width: 1.5),
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radiusMd),
@@ -227,7 +279,7 @@ class AppTheme {
       // Text Button
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: primaryColor,
+          foregroundColor: primaryLight,
           textStyle: GoogleFonts.nunitoSans(
             fontSize: 15,
             fontWeight: FontWeight.w600,
@@ -238,16 +290,16 @@ class AppTheme {
       // Input Decoration
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: fillColor,
+        fillColor: glassColor,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
-          borderSide: BorderSide.none,
+          borderSide: const BorderSide(color: glassBorder),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
-          borderSide: BorderSide.none,
+          borderSide: const BorderSide(color: glassBorder),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
@@ -277,13 +329,14 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusLg),
+          side: const BorderSide(color: glassBorder),
         ),
       ),
 
       // Bottom Navigation
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: surfaceColor,
-        selectedItemColor: primaryColor,
+        backgroundColor: backgroundColor,
+        selectedItemColor: primaryLight,
         unselectedItemColor: textLight,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
@@ -292,7 +345,7 @@ class AppTheme {
       // Slider
       sliderTheme: SliderThemeData(
         activeTrackColor: primaryColor,
-        inactiveTrackColor: primaryLight.withValues(alpha: 0.3),
+        inactiveTrackColor: const Color(0xFF2A2545),
         thumbColor: primaryColor,
         overlayColor: primaryColor.withValues(alpha: 0.15),
         valueIndicatorColor: primaryColor,
@@ -306,11 +359,11 @@ class AppTheme {
 
       // Chip
       chipTheme: ChipThemeData(
-        backgroundColor: fillColor,
-        selectedColor: primaryLight.withValues(alpha: 0.25),
-        checkmarkColor: primaryColor,
-        labelStyle: GoogleFonts.nunitoSans(fontSize: 13),
-        side: BorderSide.none,
+        backgroundColor: glassColor,
+        selectedColor: primaryColor.withValues(alpha: 0.25),
+        checkmarkColor: primaryLight,
+        labelStyle: GoogleFonts.nunitoSans(fontSize: 13, color: textPrimary),
+        side: const BorderSide(color: glassBorder),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusSm),
         ),
@@ -325,14 +378,17 @@ class AppTheme {
 
       // Dialog
       dialogTheme: DialogThemeData(
+        backgroundColor: const Color(0xFF1A1735),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusLg),
+          side: const BorderSide(color: glassBorder),
         ),
       ),
 
       // Snack Bar
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
+        backgroundColor: const Color(0xFF1A1735),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusMd),
         ),
@@ -340,9 +396,24 @@ class AppTheme {
 
       // Divider
       dividerTheme: const DividerThemeData(
-        color: borderColor,
+        color: glassBorder,
         thickness: 1,
         space: 1,
+      ),
+
+      // PopupMenu
+      popupMenuTheme: PopupMenuThemeData(
+        color: const Color(0xFF1A1735),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          side: const BorderSide(color: glassBorder),
+        ),
+      ),
+
+      // BottomSheet
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: Color(0xFF1A1735),
+        modalBackgroundColor: Color(0xFF1A1735),
       ),
     );
   }

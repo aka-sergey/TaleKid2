@@ -61,9 +61,9 @@ class _HeroSection extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF6366F1),
-            Color(0xFF8B5CF6),
             Color(0xFF4338CA),
+            Color(0xFF6366F1),
+            Color(0xFF2A1F6F),
           ],
         ),
       ),
@@ -265,14 +265,14 @@ class _HeroText extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(Icons.auto_stories,
-                    color: AppTheme.textPrimary, size: 20),
+                    color: Color(0xFF1C1917), size: 20),
                 const SizedBox(width: 10),
                 Text(
                   'Создать сказку бесплатно',
                   style: GoogleFonts.comfortaa(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: AppTheme.textPrimary,
+                    color: const Color(0xFF1C1917),
                   ),
                 ),
               ],
@@ -543,12 +543,12 @@ class _FeatureChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.glassLight,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppTheme.borderColor, width: 0.5),
+        border: Border.all(color: AppTheme.glassBorder, width: 0.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -687,9 +687,9 @@ class _ExampleStoryCard extends StatelessWidget {
       width: isWide ? 270 : double.infinity,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.glassLight,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppTheme.borderColor, width: 0.5),
+          border: Border.all(color: AppTheme.glassBorder, width: 0.5),
           boxShadow: AppTheme.cardShadow,
         ),
         clipBehavior: Clip.antiAlias,
@@ -889,7 +889,7 @@ class _Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: const Color(0xFF1C1917),
+      color: AppTheme.surfaceColor,
       padding: const EdgeInsets.all(24),
       child: Center(
         child: ConstrainedBox(
