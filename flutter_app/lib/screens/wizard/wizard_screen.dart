@@ -523,88 +523,121 @@ class _Step2Settings extends ConsumerWidget {
     final worldsAsync = ref.watch(worldsProvider);
     final baseTalesAsync = ref.watch(baseTalesProvider);
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    // Genres and worlds expand to 70% of screen width (min 400, max 1200)
+    final wideMaxWidth = (screenWidth * 0.70).clamp(400.0, 1200.0);
+
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 640),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Age
-              Text('Возрастная группа',
-                  style: AppTheme.heading(size: 17)),
-              const SizedBox(height: 12),
-              _AgeCards(
-                  selected: ageRange, onChanged: onAgeRangeChanged),
-              const SizedBox(height: 28),
-              // Education
-              Text('Уровень образовательности',
-                  style: AppTheme.heading(size: 17)),
-              const SizedBox(height: 12),
-              _EduSlider(
-                  value: educationLevel,
-                  onChanged: onEducationLevelChanged),
-              const SizedBox(height: 28),
-              // Genre
-              Text('Жанр *', style: AppTheme.heading(size: 17)),
-              const SizedBox(height: 12),
-              genresAsync.when(
-                data: (g) => _GenreCards(
-                    genres: g,
-                    selectedId: selectedGenreId,
-                    onSelected: onGenreChanged),
-                loading: () => const _ShimmerRow(),
-                error: (_, __) => _ErrorRetry(
-                    message: 'Ошибка загрузки жанров',
-                    onRetry: () => ref.invalidate(genresProvider)),
-              ),
-              const SizedBox(height: 28),
-              // World
-              Text('Мир *', style: AppTheme.heading(size: 17)),
-              const SizedBox(height: 12),
-              worldsAsync.when(
-                data: (w) => _WorldGrid(
-                    worlds: w,
-                    selectedId: selectedWorldId,
-                    onSelected: onWorldChanged),
-                loading: () => const _ShimmerRow(),
-                error: (_, __) => _ErrorRetry(
-                    message: 'Ошибка загрузки миров',
-                    onRetry: () => ref.invalidate(worldsProvider)),
-              ),
-              const SizedBox(height: 28),
-              // Base tale
-              Row(children: [
-                Text('Сказка-основа',
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // ── Narrow controls: Age + Education ───────────────────────
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 640),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Возрастная группа',
                     style: AppTheme.heading(size: 17)),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                      color: AppTheme.fillColor,
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Text('необязательно',
-                      style: AppTheme.body(
-                          size: 11, color: AppTheme.textSecondary)),
-                ),
-              ]),
-              const SizedBox(height: 12),
-              baseTalesAsync.when(
-                data: (t) => _BaseTaleSel(
-                    tales: t,
-                    selectedId: selectedBaseTaleId,
-                    onSelected: onBaseTaleChanged),
-                loading: () => const _ShimmerRow(),
-                error: (_, __) => _ErrorRetry(
-                    message: 'Ошибка загрузки сказок',
-                    onRetry: () => ref.invalidate(baseTalesProvider)),
-              ),
-              const SizedBox(height: 40),
-            ],
+                const SizedBox(height: 12),
+                _AgeCards(
+                    selected: ageRange, onChanged: onAgeRangeChanged),
+                const SizedBox(height: 28),
+                Text('Уровень образовательности',
+                    style: AppTheme.heading(size: 17)),
+                const SizedBox(height: 12),
+                _EduSlider(
+                    value: educationLevel,
+                    onChanged: onEducationLevelChanged),
+              ],
+            ),
           ),
-        ),
+          const SizedBox(height: 28),
+
+          // ── Wide: Genres ────────────────────────────────────────────
+          SizedBox(
+            width: wideMaxWidth,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Жанр *', style: AppTheme.heading(size: 17)),
+                const SizedBox(height: 12),
+                genresAsync.when(
+                  data: (g) => _GenreCards(
+                      genres: g,
+                      selectedId: selectedGenreId,
+                      onSelected: onGenreChanged),
+                  loading: () => const _ShimmerRow(),
+                  error: (_, __) => _ErrorRetry(
+                      message: 'Ошибка загрузки жанров',
+                      onRetry: () => ref.invalidate(genresProvider)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 28),
+
+          // ── Wide: Worlds ────────────────────────────────────────────
+          SizedBox(
+            width: wideMaxWidth,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Мир *', style: AppTheme.heading(size: 17)),
+                const SizedBox(height: 12),
+                worldsAsync.when(
+                  data: (w) => _WorldGrid(
+                      worlds: w,
+                      selectedId: selectedWorldId,
+                      onSelected: onWorldChanged),
+                  loading: () => const _ShimmerRow(),
+                  error: (_, __) => _ErrorRetry(
+                      message: 'Ошибка загрузки миров',
+                      onRetry: () => ref.invalidate(worldsProvider)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 28),
+
+          // ── Narrow: Base tale ───────────────────────────────────────
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 640),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  Text('Сказка-основа',
+                      style: AppTheme.heading(size: 17)),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                        color: AppTheme.fillColor,
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Text('необязательно',
+                        style: AppTheme.body(
+                            size: 11, color: AppTheme.textSecondary)),
+                  ),
+                ]),
+                const SizedBox(height: 12),
+                baseTalesAsync.when(
+                  data: (t) => _BaseTaleSel(
+                      tales: t,
+                      selectedId: selectedBaseTaleId,
+                      onSelected: onBaseTaleChanged),
+                  loading: () => const _ShimmerRow(),
+                  error: (_, __) => _ErrorRetry(
+                      message: 'Ошибка загрузки сказок',
+                      onRetry: () => ref.invalidate(baseTalesProvider)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 40),
+        ],
       ),
     );
   }
@@ -868,62 +901,70 @@ class _GenreCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 10,
-      runSpacing: 10,
-      children: genres.map((g) {
-        final sel = g.id == selectedId;
-        final url = _genreAssets[g.slug] ?? '';
-        return GestureDetector(
-          onTap: () => onSelected(sel ? null : g.id),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: 170,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                  color: sel
-                      ? AppTheme.primaryColor
-                      : AppTheme.borderColor,
-                  width: sel ? 2 : 1),
-              color: AppTheme.glassLight,
+    return LayoutBuilder(builder: (ctx, box) {
+      // Adaptive columns: ~160px per card, min 3, max 8
+      final cols = (box.maxWidth / 160).floor().clamp(3, 8);
+      final spacing = 10.0;
+      final itemWidth =
+          (box.maxWidth - spacing * (cols - 1)) / cols;
+      final imageHeight = (itemWidth * 0.55).clamp(70.0, 120.0);
+
+      return Wrap(
+        spacing: spacing,
+        runSpacing: spacing,
+        children: genres.map((g) {
+          final sel = g.id == selectedId;
+          final url = _genreAssets[g.slug] ?? '';
+          return GestureDetector(
+            onTap: () => onSelected(sel ? null : g.id),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: itemWidth,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                    color: sel
+                        ? AppTheme.primaryColor
+                        : AppTheme.borderColor,
+                    width: sel ? 2 : 1),
+                color: AppTheme.glassLight,
+              ),
+              child: Column(children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(13)),
+                  child: url.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: url,
+                          height: imageHeight,
+                          width: itemWidth,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) => Container(
+                              height: imageHeight,
+                              color: AppTheme.fillColor),
+                          errorWidget: (_, __, ___) => Container(
+                              height: imageHeight,
+                              color: AppTheme.fillColor),
+                        )
+                      : Container(
+                          height: imageHeight,
+                          color: AppTheme.fillColor),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(g.nameRu,
+                      style: AppTheme.body(
+                          size: 12, weight: FontWeight.w600),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis),
+                ),
+              ]),
             ),
-            child: Column(children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(13)),
-                child: url.isNotEmpty
-                    ? CachedNetworkImage(
-                        imageUrl: url,
-                        height: 80,
-                        width: 170,
-                        fit: BoxFit.cover,
-                        placeholder: (_, __) => Container(
-                            height: 80,
-                            width: 170,
-                            color: AppTheme.fillColor),
-                        errorWidget: (_, __, ___) => Container(
-                            height: 80,
-                            width: 170,
-                            color: AppTheme.fillColor),
-                      )
-                    : Container(
-                        height: 80,
-                        width: 170,
-                        color: AppTheme.fillColor),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(g.nameRu,
-                    style: AppTheme.body(
-                        size: 13, weight: FontWeight.w600),
-                    textAlign: TextAlign.center),
-              ),
-            ]),
-          ),
-        );
-      }).toList(),
-    );
+          );
+        }).toList(),
+      );
+    });
   }
 }
 
@@ -939,7 +980,8 @@ class _WorldGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (ctx, box) {
-      final cols = box.maxWidth > 500 ? 3 : 2;
+      // Adaptive columns: ~160px per card, min 3, max 8
+      final cols = (box.maxWidth / 160).floor().clamp(3, 8);
       return GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -948,7 +990,7 @@ class _WorldGrid extends StatelessWidget {
             crossAxisCount: cols,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            childAspectRatio: 0.82),
+            childAspectRatio: 0.85),
         itemBuilder: (_, i) {
           final w = worlds[i];
           final sel = w.id == selectedId;
