@@ -1,6 +1,7 @@
 name: Deploy API to Railway
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master

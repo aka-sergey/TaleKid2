@@ -1,6 +1,7 @@
 name: Deploy Web to Railway
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
