@@ -4,6 +4,8 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
+from shared.constants import STYLE_PROMPTS, VALID_ILLUSTRATION_STYLES  # noqa: F401 (re-exported)
+
 
 # ---------------------------------------------------------------------------
 # Request schemas
@@ -17,6 +19,10 @@ class GenerationCreateRequest(BaseModel):
     education_level: float = Field(0.5, ge=0.0, le=1.0)
     page_count: int = Field(10, ge=5, le=30)
     reading_duration_minutes: int = Field(10, ge=5, le=30)
+    illustration_style: Optional[str] = Field(
+        None,
+        description="One of: watercolor, 3d-pixar, disney, comic, anime, pastel, classic-book, pop-art",
+    )
 
 
 # ---------------------------------------------------------------------------

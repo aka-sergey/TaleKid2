@@ -50,10 +50,18 @@ class SceneDecompositionStage(PipelineStage):
         )
 
         bible = ctx.story_bible or {}
-        visual_style = bible.get(
-            "visual_style",
-            "warm watercolor children's book illustration style",
-        )
+        # Illustration style: user choice takes priority over AI-generated style
+        if ctx.illustration_style:
+            from shared.constants import STYLE_PROMPTS
+            visual_style = STYLE_PROMPTS.get(
+                ctx.illustration_style,
+                bible.get("visual_style", "warm watercolor children's book illustration style"),
+            )
+        else:
+            visual_style = bible.get(
+                "visual_style",
+                "warm watercolor children's book illustration style",
+            )
         pages = ctx.pages_text
         total = len(pages)
 

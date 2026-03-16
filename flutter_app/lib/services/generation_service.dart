@@ -19,6 +19,7 @@ class GenerationService {
     required double educationLevel,
     required int pageCount,
     required int readingDurationMinutes,
+    String? illustrationStyle,
   }) async {
     try {
       final response = await _client.dio.post(
@@ -32,6 +33,7 @@ class GenerationService {
           'education_level': educationLevel,
           'page_count': pageCount,
           'reading_duration_minutes': readingDurationMinutes,
+          if (illustrationStyle != null) 'illustration_style': illustrationStyle,
         },
       );
       return GenerationJob.fromJson(response.data as Map<String, dynamic>);

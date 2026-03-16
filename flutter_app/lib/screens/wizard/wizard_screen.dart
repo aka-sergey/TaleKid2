@@ -121,6 +121,7 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
   int? _selectedGenreId;
   int? _selectedWorldId;
   int? _selectedBaseTaleId;
+  String _illustrationStyle = 'watercolor'; // default
   int _pageCount = 10;
   int _readingDuration = 10;
 
@@ -151,6 +152,7 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
         educationLevel: _educationLevel,
         pageCount: _pageCount,
         readingDurationMinutes: _readingDuration,
+        illustrationStyle: _illustrationStyle,
       );
       if (mounted) {
         context.go(
@@ -244,6 +246,7 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
           selectedGenreId: _selectedGenreId,
           selectedWorldId: _selectedWorldId,
           selectedBaseTaleId: _selectedBaseTaleId,
+          illustrationStyle: _illustrationStyle,
           onAgeRangeChanged: (v) => setState(() => _ageRange = v),
           onEducationLevelChanged: (v) =>
               setState(() => _educationLevel = v),
@@ -251,6 +254,7 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
           onWorldChanged: (v) => setState(() => _selectedWorldId = v),
           onBaseTaleChanged: (v) =>
               setState(() => _selectedBaseTaleId = v),
+          onStyleChanged: (v) => setState(() => _illustrationStyle = v),
         );
       case 2:
         return _Step3Format(
@@ -549,11 +553,13 @@ class _Step2Settings extends ConsumerWidget {
   final int? selectedGenreId;
   final int? selectedWorldId;
   final int? selectedBaseTaleId;
+  final String illustrationStyle;
   final ValueChanged<String> onAgeRangeChanged;
   final ValueChanged<double> onEducationLevelChanged;
   final ValueChanged<int?> onGenreChanged;
   final ValueChanged<int?> onWorldChanged;
   final ValueChanged<int?> onBaseTaleChanged;
+  final ValueChanged<String> onStyleChanged;
 
   const _Step2Settings({
     super.key,
@@ -562,11 +568,13 @@ class _Step2Settings extends ConsumerWidget {
     required this.selectedGenreId,
     required this.selectedWorldId,
     required this.selectedBaseTaleId,
+    required this.illustrationStyle,
     required this.onAgeRangeChanged,
     required this.onEducationLevelChanged,
     required this.onGenreChanged,
     required this.onWorldChanged,
     required this.onBaseTaleChanged,
+    required this.onStyleChanged,
   });
 
   @override
@@ -685,6 +693,29 @@ class _Step2Settings extends ConsumerWidget {
                       message: 'Ошибка загрузки сказок',
                       onRetry: () => ref.invalidate(baseTalesProvider)),
                 ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 28),
+
+          // ── Wide: Illustration Styles ────────────────────────────────
+          SizedBox(
+            width: wideMaxWidth,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Стиль иллюстраций',
+                    style: AppTheme.heading(size: 17)),
+                const SizedBox(height: 6),
+                Text(
+                  'Выберите художественный стиль для картинок в вашей сказке',
+                  style: AppTheme.body(
+                      size: 13, color: AppTheme.textSecondary),
+                ),
+                const SizedBox(height: 12),
+                _StyleSelector(
+                    selected: illustrationStyle,
+                    onChanged: onStyleChanged),
               ],
             ),
           ),
@@ -1141,6 +1172,162 @@ class _BaseTaleSel extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════
+// Illustration Style Selector
+// ═════════════════════════════════════════════════════════════════════════
+
+class _StyleData {
+  final String slug;
+  final String nameRu;
+  final String description;
+  final String imageUrl;
+  const _StyleData(this.slug, this.nameRu, this.description, this.imageUrl);
+}
+
+class _StyleSelector extends StatelessWidget {
+  final String selected;
+  final ValueChanged<String> onChanged;
+
+  static const _baseUrl =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801'
+      '/landing-assets/styles';
+
+  static const _styles = [
+    _StyleData('watercolor', 'Акварель',
+        'Мягкие цвета и нежные переходы', '$_baseUrl/watercolor.png'),
+    _StyleData('3d-pixar', '3D Анимация',
+        'Яркий мир как в мультфильмах Pixar', '$_baseUrl/3d-pixar.png'),
+    _StyleData('disney', 'Disney',
+        'Волшебство в стиле Disney', '$_baseUrl/disney.png'),
+    _StyleData('comic', 'Комикс',
+        'Динамичные сцены с яркими контурами', '$_baseUrl/comic.png'),
+    _StyleData('anime', 'Аниме',
+        'Японский стиль с большими глазами', '$_baseUrl/anime.png'),
+    _StyleData('pastel', 'Пастель',
+        'Нежные пастельные тона', '$_baseUrl/pastel.png'),
+    _StyleData('classic-book', 'Книжная классика',
+        'Тёплый стиль классических иллюстраций', '$_baseUrl/classic-book.png'),
+    _StyleData('pop-art', 'Поп-арт',
+        'Смелые цвета и современный дизайн', '$_baseUrl/pop-art.png'),
+  ];
+
+  const _StyleSelector({required this.selected, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (ctx, box) {
+      final cols = (box.maxWidth / 160).floor().clamp(3, 8);
+      final spacing = 10.0;
+      final itemWidth = (box.maxWidth - spacing * (cols - 1)) / cols;
+      final imageHeight = (itemWidth * 0.65).clamp(70.0, 130.0);
+
+      return Wrap(
+        spacing: spacing,
+        runSpacing: spacing,
+        children: _styles.map((s) {
+          final isSel = s.slug == selected;
+          return GestureDetector(
+            onTap: () => onChanged(s.slug),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              width: itemWidth,
+              decoration: BoxDecoration(
+                color: isSel
+                    ? AppTheme.primaryColor.withValues(alpha: 0.08)
+                    : AppTheme.cardColor,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: isSel
+                      ? AppTheme.primaryColor
+                      : AppTheme.borderColor,
+                  width: isSel ? 2.0 : 1.0,
+                ),
+                boxShadow: isSel ? AppTheme.cardShadow : [],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Cover image
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(13)),
+                    child: Stack(
+                      children: [
+                        CachedNetworkImage(
+                          imageUrl: s.imageUrl,
+                          height: imageHeight,
+                          width: itemWidth,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) =>
+                              Container(
+                                height: imageHeight,
+                                color: AppTheme.fillColor,
+                              ),
+                          errorWidget: (_, __, ___) =>
+                              Container(
+                                height: imageHeight,
+                                color: AppTheme.fillColor,
+                                child: const Icon(Icons.image_not_supported,
+                                    color: Colors.grey),
+                              ),
+                        ),
+                        if (isSel)
+                          Positioned(
+                            top: 6,
+                            right: 6,
+                            child: Container(
+                              padding: const EdgeInsets.all(3),
+                              decoration: BoxDecoration(
+                                color: AppTheme.primaryColor,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.check,
+                                  size: 12, color: Colors.white),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  // Label
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          s.nameRu,
+                          style: AppTheme.body(
+                            size: 13,
+                            weight: FontWeight.w700,
+                            color: isSel
+                                ? AppTheme.primaryColor
+                                : AppTheme.textPrimary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          s.description,
+                          style: AppTheme.body(
+                              size: 11, color: AppTheme.textSecondary),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      );
+    });
   }
 }
 

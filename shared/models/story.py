@@ -68,6 +68,9 @@ class Story(TimestampMixin, Base):
     cover_image_url: Mapped[Optional[str]] = mapped_column(
         String(1000), nullable=True
     )
+    illustration_style: Mapped[Optional[str]] = mapped_column(
+        String(50), nullable=True
+    )
     status: Mapped[str] = mapped_column(
         String(20), nullable=False, default="draft", server_default=text("'draft'")
     )

@@ -145,6 +145,23 @@ class StoryBibleStage(PipelineStage):
                     f"{json.dumps(story.base_tale.plot_structure, ensure_ascii=False)}"
                 )
 
+        # Illustration style
+        if ctx.illustration_style:
+            from shared.constants import STYLE_PROMPTS
+            style_desc = STYLE_PROMPTS.get(
+                ctx.illustration_style,
+                ctx.illustration_style
+            )
+            parts.append(
+                f"\nСтиль иллюстраций (выбор пользователя): {ctx.illustration_style}"
+            )
+            parts.append(
+                f"Описание стиля для иллюстраций: {style_desc}"
+            )
+            parts.append(
+                "ВАЖНО: Поле visual_style в JSON должно точно описывать этот стиль."
+            )
+
         # Characters
         parts.append("\nПерсонажи (пользователь добавил своих):")
         for char_id, description in ctx.character_descriptions.items():

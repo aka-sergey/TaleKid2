@@ -27,6 +27,8 @@ class PipelineContext:
         # Leonardo image IDs for character references (char_id -> leonardo_image_id)
         # Used for initImageId + initImageType="GENERATED" in controlnets
         self.character_leonardo_ids: dict[str, str] = {}
+        # Illustration style chosen by user (e.g. "watercolor", "3d-pixar")
+        self.illustration_style: str | None = payload.get("illustration_style")
 
 
 class PipelineStage:
