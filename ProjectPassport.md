@@ -1,16 +1,16 @@
 # TaleKID - Project Passport
 
-> **Version:** 1.2.0 | **Date:** 2026-03-15 | **Repository:** https://github.com/aka-sergey/TaleKid2 | **Branch:** master
+> **Version:** 1.3.0 | **Date:** 2026-03-16 | **Repository:** https://github.com/aka-sergey/TaleKid2 | **Branch:** master
 
 ---
 
 ## 1. Overview
 
-**TaleKID** — mobile (Android) + web application for generating personalized illustrated children's fairy tales using AI. Users create characters (with photos), choose genre, world, and optionally a base tale template; the system generates story text (Russian) and illustrations page by page.
+**TaleKID** — mobile (Android) + web application for generating personalized illustrated children's fairy tales using AI. Users create characters (with photos), choose genre, world, illustration style, and optionally a base tale template; the system generates story text (Russian) and illustrations page by page in the selected artistic style.
 
 **Target audience:** Parents with children aged 3-12, Russian-speaking market.
 
-**Core flow:** Register → Create Characters → Wizard (genre, world, age, education level) → Generation pipeline (9 stages) → Reading experience with educational content.
+**Core flow:** Register → Create Characters → Wizard (genre, world, illustration style, age, education level) → Generation pipeline (9 stages) → Reading experience with educational content.
 
 ---
 
@@ -67,11 +67,11 @@ talekid/
 | **ORM** | SQLAlchemy 2.0 | 2.0.35 (async) | Shared models backend+worker |
 | **DB Driver** | asyncpg | 0.30.0 | Async PostgreSQL |
 | **Database** | PostgreSQL | 15+ | TimeWeb hosted, SSL |
-| **Migrations** | Alembic | 1.13.0 | Schema versioning |
+| **Migrations** | Alembic | 1.13.0 | Schema versioning (manual) |
 | **Queue** | Redis | 5.1.0 | BRPOP job queue + progress |
 | **Auth** | JWT (HS256) | python-jose 3.3.0 | Access + Refresh tokens |
 | **Password** | bcrypt | 4.1.3 | via passlib 1.7.4 |
-| **Storage** | S3 (TimeWeb) | boto3 1.35.0 | Photos, illustrations |
+| **Storage** | S3 (TimeWeb) | boto3 1.35.0 | Photos, illustrations, UI assets |
 | **Text AI** | OpenAI GPT-4o | openai 1.50.0 | Text + Vision |
 | **Image AI** | Leonardo.ai | HTTP API | Primary image generation |
 | **Image Fallback** | DALL-E 3 | openai 1.50.0 | Fallback image generation |
@@ -210,6 +210,7 @@ users (UUID PK)
 | page_count | INTEGER | NOT NULL |
 | reading_duration_minutes | INTEGER | NOT NULL |
 | cover_image_url | VARCHAR(1000) | NULLABLE |
+| **illustration_style** | **VARCHAR(50)** | **NULLABLE** (watercolor/3d-pixar/disney/comic/anime/pastel/classic-book/pop-art) |
 | status | VARCHAR(20) | NOT NULL, default: 'draft', CHECK IN ('draft','generating','completed','failed'), INDEX |
 | story_bible | JSONB | NULLABLE |
 | created_at | TIMESTAMPTZ | NOT NULL, default: NOW |
@@ -230,7 +231,7 @@ users (UUID PK)
   "themes": ["theme1", "theme2"],
   "moral": "Story moral (Russian)",
   "vocabulary_level": "simple|moderate|advanced",
-  "visual_style": "Illustration style description"
+  "visual_style": "Illustration style description (guided by illustration_style field)"
 }
 ```
 
@@ -339,15 +340,6 @@ users (UUID PK)
 - Refresh token: 30 days TTL
 - Algorithm: HS256
 
-**Registration request:**
-```json
-{
-  "email": "user@example.com",
-  "password": "min6chars",
-  "display_name": "Optional Name"
-}
-```
-
 ### 5.2 Characters
 
 | Method | Endpoint | Auth | Request/Query | Response |
@@ -360,23 +352,6 @@ users (UUID PK)
 | POST | `/characters/{id}/photos` | JWT | multipart: `file` (image) | `CharacterPhotoResponse` (201) |
 | DELETE | `/characters/{id}/photos/{photo_id}` | JWT | UUID paths | 204 |
 
-**CharacterResponse:**
-```json
-{
-  "id": "uuid",
-  "name": "string",
-  "character_type": "child|adult|pet",
-  "gender": "male|female",
-  "age": null,
-  "appearance_description": null,
-  "photos": [
-    {"id": "uuid", "s3_url": "https://...", "sort_order": 0}
-  ],
-  "created_at": "2026-03-14T12:00:00Z",
-  "updated_at": "2026-03-14T12:00:00Z"
-}
-```
-
 **Constraints:** max 3 photos per character.
 
 ### 5.3 Catalog (No Auth Required)
@@ -387,21 +362,6 @@ users (UUID PK)
 | GET | `/catalog/worlds` | `[{id, slug, name_ru, description_ru, icon_url, sort_order}, ...]` |
 | GET | `/catalog/base-tales` | `[{id, slug, name_ru, icon_url}, ...]` |
 | GET | `/catalog/base-tales/{id}` | `{id, slug, name_ru, summary_ru, moral_ru, icon_url, characters: [...]}` |
-
-**BaseTaleResponse (detail):**
-```json
-{
-  "id": 1,
-  "slug": "kolobok",
-  "name_ru": "Kolok",
-  "summary_ru": "...",
-  "moral_ru": "...",
-  "icon_url": null,
-  "characters": [
-    {"id": 1, "name_ru": "Kolok", "role": "protagonist", "personality_ru": "..."}
-  ]
-}
-```
 
 ### 5.4 Generation
 
@@ -421,9 +381,12 @@ users (UUID PK)
   "age_range": "3-5|6-8|9-12",
   "education_level": 0.5,
   "page_count": 10,
-  "reading_duration_minutes": 10
+  "reading_duration_minutes": 10,
+  "illustration_style": "watercolor"
 }
 ```
+
+**`illustration_style` allowed values:** `watercolor` · `3d-pixar` · `disney` · `comic` · `anime` · `pastel` · `classic-book` · `pop-art` · `null` (defaults to `watercolor` in worker)
 
 **GenerationStatusResponse:**
 ```json
@@ -448,43 +411,6 @@ users (UUID PK)
 | PUT | `/stories/{id}/title` | JWT | `{title: "string"}` | `StoryResponse` |
 | DELETE | `/stories/{id}` | JWT | UUID path | 204 |
 
-**StoryDetailResponse:**
-```json
-{
-  "id": "uuid",
-  "title": "Story Title",
-  "title_suggested": "AI Suggested Title",
-  "cover_image_url": "https://...",
-  "status": "completed",
-  "age_range": "6-8",
-  "page_count": 10,
-  "reading_duration_minutes": 10,
-  "created_at": "2026-03-14T12:00:00Z",
-  "pages": [
-    {
-      "id": "uuid",
-      "page_number": 1,
-      "text_content": "Story text in Russian...",
-      "image_url": "https://s3.../page_01.png",
-      "educational_content": {
-        "content_type": "fact",
-        "text_ru": "Interesting fact in Russian",
-        "answer_ru": null,
-        "topic": "Nature"
-      }
-    }
-  ],
-  "characters": [
-    {
-      "character_id": "uuid",
-      "character_name": "Character Name",
-      "role_in_story": "protagonist",
-      "reference_image_url": "https://..."
-    }
-  ]
-}
-```
-
 ### 5.6 Health
 
 | Method | Endpoint | Auth | Response |
@@ -493,13 +419,6 @@ users (UUID PK)
 | GET | `/health/db` | No | `{"status": "ok", "database": "connected"}` |
 
 ### 5.7 Error Responses
-
-All errors follow the format:
-```json
-{
-  "detail": "Error description"
-}
-```
 
 | Code | Exception | Meaning |
 |------|-----------|---------|
@@ -546,17 +465,8 @@ Backend (API)                Redis                    Worker
   "age_range": "6-8",
   "education_level": 0.5,
   "page_count": 10,
-  "reading_duration_minutes": 10
-}
-```
-
-**Progress payload (JSON in Redis key):**
-```json
-{
-  "status": "processing|completed|failed",
-  "progress_pct": 0-100,
-  "status_message": "Human readable (Russian/English)",
-  "error_message": null
+  "reading_duration_minutes": 10,
+  "illustration_style": "watercolor"
 }
 ```
 
@@ -574,73 +484,63 @@ Backend (API)                Redis                    Worker
 | 8 | Title Generation | 93→96% | GPT-4o (JSON) | - | - | stories.title_suggested |
 | 9 | Finalization | 96→100% | - | - | - | stories.status='completed', FCM push |
 
+**Illustration style flow:**
+- Stage 2 (Story Bible): `illustration_style` injected into OpenAI prompt → AI generates matching `visual_style` in story bible JSON
+- Stage 4 (Scene Decomp): `STYLE_PROMPTS[illustration_style]` used as primary `visual_style` override; fallback to story bible value if no style set
+- Stage 5 (Char Refs): `style_hint` passed to image service from story bible `visual_style`
+
 **Image generation fallback chain:** Leonardo.ai → (2 failures) → DALL-E 3
 
 **Concurrency:** `asyncio.Semaphore(IMAGE_MAX_CONCURRENT=10)` for parallel illustration
-
-**Error handling:** Each stage retries up to 3x with exponential backoff. On final failure: `generation_jobs.status='failed'`, `stories.status='failed'`, error saved to `generation_jobs.error_message`.
 
 ### 6.3 AI Model Configuration
 
 **Text generation (OpenAI):**
 - Model: `gpt-4o` (configurable via `OPENAI_MODEL`)
 - Vision model: `gpt-4o` (configurable via `OPENAI_VISION_MODEL`)
-- Max tokens: 4096 (configurable)
 - Temperature: 0.7 for JSON mode, 0.8 for regular chat
-- Response format: `{"type": "json_object"}` for structured outputs
 
 **Image generation (Leonardo.ai):**
 - Model: Leonardo Phoenix (`6b645e3a-d64f-4341-a6d8-7a3690fbf042`)
-- Character Reference: preprocessorId 133, strength "Mid"
+- Character Reference: preprocessorId 133, strength "Mid", `initImageId`/`initImageType: "GENERATED"`
 - Page illustrations: 1024x768 px
 - Character references: 768x1024 px
-- Alchemy: enabled
-- Style preset: ILLUSTRATION
-- Negative prompt: `"ugly, deformed, blurry, low quality, text, watermark, signature, adult content, violence, scary, horror"`
-- Polling: GET every 3s, max 60 attempts (3 min timeout)
+- Alchemy: enabled, Style preset: ILLUSTRATION
 
 **Image generation (DALL-E 3 fallback):**
-- Model: DALL-E 3
-- Sizes: 1792x1024 (landscape), 1024x1792 (portrait), 1024x1024 (square)
-- Quality: standard
-- Style: vivid
-- Concurrency: Semaphore(5) (stricter limits)
-- Safety prefix auto-prepended to all prompts
+- Model: DALL-E 3, Quality: standard, Style: vivid
+- Concurrency: Semaphore(5)
 
 ---
 
 ## 7. S3 Storage Structure
 
-**Provider:** TimeWeb S3 (S3-compatible, region `ru-1`, signature `s3v4`)
+**Provider:** TimeWeb S3 (S3-compatible)
 
 ```
 {S3_BUCKET}/
 ├── character-photos/{user_id}/{character_id}/
-│   ├── photo_1.jpg
-│   ├── photo_2.jpg
-│   └── photo_3.jpg
-└── stories/{story_id}/
-    ├── characters/{character_id}/
-    │   └── reference.png
-    ├── pages/
-    │   ├── 1.png
-    │   ├── 2.png
-    │   └── ...N.png
-    └── cover.png (= first page image)
+│   └── photo_N.jpg
+├── stories/{story_id}/
+│   ├── characters/{character_id}/reference.png
+│   ├── pages/1.png … N.png
+│   └── cover.png
+├── ui-assets/
+│   ├── genres/{slug}.png          # 31 genre cover images (512×384)
+│   ├── worlds/{slug}.png          # 30 world cover images (512×384)
+│   ├── ages/age-{range}.png       # 3 age group images
+│   └── ui/*.png                   # UI illustrations
+└── landing-assets/
+    ├── ui/hero-bg.png, cta-bg.png, how-step1-3.png
+    ├── styles/{style}.png         # 8 illustration style previews
+    └── showcase stories (4)       # landing page demo stories
 ```
 
 **Access:** All objects uploaded with `ACL: public-read`
-**Public URL pattern:** `{STORAGE_PUBLIC_URL}/{key}`
 
-> ⚠️ **Important:** `STORAGE_PUBLIC_URL` already includes the bucket name
-> (e.g., `https://s3.twcstorage.ru/{bucket-id}`). Never append the bucket name
-> again when building public URLs — that produces a double-bucket 404 path.
+> ⚠️ `STORAGE_PUBLIC_URL` already includes bucket name. Never append bucket name again.
 
-**CORS:** Bucket has an explicit CORS rule allowing `GET`/`HEAD` from:
-- `https://talekid2-production.up.railway.app` (production web)
-- `http://localhost:8080`, `http://localhost:3000`, `http://localhost:5173` (local dev)
-
-Flutter Web uses `XMLHttpRequest` for `CachedNetworkImage`, so S3 CORS is **required** for images to load in browsers.
+**CORS:** Bucket allows `GET`/`HEAD` from `https://talekid2-production.up.railway.app` + localhost ports.
 
 ---
 
@@ -650,45 +550,27 @@ Flutter Web uses `XMLHttpRequest` for `CachedNetworkImage`, so S3 CORS is **requ
 
 ```
 flutter_app/lib/
-├── main.dart              # Entry point, ProviderScope
-├── app.dart               # MaterialApp.router, theme, locale
 ├── config/
-│   ├── app_config.dart    # API URL, timeouts, limits
-│   ├── theme.dart         # Material 3 theme, brand colors
-│   └── router.dart        # go_router, auth guard, routes
-├── models/
-│   ├── character.dart     # CharacterModel, CharacterPhoto
-│   ├── story.dart         # StoryModel, StoryDetail, StoryPage, GenerationJob
-│   └── catalog.dart       # Genre, World, BaseTale
-├── providers/
-│   ├── auth_provider.dart       # AuthNotifier, apiClient
-│   ├── character_provider.dart  # CharactersNotifier
-│   ├── catalog_provider.dart    # genres, worlds, baseTales FutureProviders
-│   ├── generation_provider.dart # GenerationJobNotifier (polling)
-│   └── story_provider.dart      # StoriesNotifier
-├── services/
-│   ├── api_client.dart          # Dio wrapper, JWT interceptor
-│   ├── auth_service.dart        # register, login, logout
-│   ├── catalog_service.dart     # genres, worlds, baseTales
-│   ├── character_service.dart   # CRUD + photo upload
-│   ├── generation_service.dart  # create, status, cancel
-│   ├── story_service.dart       # library, detail, rename, delete
-│   ├── pdf_service.dart         # landscape PDF generation
-│   └── share_service.dart       # link sharing, PDF sharing
+│   ├── theme.dart         # «Зачарованная ночь» dark theme
+│   ├── router.dart        # go_router, auth guard, routes
+│   ├── ui_assets.dart     # S3 URL constants (genres×31, worlds×30, ages×3, UI)
+│   └── landing_assets.dart# Landing page assets + showcase story data
+├── models/                # character.dart, story.dart, catalog.dart
+├── providers/             # auth, character, catalog, generation, story
+├── services/              # api_client, auth, catalog, character, generation, story, pdf, share
 ├── screens/
-│   ├── landing/           # Public landing page
+│   ├── landing/           # Public landing — hero, styles, genres, how-it-works, CTA
 │   ├── auth/              # Login + Register
 │   ├── home/              # Dashboard
-│   ├── wizard/            # 3-step story creation + character dialog
-│   ├── generation/        # Progress screen with polling
-│   ├── reader/            # Story reader (mobile/web layouts)
+│   ├── wizard/            # 3-step wizard + character dialog
+│   ├── generation/        # Progress screen with pipeline timeline
+│   ├── reader/            # Immersive story reader (mobile/web)
 │   ├── library/           # Story library grid
 │   └── legal/             # Terms, Privacy, Consent
 └── widgets/
-    ├── character_card.dart      # Character list item
-    ├── photo_picker.dart        # Cross-platform photo upload
-    ├── educational_popup.dart   # Fact/question bottom sheet
-    └── title_dialog.dart        # Story naming dialog
+    ├── app_card.dart, glass_card.dart, gradient_button.dart
+    ├── shimmer_loading.dart, character_card.dart
+    ├── educational_popup.dart, title_dialog.dart, photo_picker.dart
 ```
 
 ### 8.2 Routing
@@ -703,113 +585,86 @@ flutter_app/lib/
 | `/wizard/progress/:jobId` | GenerationProgressScreen | JWT |
 | `/stories/:id` | ReaderScreen | JWT |
 | `/library` | LibraryScreen | JWT |
-| `/terms` | LegalScreen (Terms) | No |
-| `/privacy` | LegalScreen (Privacy) | No |
-| `/consent` | LegalScreen (Consent) | No |
-
-**Auth guard:** Unauthenticated users redirected to `/auth/login`. Public routes (landing, auth, legal, catalog) bypass the guard.
+| `/terms`, `/privacy`, `/consent` | LegalScreen | No |
 
 ### 8.3 API Client & Auth Flow
 
 ```
 ┌─ Dio Interceptor ─────────────────────────────────┐
-│                                                     │
-│  Request:                                           │
-│    if path NOT in [/auth/*, /health, /catalog/*]:   │
-│      → add Authorization: Bearer {accessToken}      │
-│                                                     │
-│  Response 401 OR 403:                               │
-│    (401 = token expired; 403 = no token, HTTPBearer)│
-│    → POST /auth/refresh {refresh_token}             │
-│    → if success: save new tokens, retry request     │
-│      (retry wrapped in try/catch — handler always   │
-│       called to prevent hanging requests)           │
-│    → if fail: clear tokens, redirect to login       │
-│                                                     │
+│  Request: add Authorization: Bearer {accessToken}  │
+│  Response 401 OR 403:                              │
+│    → POST /auth/refresh                            │
+│    → success: save tokens, retry request            │
+│    → fail: clear tokens, redirect to login         │
 └─────────────────────────────────────────────────────┘
 ```
 
-**Token storage:** `flutter_secure_storage` (encrypted on device)
-**Keys:** `access_token`, `refresh_token`
+**Token storage:** `flutter_secure_storage` · Keys: `access_token`, `refresh_token`
 
-### 8.4 State Management Pattern
-
-```dart
-// Provider chain:
-apiClientProvider → authServiceProvider → authStateProvider
-apiClientProvider → characterApiServiceProvider → charactersProvider
-apiClientProvider → catalogServiceProvider → genresProvider / worldsProvider / baseTalesProvider
-apiClientProvider → generationServiceProvider → generationJobProvider(jobId)
-apiClientProvider → storyServiceProvider → storiesProvider / storyDetailProvider(storyId)
-```
-
-All data providers use `AsyncNotifier` or `FutureProvider`. Catalog providers are cached while listeners exist. Character and story providers support optimistic updates.
-
-### 8.5 Brand Theme
+### 8.4 Brand Theme — «Зачарованная ночь»
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| Primary | `#6C5CE7` (purple) | Buttons, AppBar, accents |
-| Secondary | `#FF6B6B` (red) | Secondary actions |
-| Accent | `#FFD93D` (yellow) | Highlights |
-| Success | `#00B894` (green) | Completed status |
-| Error | `#E17055` (orange-red) | Error states |
-| Warning | `#FDCB6E` (amber) | Warnings |
-| Info | `#74B9FF` (light blue) | Info badges |
-| Font | Google Fonts Nunito | All text |
+| Background | `#0C0A1D` (deep midnight) | App background |
+| Surface/Fill | `rgba(255,255,255,0.06)` | Glass surface |
+| Card | glass-morphism (blur 20px) | Cards and panels |
+| Text Primary | `#E8E5F0` (soft lavender) | Main text |
+| Text Secondary | `#9B95B0` (muted lavender) | Secondary text |
+| Primary | `#6366F1` (indigo) + glow shadow | Buttons, accents |
+| Accent Gold | `#FFD700` | Highlights |
+| Accent Purple | `#A78BFA` | Secondary accents |
+| Border | `rgba(255,255,255,0.08)` | Card borders |
+| Font (Headings) | Google Fonts Comfortaa | All headings |
+| Font (Body) | Google Fonts Nunito Sans | Body text |
 
-### 8.6 Wizard Steps
+### 8.5 Wizard Steps
 
 **Step 1 — Characters:**
 - Select existing characters (multi-select)
 - Create new character inline (bottom sheet dialog)
-- At least 1 character required
+- At least 1 character required to proceed
 
 **Step 2 — Settings:**
-- Age range: `3-5` / `6-8` / `9-12` (ChoiceChips)
+- Age range: `3-5` / `6-8` / `9-12` (image cards)
 - Education level: 0.0–1.0 (Slider, "Entertainment ↔ Learning")
-- Genre: select from catalog (ChoiceChips, required)
-- World: select from catalog (ChoiceChips, required)
-- Base tale: select from catalog or "Original Plot" (optional)
+- **Genre** — select from catalog (responsive grid, 70% viewport width, 3-8 cols, required)
+- **World** — select from catalog (same responsive grid, required)
+- **Base tale** — optional selection from 50 templates
+- **Illustration style** — 8 styles with cover images (responsive grid, same 70% layout):
+  - Акварель · 3D Анимация (Pixar) · Disney · Комикс · Аниме · Пастель · Книжная классика · Поп-арт
+  - Default: Акварель; cover images from `landing-assets/styles/{slug}.png`
 
 **Step 3 — Format:**
-- Page count: 5–30 (Slider)
-- Reading duration: 5–30 min (Slider)
-- Quick presets (e.g., "Short 5 min", "Medium 15 min")
+- Page count: 5–30 (Slider + presets)
+- Reading duration: 5–30 min (Slider + presets)
 
-### 8.7 Reader UX
+### 8.6 Reader UX
 
 **Mobile (Android):**
 - Horizontal `PageView` (swipe between pages)
-- Full-bleed illustration + text overlay at bottom
+- Full-bleed illustration + frosted glass text overlay at bottom
 - Top overlay: back button, title, page counter
 - Bottom: page dots, lightbulb (educational content)
 
-**Web:**
-- Vertical layout, image (4:3 aspect) + text below
-- Left/right arrow navigation
-- AppBar: title, page indicator, lightbulb, PDF, share buttons
-- Max 10 page dots (ellipsis for more)
+**Web (immersive):**
+- `Stack(fit: StackFit.expand)` — fullscreen CachedNetworkImage background
+- Frosted glass top overlay (back/title/PDF/share/lightbulb) via `BackdropFilter`
+- Text card: `Positioned(bottom: 80)` — `ClipRRect + BackdropFilter(blur: 16)`, black 40% + white 15% border, max 700px wide
+- Floating arrow navigation (left/right, vertically centered)
+- Bottom overlay: page dots
+- Keyboard navigation: ←/→ arrow keys via `Focus + onKeyEvent`
 
 ---
 
 ## 9. Environment Variables
 
-### 9.1 Backend API (Railway service: `api`)
+### 9.1 Backend API
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `POSTGRESQL_HOST` | Yes | - | TimeWeb PostgreSQL host |
-| `POSTGRESQL_PORT` | No | 5432 | PostgreSQL port |
-| `POSTGRESQL_USER` | Yes | - | DB username |
-| `POSTGRESQL_PASSWORD` | Yes | - | DB password |
-| `POSTGRESQL_DBNAME` | Yes | - | Database name |
+| `POSTGRESQL_HOST/PORT/USER/PASSWORD/DBNAME` | Yes | - | TimeWeb PostgreSQL |
 | `POSTGRESQL_SSLMODE` | No | verify-full | SSL mode |
-| `S3_ENDPOINT_URL` | Yes | - | TimeWeb S3 endpoint |
-| `S3_ACCESS_KEY_ID` | Yes | - | S3 access key |
-| `S3_SECRET_ACCESS_KEY` | Yes | - | S3 secret key |
-| `S3_BUCKET` | Yes | - | S3 bucket name |
-| `STORAGE_PUBLIC_URL` | Yes | - | Public URL for S3 files |
+| `S3_ENDPOINT_URL`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_BUCKET`, `STORAGE_PUBLIC_URL` | Yes | - | TimeWeb S3 |
 | `JWT_SECRET` | Yes | - | JWT signing secret (base64) |
 | `JWT_ALGORITHM` | No | HS256 | JWT algorithm |
 | `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | No | 30 | Access token TTL |
@@ -817,29 +672,23 @@ All data providers use `AsyncNotifier` or `FutureProvider`. Catalog providers ar
 | `OPENAI_API_KEY` | Yes | - | OpenAI API key |
 | `LEONARDO_API_KEY` | Yes | - | Leonardo.ai API key |
 | `REDIS_URL` | No | redis://localhost:6379 | Redis connection URL |
-| `IMAGE_ENGINE` | No | leonardo | Image engine: leonardo/dalle |
+| `IMAGE_ENGINE` | No | leonardo | `leonardo` or `dalle` |
 | `IMAGE_MAX_CONCURRENT` | No | 10 | Max parallel image generation |
 
-### 9.2 Worker (Railway service: `worker`)
+### 9.2 Worker
 
 All variables from 9.1 plus:
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `OPENAI_MODEL` | No | gpt-4o | Text generation model |
-| `OPENAI_VISION_MODEL` | No | gpt-4o | Vision analysis model |
-| `OPENAI_MAX_TOKENS` | No | 4096 | Max response tokens |
+| `OPENAI_VISION_MODEL` | No | gpt-4o | Vision model |
 | `REDIS_QUEUE` | No | talekid:jobs | Redis queue name |
 | `REDIS_PROGRESS_PREFIX` | No | talekid:progress | Progress key prefix |
 | `REDIS_PROGRESS_TTL` | No | 3600 | Progress TTL (seconds) |
-| `WORKER_CONCURRENCY` | No | 1 | Worker instances (reserved) |
-| `GOOGLE_APPLICATION_CREDENTIALS` | No | - | Firebase service account JSON path |
+| `GOOGLE_APPLICATION_CREDENTIALS` | No | - | Firebase service account |
 
-### 9.3 Web (Railway service: `web`)
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `PORT` | Auto | 80 | Railway injects dynamically |
+### 9.3 Web
 
 **Build-time variable (baked into Flutter):**
 - `API_BASE_URL` — set in `Dockerfile.web` as `--dart-define`
@@ -850,81 +699,74 @@ All variables from 9.1 plus:
 
 ### 10.1 Railway Services
 
-| Service | Dockerfile | Healthcheck | Start Command |
-|---------|-----------|-------------|---------------|
-| api | `Dockerfile.backend` | `/api/v1/health` (300s timeout) | `uvicorn app.main:app --host 0.0.0.0 --port ${PORT}` |
-| worker | `Dockerfile.worker` | None | `python -m app.main` |
-| web | `Dockerfile.web` | None | nginx (auto) |
-| redis | Railway managed | Auto | Auto |
-
-**Railway settings (all services):**
-- Root Directory: `` (empty, repo root)
-- Builder: Dockerfile
-- Restart policy: ON_FAILURE, max 10 retries
+| Service | Dockerfile | Start Command |
+|---------|-----------|---------------|
+| api | `Dockerfile.backend` | `uvicorn app.main:app --host 0.0.0.0 --port ${PORT}` |
+| worker | `Dockerfile.worker` | `python -m app.main` |
+| web | `Dockerfile.web` | nginx (auto) |
+| redis | Railway managed | Auto |
 
 ### 10.2 CI/CD (GitHub Actions)
 
-**Triggers:** Push to `master` branch
-
-**api-deploy.yml:** backend/**, shared/**, Dockerfile.backend
-1. Checkout → Setup Python 3.12 → Install deps → Run pytest → Install Railway CLI → `railway up --service api`
-
-**worker-deploy.yml:** worker/**, shared/**, Dockerfile.worker
-1. Checkout → Setup Python 3.12 → Install deps → Run pytest → Install Railway CLI → `railway up --service worker`
-
-**Web:** Deployed manually or via Railway auto-deploy on push (watches Dockerfile.web)
+**Triggers:** Push to `master` branch (auto-deploys api + worker on relevant file changes)
 
 ### 10.3 Database Initialization
 
-On first startup (`lifespan` in `main.py`):
+On first startup:
 1. `Base.metadata.create_all` — creates all tables if missing
 2. `_seed_catalog_if_empty()` — inserts 6 genres + 6 worlds if genres table is empty
 
-**Production migrations:** Alembic (configured but manual)
+**New columns added to production via direct ALTER TABLE** (Alembic versions dir is empty):
+- `stories.illustration_style VARCHAR(50)` — added 2026-03-16
 
-### 10.4 SSL
-
-- Backend + Worker: look for `root.crt` in project directory
-- If found: full certificate verification
-- If not found (Railway): encrypted connection without cert verification (`CERT_NONE`)
+Full catalog (31 genres, 30 worlds, 50 base tales) loaded via `python3 -m app.seed.seed_db`.
 
 ---
 
 ## 11. Seed Data
 
-### 11.1 Genres (6)
+### 11.1 Genres (31 total)
 
-| slug | name_ru | prompt_hint (summary) |
-|------|---------|----------------------|
-| adventure | Appended | Exciting journey, discoveries, obstacles |
-| fairy-tale | Fairy Tale | Magic, enchantments, transformations |
-| educational | Educational | Interesting facts woven into narrative |
-| friendship | About Friendship | Loyalty, helping each other |
-| funny | Funny Story | Comic situations, wordplay |
-| bedtime | Bedtime Tale | Calm, soothing, peaceful |
+Original 6 + 25 new (seeded via `backend/app/seed/genres.json`):
 
-### 11.2 Worlds (6)
+**Original:** adventure · fairy-tale · educational · friendship · funny · bedtime
 
-| slug | name_ru | visual_style_hint (summary) |
-|------|---------|----------------------------|
-| enchanted-forest | Enchanted Forest | Studio Ghibli, warm tones |
-| space | Space | Pixar-style kid-friendly sci-fi |
-| underwater | Underwater | Colorful coral, bioluminescent |
-| medieval-kingdom | Fairy Kingdom | Classic Disney storybook |
-| modern-city | Modern City | Friendly, warm urban |
-| dinosaur-world | Dinosaur World | Bright, adventurous jungle |
+**New:** detective · rescue · riddles · journey · fantasy · space-sci-fi · animal-stories · superheroes · light-mystery · everyday-stories · school-stories · moral-stories · survival-nature · historical-adventure · creativity-imagination · holiday-stories · science-adventure · quest-treasure-hunt · sea-adventure · prehistoric-world · robots-technology · profession-stories · magical-worlds · secrets-mysteries · self-discovery-growing-up
 
-### 11.3 Base Tales (3, from seed script)
+**Cover images:** All 31 genres have S3 cover images at `ui-assets/genres/{slug}.png` (512×384, generated via Leonardo AI Phoenix)
 
-| slug | name_ru | summary |
-|------|---------|---------|
-| kolobok | Kolobok | Round bun escapes, meets animals |
-| teremok | Teremok | Animals settle in a small house |
-| repka | Repka (Turnip) | Grandfather can't pull out a huge turnip |
+### 11.2 Worlds (30 total)
+
+Original 6 + 24 new (seeded via `backend/app/seed/worlds.json`):
+
+**Original:** enchanted-forest · space · underwater · medieval-kingdom · modern-city · dinosaur-world
+
+**New:** ancient-legends · underground-world · sky-kingdom · dragon-world · robot-world · enchanted-castle · mysterious-island · wonder-desert · north-pole · jungle · candy-land · dream-world · lost-city · pirate-islands · magic-school · deep-ocean · moon-base · monster-planet · giant-world · miniature-world · cloud-country · shadow-labyrinth · time-kingdom · elemental-world
+
+**Cover images:** All 30 worlds have S3 cover images at `ui-assets/worlds/{slug}.png`
+
+### 11.3 Base Tales (50 total)
+
+50 Russian fairy tale templates with plot structures and characters, seeded via `backend/app/seed/seed_db.py` (run once manually).
+
+### 11.4 Illustration Style Previews (8)
+
+Cover images at `landing-assets/styles/{slug}.png`:
+
+| Slug | Name |
+|------|------|
+| watercolor | Акварель |
+| 3d-pixar | 3D Анимация (Pixar) |
+| disney | Disney |
+| comic | Комикс |
+| anime | Аниме |
+| pastel | Пастель |
+| classic-book | Книжная классика |
+| pop-art | Поп-арт |
 
 ---
 
-## 12. Shared Constants (Enums)
+## 12. Shared Constants (`shared/constants.py`)
 
 ```python
 CharacterType:   child | adult | pet
@@ -938,6 +780,13 @@ JobStatus:       queued | processing | photo_analysis | story_bible |
 Platform:        android | web
 BaseTaleCharacterRole: protagonist | antagonist | helper | secondary
 EducationalContentType: fact | question
+
+# Illustration styles
+VALID_ILLUSTRATION_STYLES: frozenset = {
+    "watercolor", "3d-pixar", "disney", "comic",
+    "anime", "pastel", "classic-book", "pop-art"
+}
+STYLE_PROMPTS: dict[str, str]  # slug → English AI prompt fragment
 ```
 
 ---
@@ -950,66 +799,41 @@ EducationalContentType: fact | question
 | `backend/app/main.py` | FastAPI app, CORS, lifespan, auto-seed |
 | `backend/app/config.py` | Pydantic BaseSettings, all env vars |
 | `backend/app/database.py` | Async SQLAlchemy engine, SSL fallback |
-| `backend/app/dependencies.py` | get_db, get_current_user (JWT) |
-| `backend/app/core/security.py` | JWT create/decode, bcrypt hash/verify |
-| `backend/app/core/exceptions.py` | HTTP exceptions (400/401/403/404/409) |
-| `backend/app/core/middleware.py` | Request logging, X-Request-ID |
-| `backend/app/routers/*.py` | API endpoints (auth, characters, catalog, generation, stories, health) |
-| `backend/app/schemas/*.py` | Pydantic request/response models |
-| `backend/app/services/*.py` | Business logic (auth, character, story, generation, s3, redis) |
-| `backend/requirements.txt` | Python dependencies |
+| `backend/app/routers/*.py` | API endpoints |
+| `backend/app/schemas/generation.py` | GenerationCreateRequest (incl. illustration_style) |
+| `backend/app/services/generation_service.py` | Job creation, Redis enqueue |
+| `backend/app/seed/seed_db.py` | Full catalog seed (31 genres, 30 worlds, 50 tales) |
 
 ### Worker
 | File | Purpose |
 |------|---------|
 | `worker/app/main.py` | Redis BRPOP loop, pipeline orchestrator |
-| `worker/app/config.py` | Worker env vars |
-| `worker/app/database.py` | Async engine for worker |
-| `worker/app/pipeline/base.py` | PipelineContext, PipelineStage base |
-| `worker/app/pipeline/*.py` | 9 pipeline stages |
-| `worker/app/services/openai_service.py` | GPT-4o text + Vision |
-| `worker/app/services/leonardo_service.py` | Leonardo.ai image generation |
-| `worker/app/services/dalle_service.py` | DALL-E 3 fallback |
+| `worker/app/pipeline/base.py` | PipelineContext (incl. illustration_style) |
+| `worker/app/pipeline/story_bible.py` | Stage 2: style injected into OpenAI prompt |
+| `worker/app/pipeline/scene_decomposition.py` | Stage 4: STYLE_PROMPTS override |
 | `worker/app/services/image_service.py` | Unified image router with fallback |
-| `worker/app/services/s3_service.py` | S3 upload/delete |
-| `worker/app/services/redis_service.py` | Queue consume, progress tracking |
-| `worker/app/services/push_service.py` | FCM push notifications |
-| `worker/app/utils/text.py` | JSON cleanup, truncation |
-| `worker/requirements.txt` | Worker Python dependencies |
 
 ### Shared
 | File | Purpose |
 |------|---------|
-| `shared/models/base.py` | DeclarativeBase, TimestampMixin |
-| `shared/models/*.py` | All SQLAlchemy ORM models (12 files) |
-| `shared/constants.py` | Enums for types, statuses, roles |
+| `shared/models/story.py` | Story model (incl. illustration_style column) |
+| `shared/constants.py` | Enums + STYLE_PROMPTS + VALID_ILLUSTRATION_STYLES |
 
 ### Flutter
 | File | Purpose |
 |------|---------|
-| `flutter_app/lib/main.dart` | App entry, ProviderScope |
-| `flutter_app/lib/app.dart` | MaterialApp.router, theme |
-| `flutter_app/lib/config/app_config.dart` | API URL, timeouts |
-| `flutter_app/lib/config/theme.dart` | Material 3 theme |
-| `flutter_app/lib/config/router.dart` | go_router, auth guard |
-| `flutter_app/lib/models/*.dart` | Dart data models (3 files) |
-| `flutter_app/lib/providers/*.dart` | Riverpod providers (5 files) |
-| `flutter_app/lib/services/*.dart` | API services (7 files) |
-| `flutter_app/lib/screens/**/*.dart` | UI screens (8 sections) |
-| `flutter_app/lib/widgets/*.dart` | Reusable widgets (4 files) |
-| `flutter_app/pubspec.yaml` | Flutter dependencies |
+| `flutter_app/lib/config/theme.dart` | «Зачарованная ночь» dark theme |
+| `flutter_app/lib/config/ui_assets.dart` | S3 URL constants (86 total assets) |
+| `flutter_app/lib/config/landing_assets.dart` | Landing assets + showcase story data |
+| `flutter_app/lib/screens/wizard/wizard_screen.dart` | 3-step wizard + `_StyleSelector` |
+| `flutter_app/lib/screens/reader/reader_screen.dart` | Immersive reader (mobile + web) |
+| `flutter_app/lib/services/generation_service.dart` | createGeneration(illustrationStyle) |
 
 ### Infrastructure
 | File | Purpose |
 |------|---------|
-| `Dockerfile.backend` | API Docker build |
-| `Dockerfile.worker` | Worker Docker build |
-| `Dockerfile.web` | Flutter web → nginx build |
-| `backend/railway.toml` | Backend Railway config |
-| `worker/railway.toml` | Worker Railway config |
-| `.github/workflows/api-deploy.yml` | Backend CI/CD |
-| `.github/workflows/worker-deploy.yml` | Worker CI/CD |
-| `backend/.env.example` | Env vars template |
+| `Dockerfile.backend/worker/web` | Docker builds |
+| `generate_catalog_assets.py` | Leonardo AI → S3 asset generation script |
 
 ---
 
@@ -1026,40 +850,78 @@ EducationalContentType: fact | question
 
 ## 15. Known Constraints & Notes
 
-1. **CORS (API):** `allow_origins` lists explicit origins only — `allow_origins=["*"]` is **forbidden** when `allow_credentials=True` (CORS spec violation). Current allowed: `https://talekid2-production.up.railway.app` + `allow_origin_regex` for localhost.
-2. **CORS (S3):** TimeWeb S3 bucket has explicit CORS rules for web origin. If the domain changes, update via `boto3.put_bucket_cors()`.
-3. **Password hashing:** Requires `bcrypt==4.1.3` (passlib 1.7.4 incompatible with bcrypt >=5.0)
-4. **Email validation:** Requires `pydantic[email]` (includes email-validator package)
-5. **SSL fallback:** Without `root.crt`, SSL connection is encrypted but without certificate verification
-6. **Image consistency:** Leonardo Character Reference (preprocessorId 133) + `initImageId`/`initImageType: "GENERATED"` for visual consistency across pages; DALL-E fallback loses character consistency (no reference support)
-7. **Leonardo image ID flow:** `generate_character_reference` returns `{url, id}`; ID stored in `PipelineContext.character_leonardo_ids[character_id]`; used as `initImageId` in controlnets for page illustrations
-8. **Catalog auto-seed:** 6 genres + 6 worlds inserted on first startup; base tales (3) available via seed script only
-9. **Firebase FCM:** Not yet initialized in Flutter; push_service in worker gracefully degrades if credentials missing
-10. **PDF generation:** Client-side (Flutter `pdf` package), no server load
-11. **Localization:** Russian UI throughout; API prompts in English for AI models, user-facing content in Russian
+1. **CORS (API):** `allow_origins` lists explicit origins — wildcard forbidden with `allow_credentials=True`.
+2. **CORS (S3):** Explicit CORS rules for web origin. If domain changes, update via `boto3.put_bucket_cors()`.
+3. **Password hashing:** Requires `bcrypt==4.1.3` (passlib 1.7.4 incompatible with bcrypt ≥5.0).
+4. **SSL fallback:** Without `root.crt`, uses encrypted connection without cert verification.
+5. **Image consistency:** Leonardo Character Reference + `initImageId`/`initImageType: "GENERATED"` for visual consistency; DALL-E fallback loses consistency.
+6. **Catalog auto-seed:** Only 6 genres + 6 worlds on first startup; full 31+30+50 requires `python3 -m app.seed.seed_db`.
+7. **illustration_style migration:** Column added via direct `ALTER TABLE` (not Alembic). Existing stories have `NULL` → treated as `watercolor` in worker.
+8. **Firebase FCM:** Not yet initialized in Flutter; push_service gracefully degrades.
+9. **PDF generation:** Client-side only (Flutter `pdf` package).
+10. **Localization:** Russian UI; API prompts in English for AI models.
 
 ---
 
 ## 16. Changelog
 
+### v1.3.0 — 2026-03-16
+
+**New Features:**
+
+- **Illustration Style Selector** (full stack) — Users can choose 1 of 8 artistic styles when creating a story:
+  - Акварель · 3D Анимация (Pixar) · Disney · Комикс · Аниме · Пастель · Книжная классика · Поп-арт
+  - DB: `stories.illustration_style VARCHAR(50)` column (ALTER TABLE in production)
+  - Backend: `illustration_style` field in `GenerationCreateRequest`, stored in Story + Redis payload
+  - Worker Stage 2 (Story Bible): style injected into OpenAI prompt as forced `visual_style`
+  - Worker Stage 4 (Scene Decomp): `STYLE_PROMPTS[slug]` overrides AI-generated visual style
+  - `shared/constants.py`: `STYLE_PROMPTS` dict + `VALID_ILLUSTRATION_STYLES` frozenset
+  - Flutter: `_StyleSelector` widget (responsive grid, 3-8 cols, cover images from S3, checkmark on selected)
+
+- **Extended Catalog** — 31 genres + 30 worlds + 50 base tales:
+  - 25 new genres + 24 new worlds added via `backend/app/seed/seed_db.py`
+  - All 49 new catalog items have AI-generated cover images (Leonardo Phoenix, 512×384, uploaded to S3)
+  - `ui_assets.dart`: 49 new Dart constants
+  - `wizard_screen.dart`: `_genreAssets` / `_worldAssets` maps extended to all slugs
+
+- **Responsive Wizard Grid** — Genre and world grids now fill 70% of browser viewport width:
+  - Dynamic column count: `(width / 160).floor().clamp(3, 8)`
+  - Separate `SizedBox(width: screenWidth * 0.70)` containers for genre/world/style sections
+  - Age, education, base tale sections remain at `maxWidth: 640`
+
+- **«Зачарованная ночь» Dark Theme** — Complete visual redesign:
+  - Background `#0C0A1D`, glass-morphism cards, indigo/gold/purple accent palette
+  - Comfortaa headings + Nunito Sans body fonts
+  - All screens updated: home, wizard, generation progress, reader, library, auth, landing
+
+- **Immersive Web Reader** — Fullscreen illustration with frosted glass text overlay:
+  - `Stack(fit: StackFit.expand)` + `BackdropFilter(blur: 16)` text card
+  - Keyboard navigation (←/→)
+  - Floating navigation arrows
+
+- **Landing Page** — Full redesign with 8 style cards showcase, 4 interactive story previews (10 pages each with real illustrations and text), features section.
+
+- **Seed Script** (`backend/app/seed/seed_db.py`) — Idempotent upsert of full catalog (31 genres, 30 worlds, 50 base tales with characters).
+
+**Technical:**
+- `generate_catalog_assets.py` — standalone script for Leonardo AI → S3 cover generation
+- Production PostgreSQL `ALTER TABLE stories ADD COLUMN IF NOT EXISTS illustration_style VARCHAR(50)` executed directly
+
+---
+
 ### v1.2.0 — 2026-03-15
 
 **Fixes:**
+- **S3 CORS** — Configured `GET`/`HEAD` CORS rule on TimeWeb S3 for production web origin.
+- **DB: double-bucket image URLs** — Fixed 18 pages + 2 covers + 2 character refs with `/{bucket}/{bucket}/{key}` paths.
+- **CORS middleware (API)** — Replaced `allow_origins=["*"]` with explicit origin list.
+- **JWT interceptor: 403 handling** — FastAPI `HTTPBearer` returns 403 when `Authorization` is absent; interceptor now handles both 401 and 403.
+- **JWT interceptor: dangling handler** — Retry in `onError` now wrapped in `try/catch` with `handler.next()` fallback.
 
-- **S3 CORS** — Configured `GET`/`HEAD` CORS rule on TimeWeb S3 bucket for `https://talekid2-production.up.railway.app`. Flutter Web uses `XMLHttpRequest` for `CachedNetworkImage`, so without CORS images were silently blocked by the browser.
-- **DB: double-bucket image URLs** — 18 pages + 2 story covers + 2 character reference URLs had path `/{bucket}/{bucket}/{key}` in the database (written before the S3 URL fix). Fixed via direct SQL `REPLACE()` update.
-- **CORS middleware (API)** — Replaced `allow_origins=["*"]` with explicit origin list. The wildcard combined with `allow_credentials=True` is invalid per the CORS spec; browsers suppressed 401/403 responses, making Dio report `connectionError` instead of `badResponse`.
-- **JWT interceptor: 403 handling** — FastAPI `HTTPBearer` returns HTTP 403 (not 401) when `Authorization` header is absent. Interceptor now handles both `401` and `403` for token refresh.
-- **JWT interceptor: dangling handler** — `dio.fetch()` retry inside `onError` was not wrapped in `try/catch`. Any exception left `ErrorInterceptorHandler` uncalled, causing the request to hang and surface as a fake `connectionError`. Added `try/catch` with `handler.next()` fallback.
+---
 
 ### v1.1.0 — 2026-03-14
 
 **Fixes:**
-
-- **S3 URL double-bucket** (`worker/app/services/s3_service.py`) — `STORAGE_PUBLIC_URL` already contains the bucket name; worker was appending `/{bucket}/{key}` → produced broken `/{bucket}/{bucket}/{key}` URLs. Fixed: use `{STORAGE_PUBLIC_URL}/{key}` directly.
-- **Leonardo.ai 400 Bad Request** — Worker used non-existent `initImageUrl` field in controlnets. Leonardo API requires `initImageId` (internal generation ID) + `initImageType: "GENERATED"`. Rewrote 5 files:
-  - `worker/app/pipeline/base.py` — added `character_leonardo_ids: dict[str, str]` to `PipelineContext`
-  - `worker/app/services/leonardo_service.py` — `_poll_generation` returns `list[{url, id}]`; `generate_image` accepts `character_ref_id`; builds correct controlnet payload
-  - `worker/app/services/image_service.py` — passes `character_ref_id` through; `generate_character_reference` returns `list[{url, id}]`
-  - `worker/app/pipeline/character_references.py` — stores Leonardo image ID in context
-  - `worker/app/pipeline/illustration.py` — looks up protagonist's Leonardo ID from context, passes as `character_ref_id`
+- **S3 URL double-bucket** — `STORAGE_PUBLIC_URL` already contains bucket; removed duplicate append.
+- **Leonardo.ai 400 Bad Request** — Replaced invalid `initImageUrl` with `initImageId` + `initImageType: "GENERATED"` in controlnets. Rewrote character reference pipeline (5 files).
