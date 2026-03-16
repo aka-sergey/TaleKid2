@@ -3,8 +3,7 @@
 class UiAssets {
   UiAssets._();
 
-  // Worlds
-  // Worlds
+  // ── Worlds (original 6) ──────────────────────────────────────────────────
   static const String magic_forest =
       'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/magic-forest.png';
   static const String space =
@@ -18,7 +17,57 @@ class UiAssets {
   static const String dinosaur_world =
       'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/dinosaur-world.png';
 
-  // Genres
+  // ── Worlds (new 24) ──────────────────────────────────────────────────────
+  static const String ancient_legends =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/ancient-legends.png';
+  static const String underground_world =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/underground-world.png';
+  static const String sky_kingdom =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/sky-kingdom.png';
+  static const String dragon_world =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/dragon-world.png';
+  static const String robot_world =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/robot-world.png';
+  static const String enchanted_castle =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/enchanted-castle.png';
+  static const String mysterious_island =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/mysterious-island.png';
+  static const String wonder_desert =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/wonder-desert.png';
+  static const String north_pole =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/north-pole.png';
+  static const String jungle =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/jungle.png';
+  static const String candy_land =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/candy-land.png';
+  static const String dream_world =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/dream-world.png';
+  static const String lost_city =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/lost-city.png';
+  static const String pirate_islands =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/pirate-islands.png';
+  static const String magic_school =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/magic-school.png';
+  static const String deep_ocean =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/deep-ocean.png';
+  static const String moon_base =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/moon-base.png';
+  static const String monster_planet =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/monster-planet.png';
+  static const String giant_world =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/giant-world.png';
+  static const String miniature_world =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/miniature-world.png';
+  static const String cloud_country =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/cloud-country.png';
+  static const String shadow_labyrinth =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/shadow-labyrinth.png';
+  static const String time_kingdom =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/time-kingdom.png';
+  static const String elemental_world =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/worlds/elemental-world.png';
+
+  // ── Genres (original 6) ──────────────────────────────────────────────────
   static const String adventure =
       'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/adventure.png';
   static const String fairy_tale =
@@ -32,7 +81,59 @@ class UiAssets {
   static const String bedtime =
       'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/bedtime.png';
 
-  // Ages
+  // ── Genres (new 25) ──────────────────────────────────────────────────────
+  static const String detective =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/detective.png';
+  static const String rescue =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/rescue.png';
+  static const String riddles =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/riddles.png';
+  static const String journey =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/journey.png';
+  static const String fantasy =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/fantasy.png';
+  static const String space_sci_fi =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/space-sci-fi.png';
+  static const String animal_stories =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/animal-stories.png';
+  static const String superheroes =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/superheroes.png';
+  static const String light_mystery =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/light-mystery.png';
+  static const String everyday_stories =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/everyday-stories.png';
+  static const String school_stories =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/school-stories.png';
+  static const String moral_stories =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/moral-stories.png';
+  static const String survival_nature =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/survival-nature.png';
+  static const String historical_adventure =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/historical-adventure.png';
+  static const String creativity_imagination =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/creativity-imagination.png';
+  static const String holiday_stories =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/holiday-stories.png';
+  static const String science_adventure =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/science-adventure.png';
+  static const String quest_treasure_hunt =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/quest-treasure-hunt.png';
+  static const String sea_adventure =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/sea-adventure.png';
+  static const String prehistoric_world =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/prehistoric-world.png';
+  static const String robots_technology =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/robots-technology.png';
+  static const String profession_stories =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/profession-stories.png';
+  static const String magical_worlds =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/magical-worlds.png';
+  static const String secrets_mysteries =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/secrets-mysteries.png';
+  static const String self_discovery_growing_up =
+      'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/genres/self-discovery-growing-up.png';
+
+  // ── Ages ─────────────────────────────────────────────────────────────────
   static const String age_3_5 =
       'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/ages/age-3-5.png';
   static const String age_6_8 =
@@ -40,7 +141,7 @@ class UiAssets {
   static const String age_9_12 =
       'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/ages/age-9-12.png';
 
-  // UI
+  // ── UI ────────────────────────────────────────────────────────────────────
   static const String hero_create_story =
       'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/ui/hero-create-story.png';
   static const String empty_library =
@@ -51,5 +152,4 @@ class UiAssets {
       'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/ui/landing-hero.png';
   static const String character_create =
       'https://s3.twcstorage.ru/3e487a89-899c-4ef8-91e2-0900cb899801/ui-assets/ui/character-create.png';
-
 }
