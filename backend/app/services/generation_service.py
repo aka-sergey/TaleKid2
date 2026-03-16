@@ -84,6 +84,7 @@ async def create_generation_job(
         page_count=request.page_count,
         reading_duration_minutes=request.reading_duration_minutes,
         illustration_style=request.illustration_style,
+        user_context=request.user_context,
         status=StoryStatus.GENERATING.value,
     )
     db.add(story)
@@ -122,6 +123,7 @@ async def create_generation_job(
         "page_count": request.page_count,
         "reading_duration_minutes": request.reading_duration_minutes,
         "illustration_style": request.illustration_style,
+        "user_context": request.user_context,
     }
     await redis_svc.enqueue_job(str(job.id), payload)
 

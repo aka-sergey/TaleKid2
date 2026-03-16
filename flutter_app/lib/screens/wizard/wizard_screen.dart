@@ -122,6 +122,7 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
   int? _selectedWorldId;
   int? _selectedBaseTaleId;
   String _illustrationStyle = 'watercolor'; // default
+  String _userContext = ''; // personal context to weave into the story
   int _pageCount = 10;
   int _readingDuration = 10;
 
@@ -153,6 +154,7 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
         pageCount: _pageCount,
         readingDurationMinutes: _readingDuration,
         illustrationStyle: _illustrationStyle,
+        userContext: _userContext.trim().isEmpty ? null : _userContext.trim(),
       );
       if (mounted) {
         context.go(
@@ -261,9 +263,11 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
           key: const ValueKey('s3'),
           pageCount: _pageCount,
           readingDuration: _readingDuration,
+          userContext: _userContext,
           onPageCountChanged: (v) => setState(() => _pageCount = v),
           onReadingDurationChanged: (v) =>
               setState(() => _readingDuration = v),
+          onUserContextChanged: (v) => setState(() => _userContext = v),
         );
       default:
         return const SizedBox.shrink();
@@ -730,19 +734,42 @@ class _Step2Settings extends ConsumerWidget {
 // Step 3 — Format
 // ═════════════════════════════════════════════════════════════════════════
 
-class _Step3Format extends StatelessWidget {
+class _Step3Format extends StatefulWidget {
   final int pageCount;
   final int readingDuration;
+  final String userContext;
   final ValueChanged<int> onPageCountChanged;
   final ValueChanged<int> onReadingDurationChanged;
+  final ValueChanged<String> onUserContextChanged;
 
   const _Step3Format({
     super.key,
     required this.pageCount,
     required this.readingDuration,
+    required this.userContext,
     required this.onPageCountChanged,
     required this.onReadingDurationChanged,
+    required this.onUserContextChanged,
   });
+
+  @override
+  State<_Step3Format> createState() => _Step3FormatState();
+}
+
+class _Step3FormatState extends State<_Step3Format> {
+  late final TextEditingController _contextCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _contextCtrl = TextEditingController(text: widget.userContext);
+  }
+
+  @override
+  void dispose() {
+    _contextCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -764,36 +791,81 @@ class _Step3Format extends StatelessWidget {
                   style: AppTheme.heading(size: 17)),
               const SizedBox(height: 12),
               Slider(
-                value: pageCount.toDouble(),
+                value: widget.pageCount.toDouble(),
                 min: 5,
                 max: 30,
                 divisions: 25,
-                label: '$pageCount',
-                onChanged: (v) => onPageCountChanged(v.round()),
+                label: '${widget.pageCount}',
+                onChanged: (v) => widget.onPageCountChanged(v.round()),
               ),
               _PresetRow(
                   values: const [5, 10, 15, 20, 25, 30],
-                  selected: pageCount,
-                  onSelected: onPageCountChanged),
+                  selected: widget.pageCount,
+                  onSelected: widget.onPageCountChanged),
               const SizedBox(height: 28),
               Text('Время чтения',
                   style: AppTheme.heading(size: 17)),
               const SizedBox(height: 12),
               Slider(
-                value: readingDuration.toDouble(),
+                value: widget.readingDuration.toDouble(),
                 min: 5,
                 max: 30,
                 divisions: 25,
-                label: '$readingDuration мин',
+                label: '${widget.readingDuration} мин',
                 onChanged: (v) =>
-                    onReadingDurationChanged(v.round()),
+                    widget.onReadingDurationChanged(v.round()),
               ),
               _PresetRow(
                   values: const [5, 10, 15, 20, 30],
-                  selected: readingDuration,
-                  onSelected: onReadingDurationChanged,
+                  selected: widget.readingDuration,
+                  onSelected: widget.onReadingDurationChanged,
                   suffix: ' мин'),
-              const SizedBox(height: 28),
+              const SizedBox(height: 32),
+              // ── Personal Context Section ──────────────────────────────
+              Text('Личный контекст', style: AppTheme.heading(size: 17)),
+              const SizedBox(height: 4),
+              Text(
+                'Поделитесь событием из жизни — ИИ вплетёт его в сказку',
+                style: AppTheme.body(size: 14, color: AppTheme.textSecondary),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _contextCtrl,
+                onChanged: widget.onUserContextChanged,
+                maxLines: 4,
+                maxLength: 1000,
+                decoration: InputDecoration(
+                  hintText:
+                      'Например: «Сегодня мы ходили в зоопарк и видели '
+                      'слонов, жирафов и тигров. Маша была в восторге '
+                      'от попугаев»',
+                  hintStyle: AppTheme.body(
+                      size: 13, color: AppTheme.textLight),
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.only(left: 14, right: 8, bottom: 56),
+                    child: Icon(Icons.auto_stories_rounded,
+                        color: AppTheme.primaryColor, size: 22),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: AppTheme.borderColor),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: AppTheme.borderColor),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(
+                        color: AppTheme.primaryColor, width: 2),
+                  ),
+                  filled: true,
+                  fillColor: AppTheme.fillColor,
+                  contentPadding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                ),
+                style: AppTheme.body(size: 14),
+              ),
+              const SizedBox(height: 20),
               AppCard(
                 color: AppTheme.fillColor,
                 child: Column(
@@ -808,9 +880,9 @@ class _Step3Format extends StatelessWidget {
                               size: 15, weight: FontWeight.w700)),
                     ]),
                     const SizedBox(height: 14),
-                    _sRow('Страниц', '$pageCount'),
-                    _sRow('Время чтения', '$readingDuration мин'),
-                    _sRow('Иллюстраций', '$pageCount'),
+                    _sRow('Страниц', '${widget.pageCount}'),
+                    _sRow('Время чтения', '${widget.readingDuration} мин'),
+                    _sRow('Иллюстраций', '${widget.pageCount}'),
                   ],
                 ),
               ),

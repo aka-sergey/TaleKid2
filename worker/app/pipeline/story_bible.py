@@ -162,6 +162,18 @@ class StoryBibleStage(PipelineStage):
                 "ВАЖНО: Поле visual_style в JSON должно точно описывать этот стиль."
             )
 
+        # User personal context — the strongest personalisation signal
+        if ctx.user_context:
+            parts.append(
+                f"\n🌟 ЛИЧНЫЙ КОНТЕКСТ ПОЛЬЗОВАТЕЛЯ (самое важное!):\n{ctx.user_context}"
+            )
+            parts.append(
+                "ТРЕБОВАНИЕ: Органично вплети этот контекст в сюжет сказки. "
+                "Упомяни события, места или персонажей из контекста в нескольких ключевых моментах. "
+                "Контекст должен быть центральной темой или важным элементом сюжета, "
+                "а не просто случайным упоминанием."
+            )
+
         # Characters
         parts.append("\nПерсонажи (пользователь добавил своих):")
         for char_id, description in ctx.character_descriptions.items():

@@ -1,6 +1,6 @@
 # TaleKID - Project Passport
 
-> **Version:** 1.3.0 | **Date:** 2026-03-16 | **Repository:** https://github.com/aka-sergey/TaleKid2 | **Branch:** master
+> **Version:** 1.4.0 | **Date:** 2026-03-16 | **Repository:** https://github.com/aka-sergey/TaleKid2 | **Branch:** master
 
 ---
 
@@ -211,6 +211,7 @@ users (UUID PK)
 | reading_duration_minutes | INTEGER | NOT NULL |
 | cover_image_url | VARCHAR(1000) | NULLABLE |
 | **illustration_style** | **VARCHAR(50)** | **NULLABLE** (watercolor/3d-pixar/disney/comic/anime/pastel/classic-book/pop-art) |
+| **user_context** | **TEXT** | **NULLABLE** — personal context from user, woven into story by AI (e.g. "We visited the zoo today") |
 | status | VARCHAR(20) | NOT NULL, default: 'draft', CHECK IN ('draft','generating','completed','failed'), INDEX |
 | story_bible | JSONB | NULLABLE |
 | created_at | TIMESTAMPTZ | NOT NULL, default: NOW |
@@ -382,11 +383,14 @@ users (UUID PK)
   "education_level": 0.5,
   "page_count": 10,
   "reading_duration_minutes": 10,
-  "illustration_style": "watercolor"
+  "illustration_style": "watercolor",
+  "user_context": "We visited the zoo today and saw elephants, giraffes and parrots"
 }
 ```
 
 **`illustration_style` allowed values:** `watercolor` · `3d-pixar` · `disney` · `comic` · `anime` · `pastel` · `classic-book` · `pop-art` · `null` (defaults to `watercolor` in worker)
+
+**`user_context`** — optional, max 1000 chars. Personal context from user. AI weaves this event/memory into the story plot organically. Example: "Сегодня мы ходили в зоопарк, Маша была в восторге от попугаев"
 
 **GenerationStatusResponse:**
 ```json
@@ -864,6 +868,22 @@ STYLE_PROMPTS: dict[str, str]  # slug → English AI prompt fragment
 ---
 
 ## 16. Changelog
+
+### v1.4.0 — 2026-03-16
+
+**New Features:**
+
+- **User Context Field** — Personal context input in wizard Step 3, woven by AI into the story:
+  - Flutter: text field in Step 3 (Format), up to 1000 chars, with hint "Например: «Сегодня мы ходили в зоопарк...»"
+  - DB: `stories.user_context TEXT NULLABLE` column (ALTER TABLE executed in production)
+  - Backend: `user_context: Optional[str]` field in `GenerationCreateRequest` (max 1000 chars)
+  - Backend service: `user_context` stored in Story record + passed in Redis payload
+  - Worker `PipelineContext`: `self.user_context: str | None`
+  - Worker Stage 2 (Story Bible): context injected as 🌟 priority instruction requiring organic integration
+  - Worker Stage 3 (Text Generation): context re-injected on every page prompt for consistency; special guidance on first/last pages
+  - Example use: "Мы сегодня ходили в зоопарк, Маша была в восторге от попугаев" → ИИ строит вокруг этого весь сюжет
+
+---
 
 ### v1.3.0 — 2026-03-16
 

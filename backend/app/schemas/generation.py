@@ -23,6 +23,11 @@ class GenerationCreateRequest(BaseModel):
         None,
         description="One of: watercolor, 3d-pixar, disney, comic, anime, pastel, classic-book, pop-art",
     )
+    user_context: Optional[str] = Field(
+        None,
+        max_length=1000,
+        description="Personal context from user to weave into the story (e.g. 'We visited the zoo today')",
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -71,6 +71,9 @@ class Story(TimestampMixin, Base):
     illustration_style: Mapped[Optional[str]] = mapped_column(
         String(50), nullable=True
     )
+    user_context: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True
+    )
     status: Mapped[str] = mapped_column(
         String(20), nullable=False, default="draft", server_default=text("'draft'")
     )

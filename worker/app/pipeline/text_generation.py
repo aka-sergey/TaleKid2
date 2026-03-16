@@ -63,7 +63,8 @@ class TextGenerationStage(PipelineStage):
         previous_pages = []
         for page_num in range(1, page_count + 1):
             user_prompt = self._build_page_prompt(
-                page_num, page_count, bible, previous_pages, words_per_page, story.age_range
+                page_num, page_count, bible, previous_pages, words_per_page,
+                story.age_range, ctx.user_context
             )
 
             pct = self.progress_start + int(
@@ -120,7 +121,8 @@ class TextGenerationStage(PipelineStage):
         return max(30, total_words // page_count)
 
     def _build_page_prompt(
-        self, page_num, total_pages, bible, previous_pages, words_per_page, age_range
+        self, page_num, total_pages, bible, previous_pages, words_per_page,
+        age_range, user_context: str | None = None
     ):
         parts = []
         parts.append(
@@ -130,15 +132,31 @@ class TextGenerationStage(PipelineStage):
         parts.append(f"Page {page_num} of {total_pages}")
         parts.append(f"Target length: approximately {words_per_page} words")
 
+        # Remind model of user context on every page to ensure consistent weaving
+        if user_context:
+            parts.append(
+                f"\n🌟 USER PERSONAL CONTEXT (must be woven into this page if relevant):\n{user_context}"
+            )
+
         if page_num == 1:
             parts.append(
                 "This is the FIRST page. Introduce the main character and setting."
             )
+            if user_context:
+                parts.append(
+                    "IMPORTANT: On this first page, naturally introduce elements "
+                    "from the user's personal context into the story world."
+                )
         elif page_num == total_pages:
             parts.append(
                 "This is the LAST page. Wrap up the story with a satisfying ending "
                 "and subtle moral."
             )
+            if user_context:
+                parts.append(
+                    "IMPORTANT: The ending should echo or resolve the personal context "
+                    "in a meaningful, memorable way for the child."
+                )
         else:
             progress_pct = page_num / total_pages
             if progress_pct < 0.35:

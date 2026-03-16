@@ -29,6 +29,9 @@ class PipelineContext:
         self.character_leonardo_ids: dict[str, str] = {}
         # Illustration style chosen by user (e.g. "watercolor", "3d-pixar")
         self.illustration_style: str | None = payload.get("illustration_style")
+        # Personal context from user to weave into the story
+        # (e.g. "We visited the zoo today and saw many animals")
+        self.user_context: str | None = payload.get("user_context")
 
 
 class PipelineStage:
