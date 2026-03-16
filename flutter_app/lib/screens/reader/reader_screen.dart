@@ -33,6 +33,7 @@ class ReaderScreen extends ConsumerStatefulWidget {
 
 class _ReaderScreenState extends ConsumerState<ReaderScreen> {
   late final PageController _pageController;
+  final ScrollController _textScrollController = ScrollController();
   int _currentPage = 0;
   bool _titleDialogShown = false;
 
@@ -45,6 +46,7 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    _textScrollController.dispose();
     // Restore orientation on dispose (Android)
     if (!kIsWeb) {
       SystemChrome.setPreferredOrientations([
@@ -326,10 +328,10 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
               ),
             ),
 
-            // ── Frosted glass text bar at bottom (full width) ──
+            // ── Frosted glass text bar at bottom (auto-height, max 20%) ──
             if (page.textContent != null)
               Positioned(
-                bottom: 56,
+                bottom: 70,
                 left: 0,
                 right: 0,
                 child: ClipRRect(
@@ -338,11 +340,11 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
                     child: Container(
                       constraints: BoxConstraints(
                         maxHeight:
-                            MediaQuery.of(context).size.height * 0.42,
+                            MediaQuery.of(context).size.height * 0.20,
                       ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 32,
-                        vertical: 20,
+                        vertical: 10,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.black.withValues(alpha: 0.45),
@@ -352,13 +354,25 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
                           ),
                         ),
                       ),
-                      child: SingleChildScrollView(
-                        child: Text(
-                          page.textContent!,
-                          style: GoogleFonts.nunitoSans(
-                            color: Colors.white,
-                            fontSize: 17,
-                            height: 1.7,
+                      child: RawScrollbar(
+                        controller: _textScrollController,
+                        thumbVisibility: true,
+                        trackVisibility: true,
+                        thickness: 8,
+                        radius: const Radius.circular(4),
+                        thumbColor: AppTheme.accentColor,
+                        trackColor:
+                            AppTheme.primaryColor.withValues(alpha: 0.3),
+                        trackBorderColor: AppTheme.primaryColor,
+                        child: SingleChildScrollView(
+                          controller: _textScrollController,
+                          child: Text(
+                            page.textContent!,
+                            style: GoogleFonts.nunitoSans(
+                              color: Colors.white,
+                              fontSize: 15,
+                              height: 1.35,
+                            ),
                           ),
                         ),
                       ),
@@ -719,17 +733,21 @@ class _TopOverlay extends StatelessWidget {
                 ),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: AppTheme.accentColor.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: AppTheme.accentColor.withValues(alpha: 0.5),
+                    width: 0.5,
+                  ),
                 ),
                 child: Text(
-                  '${currentPage + 1}/$totalPages',
+                  '${currentPage + 1} / $totalPages',
                   style: GoogleFonts.nunitoSans(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+                    color: AppTheme.accentColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
