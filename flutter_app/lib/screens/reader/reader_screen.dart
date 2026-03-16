@@ -326,42 +326,39 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
               ),
             ),
 
-            // ── Frosted glass text overlay at bottom ──
+            // ── Frosted glass text bar at bottom (full width) ──
             if (page.textContent != null)
               Positioned(
-                bottom: 80,
+                bottom: 56,
                 left: 0,
                 right: 0,
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 700),
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                     child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 24),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 28,
-                              vertical: 20,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.4),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.15),
-                              ),
-                            ),
-                            child: Text(
-                              page.textContent!,
-                              style: GoogleFonts.nunitoSans(
-                                color: Colors.white,
-                                fontSize: 17,
-                                height: 1.7,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
+                      constraints: BoxConstraints(
+                        maxHeight:
+                            MediaQuery.of(context).size.height * 0.42,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 20,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.45),
+                        border: Border(
+                          top: BorderSide(
+                            color: Colors.white.withValues(alpha: 0.12),
+                          ),
+                        ),
+                      ),
+                      child: SingleChildScrollView(
+                        child: Text(
+                          page.textContent!,
+                          style: GoogleFonts.nunitoSans(
+                            color: Colors.white,
+                            fontSize: 17,
+                            height: 1.7,
                           ),
                         ),
                       ),
