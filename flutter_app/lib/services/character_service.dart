@@ -70,7 +70,7 @@ class CharacterApiService {
     String? appearanceDescription,
   }) async {
     try {
-      final response = await _client.dio.patch(
+      final response = await _client.dio.put(
         '/characters/$id',
         data: {
           if (name != null) 'name': name,

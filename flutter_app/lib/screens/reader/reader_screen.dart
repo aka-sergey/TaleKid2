@@ -136,9 +136,11 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
     return storyAsync.when(
       data: (story) {
         // Show title dialog once on first load
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _showTitleDialog(story);
-        });
+        if (!_titleDialogShown) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _showTitleDialog(story);
+          });
+        }
 
         final pages = List<StoryPage>.from(story.pages)
           ..sort((a, b) => a.pageNumber.compareTo(b.pageNumber));
@@ -852,7 +854,7 @@ class _BottomOverlay extends StatelessWidget {
           const Spacer(),
 
           // Page dots
-          _PageDots(total: pages.length, current: currentPage),
+          _PageDots(total: pages.length, current: currentPage, onDarkBackground: true),
 
           const Spacer(),
           const SizedBox(width: 48),
@@ -868,8 +870,13 @@ class _BottomOverlay extends StatelessWidget {
 class _PageDots extends StatelessWidget {
   final int total;
   final int current;
+  final bool onDarkBackground;
 
-  const _PageDots({required this.total, required this.current});
+  const _PageDots({
+    required this.total,
+    required this.current,
+    this.onDarkBackground = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -883,14 +890,21 @@ class _PageDots extends StatelessWidget {
       end = start + maxDots;
     }
 
+    final inactiveColor = onDarkBackground
+        ? Colors.white.withValues(alpha: 0.4)
+        : AppTheme.textLight.withValues(alpha: 0.35);
+    final ellipsisColor = onDarkBackground
+        ? Colors.white54
+        : AppTheme.textSecondary;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (start > 0)
-          const Padding(
-            padding: EdgeInsets.only(right: 4),
+          Padding(
+            padding: const EdgeInsets.only(right: 4),
             child: Text('...',
-                style: TextStyle(color: Colors.white54, fontSize: 10)),
+                style: TextStyle(color: ellipsisColor, fontSize: 10)),
           ),
         for (int i = start; i < end; i++)
           AnimatedContainer(
@@ -901,15 +915,15 @@ class _PageDots extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(3),
               color: i == current
-                  ? AppTheme.primaryLight
-                  : Colors.white.withValues(alpha: 0.4),
+                  ? AppTheme.primaryColor
+                  : inactiveColor,
             ),
           ),
         if (end < total)
-          const Padding(
-            padding: EdgeInsets.only(left: 4),
+          Padding(
+            padding: const EdgeInsets.only(left: 4),
             child: Text('...',
-                style: TextStyle(color: Colors.white54, fontSize: 10)),
+                style: TextStyle(color: ellipsisColor, fontSize: 10)),
           ),
       ],
     );
