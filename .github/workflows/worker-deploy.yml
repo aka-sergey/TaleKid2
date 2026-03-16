@@ -33,11 +33,9 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
 
       - name: Install Railway CLI
-        run: |
-          curl -fsSL https://railway.com/install.sh | sh
+        run: npm install -g @railway/cli
 
       - name: Deploy to Railway
-        run: |
-          railway up --service worker --detach
+        run: railway up --service worker --detach
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
