@@ -26,12 +26,16 @@ class PhotoPicker extends StatelessWidget {
   /// Maximum number of photos allowed (existing + pending).
   final int maxPhotos;
 
+  /// Number of locally-picked photos not yet uploaded (to enforce total limit).
+  final int pendingCount;
+
   const PhotoPicker({
     super.key,
     required this.existingPhotos,
     required this.onPhotoAdded,
     required this.onPhotoRemoved,
     this.maxPhotos = 3,
+    this.pendingCount = 0,
   });
 
   Future<void> _pickImage(BuildContext context, ImageSource source) async {
@@ -96,7 +100,8 @@ class PhotoPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final canAddMore = existingPhotos.length < maxPhotos;
+    final totalPhotos = existingPhotos.length + pendingCount;
+    final canAddMore = totalPhotos < maxPhotos;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +115,7 @@ class PhotoPicker extends StatelessWidget {
             ),
             const SizedBox(width: AppTheme.spacingSm),
             Text(
-              '${existingPhotos.length}/$maxPhotos',
+              '$totalPhotos/$maxPhotos',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppTheme.textLight,
                   ),

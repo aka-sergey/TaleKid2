@@ -91,13 +91,13 @@ class _CharacterCreateDialogState
   List<_GenderOption> get _genderOptions {
     if (_selectedType == 'child') {
       return [
-        _GenderOption(value: 'male', label: 'Мальчик', emoji: '👦'),
-        _GenderOption(value: 'female', label: 'Девочка', emoji: '👧'),
+        _GenderOption(value: 'male', label: 'Мальчик', emoji: '👦🏼'),
+        _GenderOption(value: 'female', label: 'Девочка', emoji: '👧🏼'),
       ];
     }
     return [
-      _GenderOption(value: 'male', label: 'Мужской', emoji: '👨'),
-      _GenderOption(value: 'female', label: 'Женский', emoji: '👩'),
+      _GenderOption(value: 'male', label: 'Мужской', emoji: '👨🏼'),
+      _GenderOption(value: 'female', label: 'Женский', emoji: '👩🏼'),
     ];
   }
 
@@ -291,7 +291,11 @@ class _CharacterCreateDialogState
               PhotoPicker(
                 existingPhotos: widget.existingCharacter?.photos ?? [],
                 maxPhotos: 3,
+                pendingCount: _pendingPhotos.length,
                 onPhotoAdded: (bytes, filename) {
+                  final existing =
+                      widget.existingCharacter?.photos.length ?? 0;
+                  if (existing + _pendingPhotos.length >= 3) return;
                   setState(() {
                     _pendingPhotos.add(
                         _PendingPhoto(bytes: bytes, filename: filename));
@@ -306,55 +310,44 @@ class _CharacterCreateDialogState
                 },
               ),
 
-              // Show pending (not yet uploaded) photos as small info chips
+              // Pending photos — show as image thumbnails (not file chips)
               if (_pendingPhotos.isNotEmpty) ...[
                 const SizedBox(height: 10),
                 Wrap(
                   spacing: 8,
-                  runSpacing: 6,
+                  runSpacing: 8,
                   children: _pendingPhotos.asMap().entries.map((entry) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppTheme.fillColor,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: AppTheme.borderColor,
-                          width: 0.5,
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.memory(
+                            entry.value.bytes,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.image,
-                              size: 16, color: AppTheme.primaryColor),
-                          const SizedBox(width: 6),
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 100),
-                            child: Text(
-                              entry.value.filename,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTheme.body(
-                                size: 12,
-                                color: AppTheme.textSecondary,
+                        Positioned(
+                          top: -4,
+                          right: -4,
+                          child: GestureDetector(
+                            onTap: () => setState(
+                                () => _pendingPhotos.removeAt(entry.key)),
+                            child: Container(
+                              width: 22,
+                              height: 22,
+                              decoration: const BoxDecoration(
+                                color: AppTheme.errorColor,
+                                shape: BoxShape.circle,
                               ),
+                              child: const Icon(Icons.close,
+                                  size: 13, color: Colors.white),
                             ),
                           ),
-                          const SizedBox(width: 4),
-                          GestureDetector(
-                            onTap: () {
-                              setState(
-                                  () => _pendingPhotos.removeAt(entry.key));
-                            },
-                            child: const Icon(Icons.close,
-                                size: 14, color: AppTheme.textLight),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     );
                   }).toList(),
                 ),
@@ -388,8 +381,8 @@ class _TypeSelector extends StatelessWidget {
   const _TypeSelector({required this.selected, required this.onChanged});
 
   static const _types = [
-    _TypeOption(value: 'child', label: 'Ребёнок', emoji: '👶'),
-    _TypeOption(value: 'adult', label: 'Взрослый', emoji: '🧑'),
+    _TypeOption(value: 'child', label: 'Ребёнок', emoji: '👶🏼'),
+    _TypeOption(value: 'adult', label: 'Взрослый', emoji: '🧑🏼'),
     _TypeOption(value: 'pet', label: 'Питомец', emoji: '🐱'),
   ];
 
@@ -409,7 +402,7 @@ class _TypeSelector extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 curve: Curves.easeOut,
                 padding:
-                    const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? AppTheme.primaryColor.withValues(alpha: 0.08)
@@ -425,8 +418,8 @@ class _TypeSelector extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(t.emoji, style: const TextStyle(fontSize: 28)),
-                    const SizedBox(height: 6),
+                    Text(t.emoji, style: const TextStyle(fontSize: 22)),
+                    const SizedBox(height: 4),
                     Text(
                       t.label,
                       style: GoogleFonts.nunitoSans(
@@ -476,7 +469,7 @@ class _GenderSelector extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 curve: Curves.easeOut,
                 padding:
-                    const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? AppTheme.primaryColor.withValues(alpha: 0.08)
@@ -492,8 +485,8 @@ class _GenderSelector extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(o.emoji, style: const TextStyle(fontSize: 28)),
-                    const SizedBox(height: 6),
+                    Text(o.emoji, style: const TextStyle(fontSize: 22)),
+                    const SizedBox(height: 4),
                     Text(
                       o.label,
                       style: GoogleFonts.nunitoSans(
