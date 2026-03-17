@@ -59,13 +59,10 @@ class _HeroSection extends StatelessWidget {
         children: [
           // Background image
           if (LandingAssets.heroBg.isNotEmpty)
-            CachedNetworkImage(
-              imageUrl: LandingAssets.heroBg,
+            LandingImage(
+              src: LandingAssets.heroBg,
               fit: BoxFit.cover,
-              placeholder: (_, __) =>
-                  Container(color: const Color(0xFF0C0A1D)),
-              errorWidget: (_, __, ___) =>
-                  Container(color: const Color(0xFF0C0A1D)),
+              errorWidget: Container(color: const Color(0xFF0C0A1D)),
             )
           else
             Container(
@@ -545,14 +542,12 @@ class _ShowcaseCard extends StatelessWidget {
             borderRadius:
                 const BorderRadius.vertical(top: Radius.circular(24)),
             child: data.coverUrl.isNotEmpty
-                ? CachedNetworkImage(
-                    imageUrl: data.coverUrl,
+                ? LandingImage(
+                    src: data.coverUrl,
                     height: isWide ? 260 : 200,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    placeholder: (_, __) => _imagePlaceholder(isWide ? 260 : 200),
-                    errorWidget: (_, __, ___) =>
-                        _imagePlaceholder(isWide ? 260 : 200),
+                    errorWidget: _imagePlaceholder(isWide ? 260 : 200),
                   )
                 : _imagePlaceholder(isWide ? 260 : 200),
           ),
@@ -566,14 +561,11 @@ class _ShowcaseCard extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: data.pageUrls.length > 2
-                        ? CachedNetworkImage(
-                            imageUrl: data.pageUrls[2],
+                        ? LandingImage(
+                            src: data.pageUrls[2],
                             height: isWide ? 110 : 80,
                             fit: BoxFit.cover,
-                            placeholder: (_, __) =>
-                                _imagePlaceholder(isWide ? 110 : 80),
-                            errorWidget: (_, __, ___) =>
-                                _imagePlaceholder(isWide ? 110 : 80),
+                            errorWidget: _imagePlaceholder(isWide ? 110 : 80),
                           )
                         : _imagePlaceholder(isWide ? 110 : 80),
                   ),
@@ -583,14 +575,11 @@ class _ShowcaseCard extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: data.pageUrls.length > 6
-                        ? CachedNetworkImage(
-                            imageUrl: data.pageUrls[6],
+                        ? LandingImage(
+                            src: data.pageUrls[6],
                             height: isWide ? 110 : 80,
                             fit: BoxFit.cover,
-                            placeholder: (_, __) =>
-                                _imagePlaceholder(isWide ? 110 : 80),
-                            errorWidget: (_, __, ___) =>
-                                _imagePlaceholder(isWide ? 110 : 80),
+                            errorWidget: _imagePlaceholder(isWide ? 110 : 80),
                           )
                         : _imagePlaceholder(isWide ? 110 : 80),
                   ),
@@ -746,13 +735,10 @@ class _StoryPreviewDialogState extends State<_StoryPreviewDialog> {
             children: [
               // Background image
               if (_currentImageUrl.isNotEmpty)
-                CachedNetworkImage(
-                  imageUrl: _currentImageUrl,
+                LandingImage(
+                  src: _currentImageUrl,
                   fit: BoxFit.cover,
-                  placeholder: (_, __) =>
-                      Container(color: const Color(0xFF0C0A1D)),
-                  errorWidget: (_, __, ___) =>
-                      Container(color: const Color(0xFF0C0A1D)),
+                  errorWidget: Container(color: const Color(0xFF0C0A1D)),
                 ),
 
               // Top bar
@@ -1123,22 +1109,10 @@ class _StylesSection extends StatelessWidget {
                             children: [
                               // Background — image or gradient
                               if (hasImage)
-                                CachedNetworkImage(
-                                  imageUrl: LandingAssets.styleCovers[i],
+                                LandingImage(
+                                  src: LandingAssets.styleCovers[i],
                                   fit: BoxFit.cover,
-                                  placeholder: (_, __) => Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          style.color.withValues(alpha: 0.15),
-                                          style.color.withValues(alpha: 0.05),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  errorWidget: (_, __, ___) => Container(
+                                  errorWidget: Container(
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         begin: Alignment.topLeft,
@@ -1372,16 +1346,12 @@ class _StepCard extends StatelessWidget {
         children: [
           // Image
           if (imageUrl.isNotEmpty)
-            CachedNetworkImage(
-              imageUrl: imageUrl,
+            LandingImage(
+              src: imageUrl,
               height: 180,
               width: double.infinity,
               fit: BoxFit.cover,
-              placeholder: (_, __) => Container(
-                height: 180,
-                color: color.withValues(alpha: 0.08),
-              ),
-              errorWidget: (_, __, ___) => Container(
+              errorWidget: Container(
                 height: 180,
                 color: color.withValues(alpha: 0.08),
                 child: Icon(Icons.image, size: 40,
@@ -1794,17 +1764,10 @@ class _CtaSection extends StatelessWidget {
         children: [
           // Background
           if (LandingAssets.ctaBg.isNotEmpty)
-            CachedNetworkImage(
-              imageUrl: LandingAssets.ctaBg,
+            LandingImage(
+              src: LandingAssets.ctaBg,
               fit: BoxFit.cover,
-              placeholder: (_, __) => Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF1E1B4B), Color(0xFF312E81)],
-                  ),
-                ),
-              ),
-              errorWidget: (_, __, ___) => Container(
+              errorWidget: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Color(0xFF1E1B4B), Color(0xFF312E81)],

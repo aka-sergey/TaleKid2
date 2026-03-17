@@ -73,3 +73,13 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/landing/ui/
+    - assets/landing/styles/
+    - assets/landing/stories/tale1/
+    - assets/landing/stories/tale1/pages/
+    - assets/landing/stories/tale2/
+    - assets/landing/stories/tale2/pages/
+    - assets/landing/stories/tale3/
+    - assets/landing/stories/tale3/pages/
+    - assets/landing/stories/tale4/
+    - assets/landing/stories/tale4/pages/
