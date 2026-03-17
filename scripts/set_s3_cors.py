@@ -55,6 +55,7 @@ cors_config = {
             "AllowedOrigins": [
                 "https://talekid2-production.up.railway.app",
                 "https://talekid.ai",
+                "https://www.talekid.ai",
                 "http://localhost:*",
                 "http://127.0.0.1:*",
             ],
