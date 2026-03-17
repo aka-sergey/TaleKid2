@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -264,8 +267,25 @@ class _HeroCard extends StatefulWidget {
   State<_HeroCard> createState() => _HeroCardState();
 }
 
-class _HeroCardState extends State<_HeroCard> {
+class _HeroCardState extends State<_HeroCard>
+    with SingleTickerProviderStateMixin {
   bool _btnHovering = false;
+  late final AnimationController _shineCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _shineCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2800),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _shineCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -313,53 +333,104 @@ class _HeroCardState extends State<_HeroCard> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Top badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 7),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.28),
-                          width: 1,
+                    // Top badge — web only
+                    if (kIsWeb)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 7),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.28),
+                            width: 1,
+                          ),
+                        ),
+                        child: const Text(
+                          '✨  Магия искусственного интеллекта',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            letterSpacing: 0.3,
+                          ),
                         ),
                       ),
-                      child: const Text(
-                        '✨  Магия искусственного интеллекта',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          letterSpacing: 0.3,
-                        ),
-                      ),
-                    ),
 
                     // Centre: title + subtitle
                     Column(
                       children: [
-                        const Text(
-                          'Создать\nновую сказку',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 42,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                            height: 1.05,
-                            letterSpacing: -0.5,
-                            shadows: [
-                              Shadow(
-                                  color: Color(0xCC000000), blurRadius: 24),
-                            ],
+                        // Title: static on web, animated shine on mobile
+                        if (kIsWeb)
+                          const Text(
+                            'Создать\nновую сказку',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 42,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                              height: 1.05,
+                              letterSpacing: -0.5,
+                              shadows: [
+                                Shadow(
+                                    color: Color(0xCC000000), blurRadius: 24),
+                              ],
+                            ),
+                          )
+                        else
+                          AnimatedBuilder(
+                            animation: _shineCtrl,
+                            builder: (_, __) {
+                              final t = _shineCtrl.value;
+                              // breathing: glow pulses 0.7..1.0
+                              final breath =
+                                  0.7 + 0.3 * math.sin(t * math.pi);
+                              // sweep position 0..1 for the ray
+                              final pos = t;
+                              return ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (bounds) =>
+                                    LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: const [
+                                    Color(0xFFFFCC00),
+                                    Color(0xFFFFCC00),
+                                    Color(0xFFFFFFAA),
+                                    Color(0xFFFFCC00),
+                                    Color(0xFFFFCC00),
+                                  ],
+                                  stops: [
+                                    0.0,
+                                    (pos - 0.12).clamp(0.0, 1.0),
+                                    pos.clamp(0.0, 1.0),
+                                    (pos + 0.12).clamp(0.0, 1.0),
+                                    1.0,
+                                  ],
+                                ).createShader(bounds),
+                                child: Opacity(
+                                  opacity: breath,
+                                  child: const Text(
+                                    'Создать\nновую сказку',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 38,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white,
+                                      height: 1.05,
+                                      letterSpacing: -0.5,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        ),
                         const SizedBox(height: 16),
                         Text(
                           'Персонализированная история\nс красивыми иллюстрациями\nспециально для вашего ребёнка',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 51,
+                            fontSize: kIsWeb ? 51 : 15,
                             fontWeight: FontWeight.w600,
                             color: Colors.white.withValues(alpha: 0.92),
                             height: 1.35,

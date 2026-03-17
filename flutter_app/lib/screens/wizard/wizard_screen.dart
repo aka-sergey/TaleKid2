@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -403,19 +404,22 @@ class _Step1Characters extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('ВЫБЕРИТЕ ПЕРСОНАЖЕЙ',
+              Text('ВЫБЕРИТЕ ПЕРСОНАЖЕЙ',
                   style: TextStyle(
-                    fontSize: 26,
+                    fontSize: kIsWeb ? 26 : 17,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFFFFDD00),
+                    color: const Color(0xFFFFDD00),
                     letterSpacing: 1.2,
                   )),
-              const SizedBox(height: 8),
-              Text(
-                  'Выберите одного или нескольких персонажей для вашей сказки',
-                  style: AppTheme.body(
-                      size: 42, color: AppTheme.textSecondary)),
-              const SizedBox(height: 20),
+              // Subtitle — web only (too large on mobile)
+              if (kIsWeb) ...[
+                const SizedBox(height: 8),
+                Text(
+                    'Выберите одного или нескольких персонажей для вашей сказки',
+                    style: AppTheme.body(
+                        size: 42, color: AppTheme.textSecondary)),
+              ],
+              const SizedBox(height: 12),
 
               // Create button
               AppCard(
@@ -468,10 +472,10 @@ class _Step1Characters extends ConsumerWidget {
                                   children: [
                                     Text(c.name,
                                         style: AppTheme.body(
-                                            size: 30,
+                                            size: kIsWeb ? 30 : 16,
                                             weight: FontWeight.w700,
                                             color: Colors.white)),
-                                    const SizedBox(height: 6),
+                                    const SizedBox(height: 4),
                                     Row(children: [
                                       _badge(c.characterTypeLabel),
                                       if (c.age != null) ...[
@@ -479,7 +483,7 @@ class _Step1Characters extends ConsumerWidget {
                                         Text(
                                             '${c.age} ${_ageSuffix(c.age!)}',
                                             style: AppTheme.body(
-                                                size: 24,
+                                                size: kIsWeb ? 24 : 13,
                                                 color: Colors.white)),
                                       ],
                                     ]),
@@ -608,10 +612,10 @@ class _Step2Settings extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('ВОЗРАСТНАЯ ГРУППА',
-                    style: const TextStyle(
-                      fontSize: 26,
+                    style: TextStyle(
+                      fontSize: kIsWeb ? 26 : 15,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFFFFDD00),
+                      color: const Color(0xFFFFDD00),
                       letterSpacing: 1.2,
                     )),
                 const SizedBox(height: 12),
@@ -619,10 +623,10 @@ class _Step2Settings extends ConsumerWidget {
                     selected: ageRange, onChanged: onAgeRangeChanged),
                 const SizedBox(height: 28),
                 Text('УРОВЕНЬ ОБРАЗОВАТЕЛЬНОСТИ',
-                    style: const TextStyle(
-                      fontSize: 26,
+                    style: TextStyle(
+                      fontSize: kIsWeb ? 26 : 15,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFFFFDD00),
+                      color: const Color(0xFFFFDD00),
                       letterSpacing: 1.2,
                     )),
                 const SizedBox(height: 12),
@@ -641,10 +645,10 @@ class _Step2Settings extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('ВЫБИРАЕМ ЖАНР',
-                    style: const TextStyle(
-                      fontSize: 26,
+                    style: TextStyle(
+                      fontSize: kIsWeb ? 26 : 15,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFFFFDD00),
+                      color: const Color(0xFFFFDD00),
                       letterSpacing: 1.2,
                     )),
                 const SizedBox(height: 12),
@@ -670,10 +674,10 @@ class _Step2Settings extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('ВЫБИРАЕМ МИР',
-                    style: const TextStyle(
-                      fontSize: 26,
+                    style: TextStyle(
+                      fontSize: kIsWeb ? 26 : 15,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFFFFDD00),
+                      color: const Color(0xFFFFDD00),
                       letterSpacing: 1.2,
                     )),
                 const SizedBox(height: 12),
@@ -700,10 +704,10 @@ class _Step2Settings extends ConsumerWidget {
               children: [
                 Row(children: [
                   Text('СКАЗКА-ОСНОВА',
-                      style: const TextStyle(
-                        fontSize: 26,
+                      style: TextStyle(
+                        fontSize: kIsWeb ? 26 : 15,
                         fontWeight: FontWeight.w900,
-                        color: Color(0xFFFFDD00),
+                        color: const Color(0xFFFFDD00),
                         letterSpacing: 1.2,
                       )),
                   const SizedBox(width: 8),
@@ -741,10 +745,10 @@ class _Step2Settings extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('СТИЛЬ ИЛЛЮСТРАЦИЙ',
-                    style: const TextStyle(
-                      fontSize: 26,
+                    style: TextStyle(
+                      fontSize: kIsWeb ? 26 : 15,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFFFFDD00),
+                      color: const Color(0xFFFFDD00),
                       letterSpacing: 1.2,
                     )),
                 const SizedBox(height: 12),
@@ -1641,9 +1645,11 @@ Widget _charAvatar(dynamic c) {
   final url = c.avatarUrl;
   final initial =
       (c.name as String).isNotEmpty ? c.name[0].toUpperCase() : '?';
+  final size = kIsWeb ? 156.0 : 58.0;
+  final fontSize = kIsWeb ? 60.0 : 22.0;
   return Container(
-    width: 156,
-    height: 156,
+    width: size,
+    height: size,
     decoration: const BoxDecoration(
         shape: BoxShape.circle, gradient: AppTheme.primaryGradient),
     clipBehavior: Clip.antiAlias,
@@ -1654,14 +1660,14 @@ Widget _charAvatar(dynamic c) {
             errorWidget: (_, __, ___) => Center(
                 child: Text(initial,
                     style: AppTheme.body(
-                        size: 60,
+                        size: fontSize,
                         weight: FontWeight.w700,
                         color: Colors.white))),
           )
         : Center(
             child: Text(initial,
                 style: AppTheme.body(
-                    size: 60,
+                    size: fontSize,
                     weight: FontWeight.w700,
                     color: Colors.white))),
   );

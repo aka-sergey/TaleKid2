@@ -169,17 +169,20 @@ class _CharacterCreateDialogState
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final maxH = MediaQuery.of(context).size.height * 0.88;
 
-    return Container(
-      decoration: const BoxDecoration(
-        color: AppTheme.surfaceColor,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppTheme.radiusXl),
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: maxH),
+      child: Container(
+        decoration: const BoxDecoration(
+          color: AppTheme.surfaceColor,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppTheme.radiusXl),
+          ),
         ),
-      ),
-      padding: EdgeInsets.only(bottom: bottomInset),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+        padding: EdgeInsets.only(bottom: bottomInset),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
         child: Form(
           key: _formKey,
           child: Column(
@@ -369,7 +372,8 @@ class _CharacterCreateDialogState
           ),
         ),
       ),
-    );
+    ),   // Container
+    );   // ConstrainedBox
   }
 }
 
