@@ -1,6 +1,6 @@
 # TaleKID — Project Passport
 
-> **Version:** 1.5.0 | **Date:** 2026-03-17 | **Repository:** https://github.com/aka-sergey/TaleKid2 | **Branch:** master
+> **Version:** 1.6.0 | **Date:** 2026-03-17 | **Repository:** https://github.com/aka-sergey/TaleKid2 | **Branch:** master
 
 ---
 
@@ -527,7 +527,7 @@ flutter_app/lib/
 │   ├── router.dart         # go_router, auth guard, маршруты
 │   ├── app_config.dart     # API_BASE_URL, таймауты, лимиты
 │   ├── ui_assets.dart      # S3 URL константы (жанры×31, миры×30, etc.)
-│   └── landing_assets.dart # Ассеты лендинга + данные showcase сказок
+│   └── landing_assets.dart # Ассеты лендинга + LandingImage виджет (web/mobile switch)
 ├── models/                 # character.dart, story.dart, catalog.dart
 ├── providers/              # auth, character, catalog, generation, story
 ├── services/               # api_client, auth, catalog, character,
@@ -621,7 +621,41 @@ AnimationController(vsync: this, duration: Duration(milliseconds: 2800))..repeat
 // ShaderMask + BlendMode.srcIn поверх текста
 ```
 
-### 8.6 Wizard — Шаги
+### 8.6 Бандл ассетов лендинга (APK only)
+
+```
+flutter_app/assets/landing/
+├── ui/            hero-bg.png, cta-bg.png, how-step1/2/3.png
+├── styles/        watercolor, 3d-pixar, disney, comic, anime, pastel, classic-book, pop-art
+└── stories/
+    ├── tale1/     cover.png + pages/1-10.png  (Маша и Двенадцать Месяцев)
+    ├── tale2/     cover.png + pages/1-10.png  (Дима и Звёздный Кот)
+    ├── tale3/     cover.png + pages/1-10.png  (Алиса и Коралловое Королевство)
+    └── tale4/     cover.png + pages/1-10.png  (Супергерой Тимофей)
+```
+
+**`LandingAssets` resolved getters** — используй всегда вместо прямых URL:
+- `LandingAssets.heroBg` → URL на web, `assets/landing/ui/hero-bg.png` на mobile
+- `LandingAssets.tale1Pages` → список из 10 путей (URL или assets)
+- `LandingAssets.styleCovers` → список из 8 путей
+
+**`LandingImage` виджет** — единственный способ отрисовки картинок лендинга:
+```dart
+LandingImage(src: LandingAssets.heroBg, fit: BoxFit.cover)
+// web  → Image.network(https://s3...)
+// APK  → Image.asset('assets/landing/...')  ← мгновенно, без сети
+```
+
+**При обновлении лендинга:**
+| Сценарий | Действие |
+|---------|---------|
+| Обновил картинку только для веба | Загрузи новый PNG в S3, ничего больше |
+| Обновил картинку для APK | Замени файл в `assets/landing/`, пересобери APK |
+| Новая картинка везде | S3 + `assets/landing/` + пересобери APK |
+
+---
+
+### 8.7 Wizard — Шаги
 
 **Step 1 — Characters:**
 - Мультиселект из существующих персонажей
@@ -639,7 +673,7 @@ AnimationController(vsync: this, duration: Duration(milliseconds: 2800))..repeat
 - Страницы + минуты: слайдеры + пресеты
 - Личный контекст: текстовое поле (опционально, до 1000 симв.)
 
-### 8.7 Reader UX
+### 8.8 Reader UX
 
 **Web (иммерсивный):**
 - `Stack(fit: StackFit.expand)` — fullscreen `CachedNetworkImage`
@@ -824,7 +858,8 @@ python3 -m app.seed.seed_db
 | `flutter_app/lib/config/theme.dart` | «Зачарованная ночь» dark theme |
 | `flutter_app/lib/config/app_config.dart` | API_BASE_URL, timeouts, max photos |
 | `flutter_app/lib/config/ui_assets.dart` | S3 URL константы (86+ ассетов) |
-| `flutter_app/lib/config/landing_assets.dart` | Лендинг ассеты + showcase stories |
+| `flutter_app/lib/config/landing_assets.dart` | Лендинг ассеты: resolved getters (kIsWeb), `LandingImage` виджет |
+| `flutter_app/assets/landing/` | 57 бандлованных PNG (ui×5, styles×8, stories×44) |
 | `flutter_app/lib/screens/home/home_screen.dart` | kIsWeb guards, shine animation |
 | `flutter_app/lib/screens/wizard/wizard_screen.dart` | 3-step wizard, kIsWeb responsive sizes |
 | `flutter_app/lib/screens/wizard/character_create_dialog.dart` | Photo thumbnails, compact cards, 88% height |
@@ -872,6 +907,30 @@ python3 -m app.seed.seed_db
 ---
 
 ## 15. Changelog
+
+### v1.6.0 — 2026-03-17
+
+**APK — Бандл лендинга (instant offline landing):**
+- 57 изображений лендинга скачаны с S3 и зашиты в APK как Flutter assets:
+  - `assets/landing/ui/` — 5 фонов (hero-bg, cta-bg, how-step1/2/3)
+  - `assets/landing/styles/` — 8 превью стилей иллюстраций
+  - `assets/landing/stories/tale{1-4}/` — 4 обложки + 40 страниц сказок
+- `pubspec.yaml`: зарегистрированы все 10 директорий `assets/landing/**`
+- `LandingAssets`: все URL-константы стали resolved getters с `kIsWeb`:
+  - Web → `https://s3.twcstorage.ru/...` (S3, без изменений)
+  - Mobile → `assets/landing/...` (бандл, мгновенно)
+- Новый виджет `LandingImage(src, fit, width, height, errorWidget)`:
+  - Web: `Image.network(src)`
+  - Mobile: `Image.asset(src)`
+- `landing_screen.dart`: все `CachedNetworkImage` заменены на `LandingImage`
+- Размер APK: 63 MB → 126 MB (+63 MB = бандлованные картинки)
+- Лендинг на APK открывается мгновенно, без сетевых запросов
+
+**Правило обновления лендинга:**
+- Поменял картинки на вебе → лендинг на веб обновится автоматически (S3)
+- Поменял картинки для APK → скачай новые в `assets/landing/` + пересобери APK
+
+---
 
 ### v1.5.0 — 2026-03-17
 
