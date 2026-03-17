@@ -130,11 +130,13 @@ async def run_pipeline(payload: dict, redis: RedisService) -> None:
             stage2 = StoryBibleStage(db, redis, openai_svc)
             await stage2.execute(ctx)
 
-            # ---- Stage 3: Text Generation (30% → 55%) ----
+            # ---- Stage 3+4: Text + Scene Generation (30% → 65%, 2-wave parallel) ----
+            # Wave 1: pages 1-3 in parallel; Wave 2: pages 4-N with Wave-1 context.
+            # Each page generates text + scene description in a single GPT call.
             stage3 = TextGenerationStage(db, redis, openai_svc)
             await stage3.execute(ctx)
 
-            # ---- Stage 4: Scene Decomposition (55% → 65%) ----
+            # Stage 4 is now a no-op (ctx.scenes already populated above).
             stage4 = SceneDecompositionStage(db, redis, openai_svc)
             await stage4.execute(ctx)
 
