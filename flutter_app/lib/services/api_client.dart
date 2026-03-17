@@ -25,6 +25,7 @@ class ApiClient {
       ),
     );
 
+    dio.interceptors.add(_RetryInterceptor(dio));
     dio.interceptors.add(_AuthInterceptor(this));
     dio.interceptors.add(LogInterceptor(
       requestBody: true,
@@ -143,6 +144,40 @@ class _AuthInterceptor extends Interceptor {
         }
       } finally {
         _isRefreshing = false;
+      }
+    }
+
+    handler.next(err);
+  }
+}
+
+/// Retry interceptor — auto-retries on network timeout / connection errors
+/// (max 2 retries with exponential back-off: 1s, 2s)
+class _RetryInterceptor extends Interceptor {
+  final Dio _dio;
+  final int maxRetries;
+
+  _RetryInterceptor(this._dio, {this.maxRetries = 2});
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    final isRetriable = err.type == DioExceptionType.connectionTimeout ||
+        err.type == DioExceptionType.sendTimeout ||
+        err.type == DioExceptionType.receiveTimeout ||
+        err.type == DioExceptionType.connectionError;
+
+    final attempt = (err.requestOptions.extra['_retryCount'] as int?) ?? 0;
+
+    if (isRetriable && attempt < maxRetries) {
+      err.requestOptions.extra['_retryCount'] = attempt + 1;
+      // Back-off: 1s on first retry, 2s on second
+      await Future.delayed(Duration(seconds: attempt + 1));
+      try {
+        final response = await _dio.fetch(err.requestOptions);
+        handler.resolve(response);
+        return;
+      } catch (_) {
+        // Let the outer handler deal with the final failure
       }
     }
 

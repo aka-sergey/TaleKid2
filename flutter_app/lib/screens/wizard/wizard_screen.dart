@@ -403,13 +403,18 @@ class _Step1Characters extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Выберите персонажей',
-                  style: AppTheme.heading(size: 22)),
-              const SizedBox(height: 4),
+              const Text('ВЫБЕРИТЕ ПЕРСОНАЖЕЙ',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFFFFDD00),
+                    letterSpacing: 1.2,
+                  )),
+              const SizedBox(height: 8),
               Text(
                   'Выберите одного или нескольких персонажей для вашей сказки',
                   style: AppTheme.body(
-                      size: 14, color: AppTheme.textSecondary)),
+                      size: 42, color: AppTheme.textSecondary)),
               const SizedBox(height: 20),
 
               // Create button
@@ -463,9 +468,10 @@ class _Step1Characters extends ConsumerWidget {
                                   children: [
                                     Text(c.name,
                                         style: AppTheme.body(
-                                            size: 15,
-                                            weight: FontWeight.w700)),
-                                    const SizedBox(height: 3),
+                                            size: 30,
+                                            weight: FontWeight.w700,
+                                            color: Colors.white)),
+                                    const SizedBox(height: 6),
                                     Row(children: [
                                       _badge(c.characterTypeLabel),
                                       if (c.age != null) ...[
@@ -473,9 +479,8 @@ class _Step1Characters extends ConsumerWidget {
                                         Text(
                                             '${c.age} ${_ageSuffix(c.age!)}',
                                             style: AppTheme.body(
-                                                size: 12,
-                                                color: AppTheme
-                                                    .textSecondary)),
+                                                size: 24,
+                                                color: Colors.white)),
                                       ],
                                     ]),
                                   ],
@@ -602,14 +607,24 @@ class _Step2Settings extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Возрастная группа',
-                    style: AppTheme.heading(size: 17)),
+                Text('ВОЗРАСТНАЯ ГРУППА',
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFFFFDD00),
+                      letterSpacing: 1.2,
+                    )),
                 const SizedBox(height: 12),
                 _AgeCards(
                     selected: ageRange, onChanged: onAgeRangeChanged),
                 const SizedBox(height: 28),
-                Text('Уровень образовательности',
-                    style: AppTheme.heading(size: 17)),
+                Text('УРОВЕНЬ ОБРАЗОВАТЕЛЬНОСТИ',
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFFFFDD00),
+                      letterSpacing: 1.2,
+                    )),
                 const SizedBox(height: 12),
                 _EduSlider(
                     value: educationLevel,
@@ -625,7 +640,13 @@ class _Step2Settings extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Жанр *', style: AppTheme.heading(size: 17)),
+                Text('ВЫБИРАЕМ ЖАНР',
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFFFFDD00),
+                      letterSpacing: 1.2,
+                    )),
                 const SizedBox(height: 12),
                 genresAsync.when(
                   data: (g) => _GenreCards(
@@ -648,7 +669,13 @@ class _Step2Settings extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Мир *', style: AppTheme.heading(size: 17)),
+                Text('ВЫБИРАЕМ МИР',
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFFFFDD00),
+                      letterSpacing: 1.2,
+                    )),
                 const SizedBox(height: 12),
                 worldsAsync.when(
                   data: (w) => _WorldGrid(
@@ -665,15 +692,20 @@ class _Step2Settings extends ConsumerWidget {
           ),
           const SizedBox(height: 28),
 
-          // ── Narrow: Base tale ───────────────────────────────────────
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 640),
+          // ── Wide: Base tale ─────────────────────────────────────────
+          SizedBox(
+            width: wideMaxWidth,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(children: [
-                  Text('Сказка-основа',
-                      style: AppTheme.heading(size: 17)),
+                  Text('СКАЗКА-ОСНОВА',
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFFFFDD00),
+                        letterSpacing: 1.2,
+                      )),
                   const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -708,14 +740,13 @@ class _Step2Settings extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Стиль иллюстраций',
-                    style: AppTheme.heading(size: 17)),
-                const SizedBox(height: 6),
-                Text(
-                  'Выберите художественный стиль для картинок в вашей сказке',
-                  style: AppTheme.body(
-                      size: 13, color: AppTheme.textSecondary),
-                ),
+                Text('СТИЛЬ ИЛЛЮСТРАЦИЙ',
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFFFFDD00),
+                      letterSpacing: 1.2,
+                    )),
                 const SizedBox(height: 12),
                 _StyleSelector(
                     selected: illustrationStyle,
@@ -865,27 +896,8 @@ class _Step3FormatState extends State<_Step3Format> {
                 ),
                 style: AppTheme.body(size: 14),
               ),
-              const SizedBox(height: 20),
-              AppCard(
-                color: AppTheme.fillColor,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(children: [
-                      const Icon(Icons.info_outline_rounded,
-                          color: AppTheme.infoColor, size: 20),
-                      const SizedBox(width: 8),
-                      Text('Параметры сказки',
-                          style: AppTheme.body(
-                              size: 15, weight: FontWeight.w700)),
-                    ]),
-                    const SizedBox(height: 14),
-                    _sRow('Страниц', '${widget.pageCount}'),
-                    _sRow('Время чтения', '${widget.readingDuration} мин'),
-                    _sRow('Иллюстраций', '${widget.pageCount}'),
-                  ],
-                ),
-              ),
+              // Параметры сказки — скрыты (visibility: hidden)
+              const SizedBox.shrink(),
               const SizedBox(height: 32),
             ],
           ),
@@ -943,11 +955,19 @@ class _AgeCards extends StatelessWidget {
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
                       color: sel
-                          ? AppTheme.primaryColor
+                          ? const Color(0xFFFFAA00)
                           : AppTheme.borderColor,
-                      width: sel ? 2.5 : 1),
-                  boxShadow: sel ? AppTheme.cardShadow : null,
-                  color: AppTheme.glassLight,
+                      width: sel ? 3.5 : 1),
+                  boxShadow: sel
+                      ? [BoxShadow(
+                          color: const Color(0xFFFFAA00).withValues(alpha: 0.35),
+                          blurRadius: 12,
+                          spreadRadius: 1,
+                        )]
+                      : null,
+                  color: sel
+                      ? const Color(0xFFFFAA00).withValues(alpha: 0.08)
+                      : AppTheme.glassLight,
                 ),
                 child: Column(children: [
                   ClipRRect(
@@ -1045,6 +1065,15 @@ class _EduSlider extends StatelessWidget {
   }
 }
 
+// Genres hidden from UI
+const _hiddenGenreSlugs = {
+  'light-mystery',
+  'self-discovery-growing-up',
+  'survival-nature',
+  'creativity-imagination',
+  'humor',
+};
+
 class _GenreCards extends StatelessWidget {
   final List<Genre> genres;
   final int? selectedId;
@@ -1056,6 +1085,7 @@ class _GenreCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final visible = genres.where((g) => !_hiddenGenreSlugs.contains(g.slug)).toList();
     return LayoutBuilder(builder: (ctx, box) {
       // Adaptive columns: ~160px per card, min 3, max 8
       final cols = (box.maxWidth / 160).floor().clamp(3, 8);
@@ -1067,7 +1097,7 @@ class _GenreCards extends StatelessWidget {
       return Wrap(
         spacing: spacing,
         runSpacing: spacing,
-        children: genres.map((g) {
+        children: visible.map((g) {
           final sel = g.id == selectedId;
           final url = _genreAssets[g.slug] ?? '';
           return GestureDetector(
@@ -1079,15 +1109,24 @@ class _GenreCards extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                     color: sel
-                        ? AppTheme.primaryColor
+                        ? const Color(0xFFFFAA00)
                         : AppTheme.borderColor,
-                    width: sel ? 2 : 1),
-                color: AppTheme.glassLight,
+                    width: sel ? 3.5 : 1),
+                color: sel
+                    ? const Color(0xFFFFAA00).withValues(alpha: 0.08)
+                    : AppTheme.glassLight,
+                boxShadow: sel
+                    ? [BoxShadow(
+                        color: const Color(0xFFFFAA00).withValues(alpha: 0.35),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                      )]
+                    : null,
               ),
               child: Column(children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(13)),
+                      top: Radius.circular(11)),
                   child: url.isNotEmpty
                       ? CachedNetworkImage(
                           imageUrl: url,
@@ -1123,6 +1162,23 @@ class _GenreCards extends StatelessWidget {
   }
 }
 
+// Worlds hidden from UI
+const _hiddenWorldSlugs = {
+  'underwater',
+  'underwater-kingdom',
+  'sky-kingdom',
+  'shadow-labyrinth',
+  'time-kingdom',
+  'elemental-world',
+  'north-pole',
+  'medieval-kingdom',
+  'modern-city',
+  'wonder-desert',
+  'dream-world',
+  'pirate-islands',
+  // candy-land restored
+};
+
 class _WorldGrid extends StatelessWidget {
   final List<World> worlds;
   final int? selectedId;
@@ -1134,20 +1190,21 @@ class _WorldGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final visible = worlds.where((w) => !_hiddenWorldSlugs.contains(w.slug)).toList();
     return LayoutBuilder(builder: (ctx, box) {
       // Adaptive columns: ~160px per card, min 3, max 8
       final cols = (box.maxWidth / 160).floor().clamp(3, 8);
       return GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: worlds.length,
+        itemCount: visible.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: cols,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
             childAspectRatio: 0.85),
         itemBuilder: (_, i) {
-          final w = worlds[i];
+          final w = visible[i];
           final sel = w.id == selectedId;
           final url = _worldAssets[w.slug] ?? '';
           return GestureDetector(
@@ -1162,11 +1219,19 @@ class _WorldGrid extends StatelessWidget {
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(
                     color: sel
-                        ? AppTheme.primaryColor
+                        ? const Color(0xFFFFAA00)
                         : AppTheme.borderColor,
-                    width: sel ? 2.5 : 1),
-                boxShadow: sel ? AppTheme.cardShadow : null,
-                color: AppTheme.glassLight,
+                    width: sel ? 3.5 : 1),
+                boxShadow: sel
+                    ? [BoxShadow(
+                        color: const Color(0xFFFFAA00).withValues(alpha: 0.35),
+                        blurRadius: 12,
+                        spreadRadius: 1,
+                      )]
+                    : null,
+                color: sel
+                    ? const Color(0xFFFFAA00).withValues(alpha: 0.08)
+                    : AppTheme.glassLight,
               ),
               child: Column(children: [
                 Expanded(
@@ -1213,36 +1278,99 @@ class _BaseTaleSel extends StatelessWidget {
       required this.selectedId,
       required this.onSelected});
 
+  static const _selColor = Color(0xFFFFAA00);
+  static const _selBg = Color(0x14FFAA00); // 8% opacity
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ChoiceChip(
-          label: const Text('Оригинальный сюжет'),
-          avatar: const Icon(Icons.auto_awesome, size: 18),
+        // "Оригинальный сюжет" chip
+        _TaleChip(
+          label: 'Оригинальный сюжет',
+          icon: Icons.auto_awesome,
           selected: selectedId == null,
-          onSelected: (_) => onSelected(null),
-          showCheckmark: false,
-          selectedColor: AppTheme.accentLight.withValues(alpha: 0.3),
+          onTap: () => onSelected(null),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: 10,
+          runSpacing: 10,
           children: tales.map((t) {
             final sel = t.id == selectedId;
-            return ChoiceChip(
-              label: Text(t.nameRu),
+            return _TaleChip(
+              label: t.nameRu,
               selected: sel,
-              onSelected: (_) => onSelected(sel ? null : t.id),
-              showCheckmark: false,
-              selectedColor:
-                  AppTheme.primaryLight.withValues(alpha: 0.25),
+              onTap: () => onSelected(sel ? null : t.id),
             );
           }).toList(),
         ),
       ],
+    );
+  }
+}
+
+class _TaleChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  final IconData? icon;
+  const _TaleChip(
+      {required this.label,
+      required this.selected,
+      required this.onTap,
+      this.icon});
+
+  static const _selColor = Color(0xFFFFAA00);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected
+              ? _selColor.withValues(alpha: 0.12)
+              : AppTheme.glassLight,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected ? _selColor : AppTheme.borderColor,
+            width: selected ? 2.5 : 1,
+          ),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: _selColor.withValues(alpha: 0.35),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                  )
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(icon,
+                  size: 16,
+                  color: selected ? _selColor : AppTheme.textSecondary),
+              const SizedBox(width: 6),
+            ],
+            Text(
+              label,
+              style: AppTheme.body(
+                size: 14,
+                weight: selected ? FontWeight.w700 : FontWeight.w500,
+                color: selected ? _selColor : AppTheme.textPrimary,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -1282,8 +1410,7 @@ class _StyleSelector extends StatelessWidget {
         'Нежные пастельные тона', '$_baseUrl/pastel.png'),
     _StyleData('classic-book', 'Книжная классика',
         'Тёплый стиль классических иллюстраций', '$_baseUrl/classic-book.png'),
-    _StyleData('pop-art', 'Поп-арт',
-        'Смелые цвета и современный дизайн', '$_baseUrl/pop-art.png'),
+    // pop-art hidden from UI
   ];
 
   const _StyleSelector({required this.selected, required this.onChanged});
@@ -1380,14 +1507,6 @@ class _StyleSelector extends StatelessWidget {
                                 : AppTheme.textPrimary,
                           ),
                           maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          s.description,
-                          style: AppTheme.body(
-                              size: 11, color: AppTheme.textSecondary),
-                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
@@ -1523,8 +1642,8 @@ Widget _charAvatar(dynamic c) {
   final initial =
       (c.name as String).isNotEmpty ? c.name[0].toUpperCase() : '?';
   return Container(
-    width: 52,
-    height: 52,
+    width: 156,
+    height: 156,
     decoration: const BoxDecoration(
         shape: BoxShape.circle, gradient: AppTheme.primaryGradient),
     clipBehavior: Clip.antiAlias,
@@ -1535,29 +1654,29 @@ Widget _charAvatar(dynamic c) {
             errorWidget: (_, __, ___) => Center(
                 child: Text(initial,
                     style: AppTheme.body(
-                        size: 20,
+                        size: 60,
                         weight: FontWeight.w700,
                         color: Colors.white))),
           )
         : Center(
             child: Text(initial,
                 style: AppTheme.body(
-                    size: 20,
+                    size: 60,
                     weight: FontWeight.w700,
                     color: Colors.white))),
   );
 }
 
 Widget _badge(String label) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-          color: AppTheme.primaryColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8)),
+          color: AppTheme.primaryColor.withValues(alpha: 0.25),
+          borderRadius: BorderRadius.circular(10)),
       child: Text(label,
           style: AppTheme.body(
-              size: 11,
+              size: 22,
               weight: FontWeight.w600,
-              color: AppTheme.primaryColor)),
+              color: Colors.white)),
     );
 
 String _ageSuffix(int age) {

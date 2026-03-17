@@ -256,128 +256,218 @@ class _NavBar extends StatelessWidget {
   }
 }
 
-class _HeroCard extends StatelessWidget {
+class _HeroCard extends StatefulWidget {
   const _HeroCard({required this.onTap});
   final VoidCallback onTap;
 
   @override
+  State<_HeroCard> createState() => _HeroCardState();
+}
+
+class _HeroCardState extends State<_HeroCard> {
+  bool _btnHovering = false;
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(28),
-        decoration: BoxDecoration(
-          color: AppTheme.primaryColor,
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.primaryColor.withValues(alpha: 0.3),
-              blurRadius: 24,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Stack(
-          children: [
-            // Decorative stars
-            ..._decorativeStars(),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Создать новую\nсказку',
-                        style: AppTheme.heading(
-                          size: 24,
-                          weight: FontWeight.w700,
+      onTap: widget.onTap,
+      child: AspectRatio(
+        aspectRatio: 1.0,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // ── Background: book image full-bleed ──────────────────
+              CachedNetworkImage(
+                imageUrl: UiAssets.hero_create_story,
+                fit: BoxFit.cover,
+                placeholder: (_, __) => const _HeroFallbackBg(),
+                errorWidget: (_, __, ___) => const _HeroFallbackBg(),
+              ),
+
+              // ── Gradient overlay: dark at top & bottom, transparent centre ──
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xCC08061A),
+                      Color(0x55080618),
+                      Color(0x33080618),
+                      Color(0xBB08061A),
+                      Color(0xEE06041A),
+                    ],
+                    stops: [0.0, 0.18, 0.45, 0.72, 1.0],
+                  ),
+                ),
+              ),
+
+              // ── Decorative sparkles ─────────────────────────────────
+              ..._sparkles(),
+
+              // ── Main content ────────────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Top badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 7),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.28),
+                          width: 1,
+                        ),
+                      ),
+                      child: const Text(
+                        '✨  Магия искусственного интеллекта',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
                           color: Colors.white,
+                          letterSpacing: 0.3,
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Персонализированная история\nс иллюстрациями',
-                        style: AppTheme.body(
-                          size: 14,
-                          color: Colors.white.withValues(alpha: 0.8),
+                    ),
+
+                    // Centre: title + subtitle
+                    Column(
+                      children: [
+                        const Text(
+                          'Создать\nновую сказку',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 42,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                            height: 1.05,
+                            letterSpacing: -0.5,
+                            shadows: [
+                              Shadow(
+                                  color: Color(0xCC000000), blurRadius: 24),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
+                        const SizedBox(height: 16),
+                        Text(
+                          'Персонализированная история\nс красивыми иллюстрациями\nспециально для вашего ребёнка',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 51,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white.withValues(alpha: 0.92),
+                            height: 1.35,
+                            shadows: const [
+                              Shadow(
+                                  color: Color(0xBB000000), blurRadius: 16),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // Bottom: "Начать" button
+                    MouseRegion(
+                      onEnter: (_) =>
+                          setState(() => _btnHovering = true),
+                      onExit: (_) =>
+                          setState(() => _btnHovering = false),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeOut,
+                        transform: Matrix4.identity()
+                          ..scale(_btnHovering ? 1.06 : 1.0),
+                        transformAlignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 22, vertical: 12),
+                            horizontal: 48, vertical: 18),
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
+                          color: _btnHovering
+                              ? Colors.white
+                              : Colors.white.withValues(alpha: 0.93),
+                          borderRadius: BorderRadius.circular(18),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _btnHovering
+                                  ? const Color(0xFFFFDD00)
+                                      .withValues(alpha: 0.65)
+                                  : Colors.black.withValues(alpha: 0.25),
+                              blurRadius: _btnHovering ? 36 : 12,
+                              spreadRadius: _btnHovering ? 2 : 0,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        child: Text(
+                        child: const Text(
                           'Начать ✨',
-                          style: AppTheme.body(
-                            size: 14,
-                            weight: FontWeight.w700,
-                            color: AppTheme.primaryColor,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF4338CA),
+                            letterSpacing: 0.2,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: CachedNetworkImage(
-                    imageUrl: UiAssets.hero_create_story,
-                    width: 120,
-                    height: 120,
-                    fit: BoxFit.cover,
-                    placeholder: (_, __) => Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
                     ),
-                    errorWidget: (_, __, ___) => Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(Icons.auto_stories,
-                          color: Colors.white54, size: 40),
-                    ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  List<Widget> _decorativeStars() {
-    const positions = [
-      (8.0, 8.0),
-      (60.0, -2.0),
-      (180.0, 5.0),
-      (280.0, 10.0),
-      (40.0, 90.0),
-      (310.0, 80.0),
+  List<Widget> _sparkles() {
+    // (left, top, size, opacity)
+    const pts = [
+      (22.0, 22.0, 18.0, 0.45),
+      (72.0, 10.0, 11.0, 0.28),
+      (165.0, 18.0, 9.0, 0.22),
+      (270.0, 14.0, 15.0, 0.38),
+      (340.0, 28.0, 10.0, 0.25),
+      (12.0, 240.0, 9.0, 0.20),
+      (350.0, 220.0, 13.0, 0.28),
+      (40.0, 380.0, 10.0, 0.22),
+      (310.0, 370.0, 8.0, 0.20),
+      (190.0, 38.0, 7.0, 0.18),
     ];
-    return positions
+    return pts
         .map((p) => Positioned(
               left: p.$1,
               top: p.$2,
-              child: Icon(Icons.star_rounded,
-                  size: 12,
-                  color: Colors.white.withValues(alpha: 0.12)),
+              child: Icon(
+                Icons.star_rounded,
+                size: p.$3,
+                color: Colors.white.withValues(alpha: p.$4),
+              ),
             ))
         .toList();
   }
+}
+
+/// Fallback gradient when image hasn't loaded yet.
+class _HeroFallbackBg extends StatelessWidget {
+  const _HeroFallbackBg();
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF4338CA), Color(0xFF6366F1), Color(0xFF2A1F6F)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: const Center(
+          child: Icon(Icons.auto_stories, color: Colors.white38, size: 80),
+        ),
+      );
 }
 
 class _StoryMiniCard extends StatefulWidget {

@@ -9,9 +9,9 @@ class AppConfig {
     defaultValue: 'http://localhost:8000/api/v1',
   );
 
-  // Timeouts
-  static const Duration connectTimeout = Duration(seconds: 15);
-  static const Duration receiveTimeout = Duration(seconds: 30);
+  // Timeouts (generous for Railway cold-start latency)
+  static const Duration connectTimeout = Duration(seconds: 30);
+  static const Duration receiveTimeout = Duration(seconds: 60);
 
   // Generation polling interval
   static const Duration pollingInterval = Duration(seconds: 3);

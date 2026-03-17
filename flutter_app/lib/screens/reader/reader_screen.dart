@@ -36,11 +36,20 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
   final ScrollController _textScrollController = ScrollController();
   int _currentPage = 0;
   bool _titleDialogShown = false;
+  double _fontSize = 15.0;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+    // Force landscape on Android for the immersive side-by-side layout
+    if (!kIsWeb) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    }
   }
 
   @override
@@ -370,7 +379,7 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
                             page.textContent!,
                             style: GoogleFonts.nunitoSans(
                               color: Colors.white,
-                              fontSize: 15,
+                              fontSize: _fontSize,
                               height: 1.35,
                             ),
                           ),
@@ -410,6 +419,30 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
                   ),
                 ),
               ),
+
+            // ── Font size +/- buttons ──
+            Positioned(
+              bottom: 80,
+              right: 16,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _FontSizeBtn(
+                    icon: Icons.add,
+                    onTap: () => setState(() {
+                      _fontSize = (_fontSize + 2).clamp(10.0, 36.0);
+                    }),
+                  ),
+                  const SizedBox(height: 8),
+                  _FontSizeBtn(
+                    icon: Icons.remove,
+                    onTap: () => setState(() {
+                      _fontSize = (_fontSize - 2).clamp(10.0, 36.0);
+                    }),
+                  ),
+                ],
+              ),
+            ),
 
             // ── Bottom overlay — page dots + lightbulb ──
             Positioned(
@@ -483,6 +516,36 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Font size +/- button for the web reader
+// =============================================================================
+class _FontSizeBtn extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _FontSizeBtn({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.25),
+            width: 1,
+          ),
+        ),
+        child: Icon(icon, size: 22, color: Colors.white),
       ),
     );
   }
@@ -576,7 +639,7 @@ class _NavArrow extends StatelessWidget {
 }
 
 // =============================================================================
-// Mobile page view — fullscreen image + frosted glass text overlay
+// Mobile page view — landscape: 75% image left | 25% text right
 // =============================================================================
 class _MobilePageView extends StatelessWidget {
   final StoryPage page;
@@ -586,71 +649,74 @@ class _MobilePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
+    return Row(
       children: [
-        // Background image
-        if (page.imageUrl != null)
-          CachedNetworkImage(
-            imageUrl: page.imageUrl!,
-            fit: BoxFit.cover,
-            placeholder: (_, __) => Container(
-              color: Colors.black,
-              child: const Center(
-                child: CircularProgressIndicator(color: Colors.white54),
-              ),
-            ),
-            errorWidget: (_, __, ___) => Container(
-              color: Colors.grey[900],
-              child: const Icon(Icons.broken_image,
-                  size: 64, color: Colors.white24),
-            ),
-          )
-        else
-          Container(
-            color: Colors.grey[900],
-            child: const Icon(Icons.image, size: 64, color: Colors.white24),
-          ),
+        // Left — illustration (75%)
+        Expanded(
+          flex: 3,
+          child: _buildImage(),
+        ),
+        // Right — text panel (25%)
+        Expanded(
+          flex: 1,
+          child: _buildTextPanel(),
+        ),
+      ],
+    );
+  }
 
-        // Frosted glass text overlay at bottom
-        if (page.textContent != null)
-          Positioned(
-            bottom: 60,
-            left: 0,
-            right: 0,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 18,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.4),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.15),
-                      ),
-                    ),
-                    child: Text(
-                      page.textContent!,
-                      style: GoogleFonts.nunitoSans(
-                        color: Colors.white,
-                        fontSize: 16,
-                        height: 1.6,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+  Widget _buildImage() {
+    if (page.imageUrl != null) {
+      return SizedBox.expand(
+        child: CachedNetworkImage(
+          imageUrl: page.imageUrl!,
+          fit: BoxFit.cover,
+          placeholder: (_, __) => Container(
+            color: Colors.black,
+            child: const Center(
+              child: CircularProgressIndicator(color: Colors.white54),
+            ),
+          ),
+          errorWidget: (_, __, ___) => Container(
+            color: Colors.grey[900],
+            child:
+                const Icon(Icons.broken_image, size: 64, color: Colors.white24),
+          ),
+        ),
+      );
+    }
+    return Container(
+      color: Colors.grey[900],
+      child: const Center(
+        child: Icon(Icons.image, size: 64, color: Colors.white24),
+      ),
+    );
+  }
+
+  Widget _buildTextPanel() {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF0D0B1E),
+        border: Border(
+          left: BorderSide(
+            color: Colors.white.withValues(alpha: 0.08),
+            width: 0.5,
+          ),
+        ),
+      ),
+      child: page.textContent != null
+          ? SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(18, 80, 18, 80),
+              child: Text(
+                page.textContent!,
+                style: GoogleFonts.nunitoSans(
+                  color: Colors.white.withValues(alpha: 0.95),
+                  fontSize: 15,
+                  height: 1.75,
                 ),
               ),
-            ),
-          ),
-      ],
+            )
+          : const SizedBox.shrink(),
     );
   }
 }

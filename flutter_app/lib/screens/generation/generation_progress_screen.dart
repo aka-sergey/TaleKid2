@@ -214,30 +214,27 @@ class _GenerationProgressScreenState
                         ),
                         const SizedBox(height: 8),
 
-                        // Server status
-                        if (job.statusMessage != null)
-                          Text(
-                            job.statusMessage!,
-                            style: AppTheme.body(
-                              size: 15,
-                              color: AppTheme.textSecondary,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                        // Server status — hidden (no AI mentions in UI)
                         const SizedBox(height: 16),
 
-                        // Funny rotating message
+                        // Funny rotating message — one line, full width
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 500),
-                          child: Text(
-                            _funnyStatuses[_funnyStatusIndex],
+                          child: FittedBox(
                             key: ValueKey(_funnyStatusIndex),
-                            style: GoogleFonts.nunitoSans(
-                              fontSize: 14,
-                              fontStyle: FontStyle.italic,
-                              color: AppTheme.primaryLight,
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              _funnyStatuses[_funnyStatusIndex],
+                              maxLines: 1,
+                              softWrap: false,
+                              style: GoogleFonts.nunitoSans(
+                                fontSize: 70,
+                                fontStyle: FontStyle.italic,
+                                color: AppTheme.primaryLight,
+                                height: 1.2,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ),
                         const SizedBox(height: 24),
