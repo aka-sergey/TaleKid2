@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,28 +11,153 @@ import '../../config/theme.dart';
 // =============================================================================
 // Landing Screen
 // =============================================================================
-class LandingScreen extends StatelessWidget {
+class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
+
+  @override
+  State<LandingScreen> createState() => _LandingScreenState();
+}
+
+class _LandingScreenState extends State<LandingScreen> {
+  final _scrollCtrl = ScrollController();
+  bool _showStickyHeader = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollCtrl.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final show = _scrollCtrl.offset > 180;
+    if (show != _showStickyHeader) setState(() => _showStickyHeader = show);
+  }
+
+  @override
+  void dispose() {
+    _scrollCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isWide = screenWidth > 900;
 
+    final sections = [
+      _HeroSection(isWide: isWide),
+      _ShowcaseSection(isWide: isWide),
+      _StylesSection(isWide: isWide),
+      _HowItWorksSection(isWide: isWide),
+      _WhyTaleKidSection(isWide: isWide),
+      _ReviewsSection(isWide: isWide),
+      _CtaSection(isWide: isWide),
+      _Footer(isWide: isWide),
+    ];
+
+    // ── Web: unchanged behaviour ─────────────────────────────────────────────
+    if (isWide) {
+      return Scaffold(
+        backgroundColor: const Color(0xFF0C0A1D),
+        body: SingleChildScrollView(child: Column(children: sections)),
+      );
+    }
+
+    // ── Mobile: scroll tracked + sticky header overlay ───────────────────────
     return Scaffold(
       backgroundColor: const Color(0xFF0C0A1D),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _HeroSection(isWide: isWide),
-            _ShowcaseSection(isWide: isWide),
-            _StylesSection(isWide: isWide),
-            _HowItWorksSection(isWide: isWide),
-            _WhyTaleKidSection(isWide: isWide),
-            _ReviewsSection(isWide: isWide),
-            _CtaSection(isWide: isWide),
-            _Footer(isWide: isWide),
-          ],
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            controller: _scrollCtrl,
+            child: Column(children: sections),
+          ),
+          AnimatedSlide(
+            offset: _showStickyHeader ? Offset.zero : const Offset(0, -1),
+            duration: const Duration(milliseconds: 260),
+            curve: Curves.easeOutCubic,
+            child: AnimatedOpacity(
+              opacity: _showStickyHeader ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 200),
+              child: const _MobileStickyHeader(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Mobile Sticky Header — State B (appears after scroll threshold)
+// =============================================================================
+class _MobileStickyHeader extends StatelessWidget {
+  const _MobileStickyHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFF0D0B1E).withValues(alpha: 0.97),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          child: Row(
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: const Icon(Icons.auto_stories,
+                    color: AppTheme.accentColor, size: 17),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'TaleKID',
+                style: GoogleFonts.comfortaa(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800),
+              ),
+              const Spacer(),
+              TextButton(
+                onPressed: () => context.go(AppRoutes.login),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white70,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text('Войти',
+                    style: GoogleFonts.nunitoSans(
+                        fontWeight: FontWeight.w600, fontSize: 14)),
+              ),
+              const SizedBox(width: 6),
+              GestureDetector(
+                onTap: () => context.go(AppRoutes.register),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppTheme.accentColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    'Создать',
+                    style: GoogleFonts.nunitoSans(
+                      color: const Color(0xFF1C1917),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -52,7 +176,7 @@ class _HeroSection extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return SizedBox(
-      height: screenHeight,
+      height: isWide ? screenHeight : screenHeight * 0.90,
       width: double.infinity,
       child: Stack(
         fit: StackFit.expand,
@@ -248,29 +372,46 @@ class _HeroSection extends StatelessWidget {
             ),
           ),
 
-          // Scroll indicator at bottom
-          Positioned(
-            bottom: 24,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Листай вниз',
-                    style: GoogleFonts.nunitoSans(
-                      color: Colors.white.withValues(alpha: 0.5),
-                      fontSize: 12,
+          // Scroll indicator at bottom — web only
+          if (isWide)
+            Positioned(
+              bottom: 24,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Листай вниз',
+                      style: GoogleFonts.nunitoSans(
+                        color: Colors.white.withValues(alpha: 0.5),
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Icon(Icons.keyboard_arrow_down,
-                      color: Colors.white.withValues(alpha: 0.5), size: 24),
-                ],
+                    const SizedBox(height: 4),
+                    Icon(Icons.keyboard_arrow_down,
+                        color: Colors.white.withValues(alpha: 0.5), size: 24),
+                  ],
+                ),
               ),
             ),
-          ),
+
+          // Mobile bottom bridge — rounded white tab merging into showcase bg
+          if (!isWide)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 36,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFFFBF5),
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(28)),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -311,6 +452,8 @@ class _ShowcaseSection extends StatefulWidget {
 
 class _ShowcaseSectionState extends State<_ShowcaseSection> {
   late final ScrollController _scrollController;
+  late final PageController _pageController;
+  int _currentPage = 0;
 
   static final _stories = [
     _ShowcaseStoryData(
@@ -355,11 +498,13 @@ class _ShowcaseSectionState extends State<_ShowcaseSection> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    _pageController = PageController(viewportFraction: 0.88);
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -427,7 +572,7 @@ class _ShowcaseSectionState extends State<_ShowcaseSection> {
                     padding: EdgeInsets.symmetric(
                         horizontal: (screenWidth - cardWidth * 2 - 24) / 2),
                     itemCount: _stories.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 24),
+                    separatorBuilder: (ctx, i) => const SizedBox(width: 24),
                     itemBuilder: (_, i) => SizedBox(
                       width: cardWidth,
                       child: _ShowcaseCard(
@@ -463,21 +608,41 @@ class _ShowcaseSectionState extends State<_ShowcaseSection> {
                 ),
               ],
             )
-          else
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: _stories
-                    .map((s) => Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: _ShowcaseCard(
-                            data: s,
-                            isWide: widget.isWide,
-                          ),
-                        ))
-                    .toList(),
+          // ── Mobile: horizontal PageView carousel ──────────────────────────
+          else ...[
+            SizedBox(
+              height: 430,
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (i) => setState(() => _currentPage = i),
+                itemCount: _stories.length,
+                itemBuilder: (_, i) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: _ShowcaseCard(data: _stories[i], isWide: false),
+                ),
               ),
             ),
+            const SizedBox(height: 16),
+            // Page dots
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(_stories.length, (i) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 280),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: _currentPage == i ? 20 : 7,
+                  height: 7,
+                  decoration: BoxDecoration(
+                    color: _currentPage == i
+                        ? AppTheme.primaryColor
+                        : Colors.grey.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                );
+              }),
+            ),
+            const SizedBox(height: 8),
+          ],
         ],
       ),
     );
@@ -642,28 +807,48 @@ class _ShowcaseCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                // "Посмотреть" button
+                // "Листать сказку" button — outlined on web, light text+arrow on mobile
                 GestureDetector(
                   onTap: () => _openPreview(context, data),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          color: AppTheme.primaryColor, width: 1.5),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Листать сказку',
-                        style: GoogleFonts.nunitoSans(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: AppTheme.primaryColor,
+                  child: isWide
+                      ? Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                                color: AppTheme.primaryColor, width: 1.5),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Листать сказку',
+                              style: GoogleFonts.nunitoSans(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: AppTheme.primaryColor,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Листать сказку',
+                                style: GoogleFonts.nunitoSans(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.primaryColor,
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              Icon(Icons.arrow_forward_ios,
+                                  size: 12, color: AppTheme.primaryColor),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -1046,7 +1231,7 @@ class _StylesSection extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.symmetric(
-          horizontal: 24, vertical: isWide ? 48 : 36),
+          horizontal: 24, vertical: isWide ? 48 : 44),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1100),
@@ -1140,6 +1325,7 @@ class _StylesSection extends StatelessWidget {
                                 ),
 
                               // Dark overlay for text readability
+                              // Mobile: stronger scrim for stable contrast
                               if (hasImage)
                                 Container(
                                   decoration: BoxDecoration(
@@ -1148,9 +1334,12 @@ class _StylesSection extends StatelessWidget {
                                       end: Alignment.bottomCenter,
                                       colors: [
                                         Colors.transparent,
-                                        Colors.black.withValues(alpha: 0.7),
+                                        Colors.black.withValues(
+                                            alpha: isWide ? 0.70 : 0.82),
                                       ],
-                                      stops: const [0.3, 1.0],
+                                      stops: isWide
+                                          ? const [0.30, 1.0]
+                                          : const [0.15, 1.0],
                                     ),
                                   ),
                                 ),
@@ -1510,12 +1699,12 @@ class _FeatureCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 14,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -1674,12 +1863,12 @@ class _ReviewCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 14,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -1895,7 +2084,17 @@ class _Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: const Color(0xFF1C1917),
+      decoration: BoxDecoration(
+        gradient: isWide
+            ? null
+            : const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF0C0A1D), Color(0xFF1C1917)],
+                stops: [0.0, 0.35],
+              ),
+        color: isWide ? const Color(0xFF1C1917) : null,
+      ),
       padding: const EdgeInsets.all(24),
       child: Center(
         child: ConstrainedBox(
