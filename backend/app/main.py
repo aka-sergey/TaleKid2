@@ -199,6 +199,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://talekid2-production.up.railway.app",
+        "https://talekid.ai",
+        "https://www.talekid.ai",
     ],
     allow_origin_regex=r"http://localhost:\d+",  # Any localhost port for dev
     allow_credentials=True,
