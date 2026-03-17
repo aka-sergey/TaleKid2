@@ -745,83 +745,105 @@ class _TopOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    final row = Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: onBack,
+        ),
+        // Title — web only; on mobile the top bar is clean
+        if (kIsWeb)
+          Expanded(
+            child: Text(
+              story.displayTitle,
+              style: GoogleFonts.comfortaa(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          )
+        else
+          const Spacer(),
+        if (onLightbulb != null)
+          IconButton(
+            icon: const Icon(Icons.lightbulb, color: AppTheme.accentColor),
+            onPressed: onLightbulb,
+            tooltip: 'Узнать интересное!',
+          ),
+        if (onPdf != null)
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf, color: Colors.white70),
+            onPressed: onPdf,
+            tooltip: 'PDF',
+          ),
+        if (onShare != null)
+          IconButton(
+            icon: const Icon(Icons.share, color: Colors.white70),
+            onPressed: onShare,
+            tooltip: 'Поделиться',
+          ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.black.withValues(alpha: 0.5),
-                Colors.transparent,
-              ],
+            color: AppTheme.accentColor.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: AppTheme.accentColor.withValues(alpha: 0.5),
+              width: 0.5,
             ),
           ),
-          child: Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: onBack,
-              ),
-              Expanded(
-                child: Text(
-                  story.displayTitle,
-                  style: GoogleFonts.comfortaa(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              if (onLightbulb != null)
-                IconButton(
-                  icon: const Icon(Icons.lightbulb,
-                      color: AppTheme.accentColor),
-                  onPressed: onLightbulb,
-                  tooltip: 'Узнать интересное!',
-                ),
-              if (onPdf != null)
-                IconButton(
-                  icon:
-                      const Icon(Icons.picture_as_pdf, color: Colors.white70),
-                  onPressed: onPdf,
-                  tooltip: 'PDF',
-                ),
-              if (onShare != null)
-                IconButton(
-                  icon: const Icon(Icons.share, color: Colors.white70),
-                  onPressed: onShare,
-                  tooltip: 'Поделиться',
-                ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppTheme.accentColor.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: AppTheme.accentColor.withValues(alpha: 0.5),
-                    width: 0.5,
-                  ),
-                ),
-                child: Text(
-                  '${currentPage + 1} / $totalPages',
-                  style: GoogleFonts.nunitoSans(
-                    color: AppTheme.accentColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-            ],
+          child: Text(
+            '${currentPage + 1} / $totalPages',
+            style: GoogleFonts.nunitoSans(
+              color: AppTheme.accentColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
+        const SizedBox(width: 8),
+      ],
+    );
+
+    // Web: frosted glass blur bar
+    if (kIsWeb) {
+      return ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black.withValues(alpha: 0.5),
+                  Colors.transparent,
+                ],
+              ),
+            ),
+            child: row,
+          ),
+        ),
+      );
+    }
+
+    // Mobile: transparent gradient only — no blur, no title
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.black.withValues(alpha: 0.25),
+            Colors.transparent,
+          ],
+        ),
       ),
+      child: row,
     );
   }
 }
