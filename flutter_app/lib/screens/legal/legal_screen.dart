@@ -1,23 +1,72 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../config/app_config.dart';
 import '../../config/theme.dart';
+import 'legal_content.dart';
 
 /// Generic legal document screen.
-/// Opens the external URL and shows a placeholder while loading.
+/// - Web: renders Markdown text inline.
+/// - APK/mobile: opens the external URL in browser.
 class LegalScreen extends StatelessWidget {
   final String title;
   final String url;
+  final String markdownContent;
 
   const LegalScreen({
     super.key,
     required this.title,
     required this.url,
+    required this.markdownContent,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return _buildWebView(context);
+    } else {
+      return _buildMobileView(context);
+    }
+  }
+
+  Widget _buildWebView(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.open_in_new),
+            tooltip: 'Открыть в браузере',
+            onPressed: () => _openUrl(url),
+          ),
+        ],
+      ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Markdown(
+            data: markdownContent,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppTheme.spacingXl,
+              vertical: AppTheme.spacingLg,
+            ),
+            onTapLink: (text, href, title) {
+              if (href != null) _openUrl(href);
+            },
+            styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+              h1: Theme.of(context).textTheme.headlineMedium,
+              h2: Theme.of(context).textTheme.titleLarge,
+              p: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileView(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(title)),
       body: Center(
@@ -39,7 +88,7 @@ class LegalScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppTheme.spacingMd),
               Text(
-                'Документ доступен на сайте TaleKID',
+                'Документ опубликован на сайте TaleKID',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: AppTheme.textSecondary,
                     ),
@@ -66,7 +115,7 @@ class LegalScreen extends StatelessWidget {
   }
 }
 
-/// Convenience constructors for each legal page.
+/// Convenience wrappers for each legal document.
 class TermsScreen extends StatelessWidget {
   const TermsScreen({super.key});
 
@@ -75,6 +124,7 @@ class TermsScreen extends StatelessWidget {
     return const LegalScreen(
       title: 'Пользовательское соглашение',
       url: AppConfig.termsUrl,
+      markdownContent: kTermsMarkdown,
     );
   }
 }
@@ -87,6 +137,7 @@ class PrivacyScreen extends StatelessWidget {
     return const LegalScreen(
       title: 'Политика конфиденциальности',
       url: AppConfig.privacyUrl,
+      markdownContent: kPrivacyMarkdown,
     );
   }
 }
@@ -99,6 +150,7 @@ class ConsentScreen extends StatelessWidget {
     return const LegalScreen(
       title: 'Согласие на обработку данных',
       url: AppConfig.consentUrl,
+      markdownContent: kConsentMarkdown,
     );
   }
 }

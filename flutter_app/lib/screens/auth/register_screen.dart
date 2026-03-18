@@ -306,7 +306,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            // TODO: open terms URL
+                                            context.push(AppRoutes.terms);
                                           },
                                           child: Text(
                                             'соглашение',
@@ -327,7 +327,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            // TODO: open privacy URL
+                                            context.push(AppRoutes.privacy);
                                           },
                                           child: Text(
                                             'политику',
