@@ -340,6 +340,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                             ),
                                           ),
                                         ),
+                                        Text(
+                                          ' и ',
+                                          style: GoogleFonts.nunitoSans(
+                                              fontSize: 12,
+                                              color: AppTheme.textSecondary),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            context.push(AppRoutes.consent);
+                                          },
+                                          child: Text(
+                                            'согласие на обработку ПД',
+                                            style: GoogleFonts.nunitoSans(
+                                              fontSize: 12,
+                                              color: AppTheme.primaryColor,
+                                              fontWeight: FontWeight.w600,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
