@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -43,15 +44,17 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isWide = screenWidth > 900;
+    // true only in mobile browser (≤599 px) — desktop web and APK unaffected
+    final isMobileWeb = kIsWeb && screenWidth < 600;
 
     final sections = [
-      _HeroSection(isWide: isWide),
-      _ShowcaseSection(isWide: isWide),
-      _StylesSection(isWide: isWide),
-      _HowItWorksSection(isWide: isWide),
-      _WhyTaleKidSection(isWide: isWide),
-      _ReviewsSection(isWide: isWide),
-      _CtaSection(isWide: isWide),
+      _HeroSection(isWide: isWide, isMobileWeb: isMobileWeb),
+      _ShowcaseSection(isWide: isWide, isMobileWeb: isMobileWeb),
+      _StylesSection(isWide: isWide, isMobileWeb: isMobileWeb),
+      _HowItWorksSection(isWide: isWide, isMobileWeb: isMobileWeb),
+      _WhyTaleKidSection(isWide: isWide, isMobileWeb: isMobileWeb),
+      _ReviewsSection(isWide: isWide, isMobileWeb: isMobileWeb),
+      _CtaSection(isWide: isWide, isMobileWeb: isMobileWeb),
       _Footer(isWide: isWide),
     ];
 
@@ -169,7 +172,8 @@ class _MobileStickyHeader extends StatelessWidget {
 // =============================================================================
 class _HeroSection extends StatelessWidget {
   final bool isWide;
-  const _HeroSection({required this.isWide});
+  final bool isMobileWeb;
+  const _HeroSection({required this.isWide, required this.isMobileWeb});
 
   @override
   Widget build(BuildContext context) {
@@ -303,7 +307,7 @@ class _HeroSection extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.comfortaa(
                         color: Colors.white,
-                        fontSize: isWide ? 56 : 36,
+                        fontSize: isWide ? 56 : isMobileWeb ? 26 : 36,
                         fontWeight: FontWeight.w800,
                         height: 1.15,
                         shadows: [
@@ -321,7 +325,7 @@ class _HeroSection extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.nunitoSans(
                         color: Colors.white.withValues(alpha: 0.88),
-                        fontSize: isWide ? 20 : 16,
+                        fontSize: isWide ? 20 : isMobileWeb ? 14 : 16,
                         height: 1.5,
                         shadows: [
                           Shadow(
@@ -444,7 +448,8 @@ class _ShowcaseStoryData {
 
 class _ShowcaseSection extends StatefulWidget {
   final bool isWide;
-  const _ShowcaseSection({required this.isWide});
+  final bool isMobileWeb;
+  const _ShowcaseSection({required this.isWide, required this.isMobileWeb});
 
   @override
   State<_ShowcaseSection> createState() => _ShowcaseSectionState();
@@ -529,7 +534,7 @@ class _ShowcaseSectionState extends State<_ShowcaseSection> {
     return Container(
       width: double.infinity,
       color: const Color(0xFFFFFBF5),
-      padding: EdgeInsets.symmetric(vertical: widget.isWide ? 56 : 40),
+      padding: EdgeInsets.symmetric(vertical: widget.isWide ? 56 : widget.isMobileWeb ? 28 : 40),
       child: Column(
         children: [
           // Header
@@ -541,7 +546,7 @@ class _ShowcaseSectionState extends State<_ShowcaseSection> {
                   'Примеры сказок',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.comfortaa(
-                    fontSize: widget.isWide ? 40 : 28,
+                    fontSize: widget.isWide ? 40 : widget.isMobileWeb ? 22 : 28,
                     fontWeight: FontWeight.w800,
                     color: const Color(0xFF1C1917),
                   ),
@@ -1198,7 +1203,8 @@ class _DialogArrow extends StatelessWidget {
 // =============================================================================
 class _StylesSection extends StatelessWidget {
   final bool isWide;
-  const _StylesSection({required this.isWide});
+  final bool isMobileWeb;
+  const _StylesSection({required this.isWide, required this.isMobileWeb});
 
   static const _styles = [
     _StyleData('Акварель', Color(0xFF059669),
@@ -1231,7 +1237,7 @@ class _StylesSection extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.symmetric(
-          horizontal: 24, vertical: isWide ? 48 : 44),
+          horizontal: 24, vertical: isWide ? 48 : isMobileWeb ? 28 : 44),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1100),
@@ -1241,7 +1247,7 @@ class _StylesSection extends StatelessWidget {
                 'Множество стилей иллюстраций',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.comfortaa(
-                  fontSize: isWide ? 36 : 26,
+                  fontSize: isWide ? 36 : isMobileWeb ? 20 : 26,
                   fontWeight: FontWeight.w800,
                   color: const Color(0xFF1C1917),
                 ),
@@ -1406,7 +1412,8 @@ class _StyleData {
 // =============================================================================
 class _HowItWorksSection extends StatelessWidget {
   final bool isWide;
-  const _HowItWorksSection({required this.isWide});
+  final bool isMobileWeb;
+  const _HowItWorksSection({required this.isWide, required this.isMobileWeb});
 
   @override
   Widget build(BuildContext context) {
@@ -1420,7 +1427,7 @@ class _HowItWorksSection extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.symmetric(
-          horizontal: 24, vertical: isWide ? 56 : 40),
+          horizontal: 24, vertical: isWide ? 56 : isMobileWeb ? 28 : 40),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1000),
@@ -1430,12 +1437,12 @@ class _HowItWorksSection extends StatelessWidget {
                 'Три шага до волшебства',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.comfortaa(
-                  fontSize: isWide ? 36 : 28,
+                  fontSize: isWide ? 36 : isMobileWeb ? 22 : 28,
                   fontWeight: FontWeight.w800,
                   color: const Color(0xFF1C1917),
                 ),
               ),
-              SizedBox(height: isWide ? 40 : 28),
+              SizedBox(height: isWide ? 40 : isMobileWeb ? 20 : 28),
               if (isWide)
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1613,7 +1620,8 @@ class _StepCard extends StatelessWidget {
 // =============================================================================
 class _WhyTaleKidSection extends StatelessWidget {
   final bool isWide;
-  const _WhyTaleKidSection({required this.isWide});
+  final bool isMobileWeb;
+  const _WhyTaleKidSection({required this.isWide, required this.isMobileWeb});
 
   static const _features = [
     _FeatureData(Icons.face, Color(0xFF6366F1), 'Ребёнок — главный герой',
@@ -1636,7 +1644,7 @@ class _WhyTaleKidSection extends StatelessWidget {
       width: double.infinity,
       color: const Color(0xFFFDF8F3),
       padding: EdgeInsets.symmetric(
-          horizontal: 24, vertical: isWide ? 56 : 40),
+          horizontal: 24, vertical: isWide ? 56 : isMobileWeb ? 28 : 40),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1000),
@@ -1646,12 +1654,12 @@ class _WhyTaleKidSection extends StatelessWidget {
                 'Больше чем просто сказка',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.comfortaa(
-                  fontSize: isWide ? 36 : 28,
+                  fontSize: isWide ? 36 : isMobileWeb ? 22 : 28,
                   fontWeight: FontWeight.w800,
                   color: const Color(0xFF1C1917),
                 ),
               ),
-              SizedBox(height: isWide ? 36 : 24),
+              SizedBox(height: isWide ? 36 : isMobileWeb ? 16 : 24),
               if (isWide)
                 Wrap(
                   spacing: 16,
@@ -1754,7 +1762,8 @@ class _FeatureCard extends StatelessWidget {
 // =============================================================================
 class _ReviewsSection extends StatelessWidget {
   final bool isWide;
-  const _ReviewsSection({required this.isWide});
+  final bool isMobileWeb;
+  const _ReviewsSection({required this.isWide, required this.isMobileWeb});
 
   static const _reviews = [
     _ReviewData(
@@ -1792,7 +1801,7 @@ class _ReviewsSection extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.symmetric(
-          horizontal: 24, vertical: isWide ? 56 : 40),
+          horizontal: 24, vertical: isWide ? 56 : isMobileWeb ? 28 : 40),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1000),
@@ -1802,12 +1811,12 @@ class _ReviewsSection extends StatelessWidget {
                 'Родители в восторге',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.comfortaa(
-                  fontSize: isWide ? 36 : 28,
+                  fontSize: isWide ? 36 : isMobileWeb ? 22 : 28,
                   fontWeight: FontWeight.w800,
                   color: const Color(0xFF1C1917),
                 ),
               ),
-              SizedBox(height: isWide ? 36 : 24),
+              SizedBox(height: isWide ? 36 : isMobileWeb ? 16 : 24),
               if (isWide)
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1941,7 +1950,8 @@ class _ReviewCard extends StatelessWidget {
 // =============================================================================
 class _CtaSection extends StatelessWidget {
   final bool isWide;
-  const _CtaSection({required this.isWide});
+  final bool isMobileWeb;
+  const _CtaSection({required this.isWide, required this.isMobileWeb});
 
   @override
   Widget build(BuildContext context) {
@@ -2001,7 +2011,7 @@ class _CtaSection extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.comfortaa(
                         color: Colors.white,
-                        fontSize: isWide ? 44 : 30,
+                        fontSize: isWide ? 44 : isMobileWeb ? 22 : 30,
                         fontWeight: FontWeight.w800,
                         height: 1.15,
                         shadows: [
