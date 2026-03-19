@@ -126,11 +126,13 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
   String _userContext = ''; // personal context to weave into the story
   int _pageCount = 10;
   int _readingDuration = 10;
+  bool _agreedToConsent = false; // required on step 3
 
   bool get _canProceedStep1 => _selectedCharacterIds.isNotEmpty;
   bool get _canProceedStep2 =>
       _selectedGenreId != null && _selectedWorldId != null;
-  bool get _canSubmit => _canProceedStep1 && _canProceedStep2;
+  bool get _canSubmit =>
+      _canProceedStep1 && _canProceedStep2 && _agreedToConsent;
 
   void _nextStep() {
     if (_currentStep < 2) setState(() => _currentStep++);
@@ -265,10 +267,12 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
           pageCount: _pageCount,
           readingDuration: _readingDuration,
           userContext: _userContext,
+          agreedToConsent: _agreedToConsent,
           onPageCountChanged: (v) => setState(() => _pageCount = v),
           onReadingDurationChanged: (v) =>
               setState(() => _readingDuration = v),
           onUserContextChanged: (v) => setState(() => _userContext = v),
+          onConsentChanged: (v) => setState(() => _agreedToConsent = v),
         );
       default:
         return const SizedBox.shrink();
@@ -773,18 +777,22 @@ class _Step3Format extends StatefulWidget {
   final int pageCount;
   final int readingDuration;
   final String userContext;
+  final bool agreedToConsent;
   final ValueChanged<int> onPageCountChanged;
   final ValueChanged<int> onReadingDurationChanged;
   final ValueChanged<String> onUserContextChanged;
+  final ValueChanged<bool> onConsentChanged;
 
   const _Step3Format({
     super.key,
     required this.pageCount,
     required this.readingDuration,
     required this.userContext,
+    required this.agreedToConsent,
     required this.onPageCountChanged,
     required this.onReadingDurationChanged,
     required this.onUserContextChanged,
+    required this.onConsentChanged,
   });
 
   @override
@@ -902,7 +910,13 @@ class _Step3FormatState extends State<_Step3Format> {
               ),
               // Параметры сказки — скрыты (visibility: hidden)
               const SizedBox.shrink(),
-              const SizedBox(height: 32),
+              const SizedBox(height: 28),
+              // ── Consent checkbox ─────────────────────────────────────
+              _ConsentCheckbox(
+                value: widget.agreedToConsent,
+                onChanged: widget.onConsentChanged,
+              ),
+              const SizedBox(height: 16),
             ],
           ),
         ),
@@ -1633,6 +1647,100 @@ class _BottomNav extends StatelessWidget {
               ),
             ),
           ]),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Consent Checkbox ────────────────────────────────────────────────────
+
+class _ConsentCheckbox extends StatelessWidget {
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  const _ConsentCheckbox({required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onChanged(!value),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: value
+              ? AppTheme.primaryColor.withValues(alpha: 0.10)
+              : AppTheme.fillColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: value ? AppTheme.primaryColor : AppTheme.borderColor,
+            width: value ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Custom checkbox
+            Container(
+              width: 20,
+              height: 20,
+              margin: const EdgeInsets.only(top: 1),
+              decoration: BoxDecoration(
+                color: value ? AppTheme.primaryColor : Colors.transparent,
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(
+                  color:
+                      value ? AppTheme.primaryColor : AppTheme.textSecondary,
+                  width: 1.5,
+                ),
+              ),
+              child: value
+                  ? const Icon(Icons.check, size: 13, color: Colors.white)
+                  : null,
+            ),
+            const SizedBox(width: 12),
+            // Label
+            Expanded(
+              child: Wrap(
+                children: [
+                  Text(
+                    'Я являюсь законным представителем ребёнка, '
+                    'ознакомлен(а) с ',
+                    style: AppTheme.body(size: 13, color: AppTheme.textSecondary),
+                  ),
+                  GestureDetector(
+                    onTap: () => context.push(AppRoutes.privacy),
+                    child: Text(
+                      'Политикой конфиденциальности',
+                      style: AppTheme.body(
+                        size: 13,
+                        color: AppTheme.primaryLight,
+                        weight: FontWeight.w600,
+                      ).copyWith(decoration: TextDecoration.underline),
+                    ),
+                  ),
+                  Text(
+                    ' и даю ',
+                    style: AppTheme.body(size: 13, color: AppTheme.textSecondary),
+                  ),
+                  GestureDetector(
+                    onTap: () => context.push(AppRoutes.consent),
+                    child: Text(
+                      'Согласие на обработку персональных данных',
+                      style: AppTheme.body(
+                        size: 13,
+                        color: AppTheme.primaryLight,
+                        weight: FontWeight.w600,
+                      ).copyWith(decoration: TextDecoration.underline),
+                    ),
+                  ),
+                  Text(
+                    '.',
+                    style: AppTheme.body(size: 13, color: AppTheme.textSecondary),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

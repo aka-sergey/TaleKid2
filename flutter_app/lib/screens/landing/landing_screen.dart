@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../config/landing_assets.dart';
 import '../../config/router.dart';
 import '../../config/theme.dart';
+import '../../widgets/cookie_banner.dart';
 
 // =============================================================================
 // Landing Screen
@@ -58,15 +59,23 @@ class _LandingScreenState extends State<LandingScreen> {
       _Footer(isWide: isWide),
     ];
 
-    // ── Web: unchanged behaviour ─────────────────────────────────────────────
+    // ── Wide (desktop web) ───────────────────────────────────────────────────
     if (isWide) {
       return Scaffold(
         backgroundColor: const Color(0xFF0C0A1D),
-        body: SingleChildScrollView(child: Column(children: sections)),
+        body: Stack(
+          children: [
+            SingleChildScrollView(child: Column(children: sections)),
+            const Align(
+              alignment: Alignment.bottomCenter,
+              child: CookieBanner(),
+            ),
+          ],
+        ),
       );
     }
 
-    // ── Mobile: scroll tracked + sticky header overlay ───────────────────────
+    // ── Narrow (mobile web + APK): scroll tracked + sticky header overlay ────
     return Scaffold(
       backgroundColor: const Color(0xFF0C0A1D),
       body: Stack(
@@ -84,6 +93,10 @@ class _LandingScreenState extends State<LandingScreen> {
               duration: const Duration(milliseconds: 200),
               child: const _MobileStickyHeader(),
             ),
+          ),
+          const Align(
+            alignment: Alignment.bottomCenter,
+            child: CookieBanner(),
           ),
         ],
       ),
@@ -2084,6 +2097,33 @@ class _CtaSection extends StatelessWidget {
 }
 
 // =============================================================================
+// Footer helper widget — contact item
+// =============================================================================
+class _FooterContact extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _FooterContact({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: Colors.white.withValues(alpha: 0.35)),
+        const SizedBox(width: 5),
+        Text(
+          label,
+          style: GoogleFonts.nunitoSans(
+            fontSize: 12,
+            color: Colors.white.withValues(alpha: 0.40),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// =============================================================================
 // SECTION 7: FOOTER
 // =============================================================================
 class _Footer extends StatelessWidget {
@@ -2136,6 +2176,7 @@ class _Footer extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
+              // ── Legal links ──────────────────────────────────────────
               Wrap(
                 spacing: 12,
                 runSpacing: 8,
@@ -2161,6 +2202,27 @@ class _Footer extends StatelessWidget {
                         TextButton.styleFrom(foregroundColor: Colors.white60),
                     child: Text('Согласие на обработку',
                         style: GoogleFonts.nunitoSans(fontSize: 13)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              // ── Contacts ─────────────────────────────────────────────
+              Wrap(
+                spacing: 16,
+                runSpacing: 4,
+                alignment: WrapAlignment.center,
+                children: [
+                  _FooterContact(
+                    icon: Icons.email_outlined,
+                    label: 'support@talekid.ai',
+                  ),
+                  _FooterContact(
+                    icon: Icons.telegram,
+                    label: '@talekid_bot',
+                  ),
+                  _FooterContact(
+                    icon: Icons.campaign_outlined,
+                    label: '@talekid_ai',
                   ),
                 ],
               ),
