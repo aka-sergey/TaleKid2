@@ -1424,8 +1424,8 @@ class _StyleSelector extends StatelessWidget {
         'Тёплый стиль классических иллюстраций', '$_baseUrl/classic-book.png'),
     _StyleData('pixar', 'Pixar',
         'Объёмный стиль сказочных мультфильмов', '$_baseUrl/pixar.png'),
-    _StyleData('whimsical', 'Волшебная фантазия',
-        'Сказочная атмосфера с магическими деталями', '$_baseUrl/whimsical.png'),
+    _StyleData('painterly', 'Живописная сказка',
+        'Кинематографичные иллюстрации в стиле масляной живописи', '$_baseUrl/painterly.png'),
   ];
 
   const _StyleSelector({required this.selected, required this.onChanged});

@@ -60,7 +60,7 @@ class EducationalContentType(str, Enum):
 
 # ── Illustration style slugs and their AI prompt descriptions ────────────────
 VALID_ILLUSTRATION_STYLES: frozenset[str] = frozenset({
-    "watercolor", "disney", "anime", "classic-book", "pixar", "whimsical",
+    "watercolor", "disney", "anime", "classic-book", "pixar", "painterly",
 })
 
 STYLE_PROMPTS: dict[str, str] = {
@@ -85,9 +85,9 @@ STYLE_PROMPTS: dict[str, str] = {
         "rounded expressive characters, rich detailed environments, "
         "warm cinematic color grading, photorealistic textures with cartoon appeal"
     ),
-    "whimsical": (
-        "whimsical fantasy illustration, ethereal dreamlike atmosphere, "
-        "loose painterly strokes, magical glowing elements, soft color gradients, "
-        "enchanted storybook feel with intricate imaginative details"
+    "painterly": (
+        "lush cinematic painterly storybook illustration, rich oil-painting textures, "
+        "dramatic warm lighting, deep saturated colors, masterful brushwork, "
+        "epic fairy tale atmosphere, cinematic composition, detailed scenic backgrounds"
     ),
 }

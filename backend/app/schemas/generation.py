@@ -21,7 +21,7 @@ class GenerationCreateRequest(BaseModel):
     reading_duration_minutes: int = Field(10, ge=5, le=30)
     illustration_style: Optional[str] = Field(
         None,
-        description="One of: watercolor, disney, anime, classic-book, pixar, whimsical",
+        description="One of: watercolor, disney, anime, classic-book, pixar, painterly",
     )
     user_context: Optional[str] = Field(
         None,
