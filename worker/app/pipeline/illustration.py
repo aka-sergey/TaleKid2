@@ -162,12 +162,17 @@ class IllustrationStage(PipelineStage):
             return None
 
         try:
+            from shared.constants import STYLE_PRESET_MAP
+            style_preset = STYLE_PRESET_MAP.get(
+                ctx.illustration_style or "", "ILLUSTRATION"
+            )
             # Generate image using Leonardo image ID for character reference
             image_urls = await self.image_svc.generate_image(
                 prompt=image_prompt,
                 character_ref_id=character_ref_id,
                 width=1024,
                 height=768,
+                style_preset=style_preset,
             )
 
             if not image_urls:

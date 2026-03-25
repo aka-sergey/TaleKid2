@@ -60,34 +60,34 @@ class EducationalContentType(str, Enum):
 
 # ── Illustration style slugs and their AI prompt descriptions ────────────────
 VALID_ILLUSTRATION_STYLES: frozenset[str] = frozenset({
-    "watercolor", "disney", "anime", "classic-book", "pixar", "painterly",
+    "classic-book", "painterly", "pixar", "anime",
 })
 
+# Maps style slug → Leonardo presetStyle value
+STYLE_PRESET_MAP: dict[str, str] = {
+    "classic-book": "ILLUSTRATION",
+    "painterly":    "CINEMATIC",
+    "pixar":        "3D RENDER",
+    "anime":        "ANIME_GENERAL",
+}
+
 STYLE_PROMPTS: dict[str, str] = {
-    "watercolor": (
-        "warm watercolor children's book illustration, soft flowing colors, "
-        "delicate brushstrokes, gentle painted textures, impressionistic feel"
-    ),
-    "disney": (
-        "classic Disney animation style, magical atmosphere, expressive large eyes, "
-        "fluid movement, bold clean outlines, cinematic storybook lighting"
-    ),
-    "anime": (
-        "Japanese anime illustration style, large expressive eyes, clean line art, "
-        "vibrant saturated colors, detailed hand-drawn backgrounds"
-    ),
     "classic-book": (
         "classic children's book illustration, warm pencil and ink sketches "
         "with watercolor washes, vintage storybook feel, cozy detailed scenes"
+    ),
+    "painterly": (
+        "lush cinematic painterly storybook illustration, rich oil-painting textures, "
+        "dramatic warm lighting, deep saturated colors, masterful brushwork, "
+        "epic fairy tale atmosphere, cinematic composition, detailed scenic backgrounds"
     ),
     "pixar": (
         "Pixar-style stylized 3D fairytale look, soft volumetric lighting, "
         "rounded expressive characters, rich detailed environments, "
         "warm cinematic color grading, photorealistic textures with cartoon appeal"
     ),
-    "painterly": (
-        "lush cinematic painterly storybook illustration, rich oil-painting textures, "
-        "dramatic warm lighting, deep saturated colors, masterful brushwork, "
-        "epic fairy tale atmosphere, cinematic composition, detailed scenic backgrounds"
+    "anime": (
+        "Japanese anime fantasy illustration style, large expressive eyes, clean line art, "
+        "vibrant saturated colors, detailed hand-drawn magical backgrounds"
     ),
 }

@@ -122,7 +122,7 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
   int? _selectedGenreId;
   int? _selectedWorldId;
   int? _selectedBaseTaleId;
-  String _illustrationStyle = 'watercolor'; // default
+  String _illustrationStyle = 'classic-book'; // default
   String _userContext = ''; // personal context to weave into the story
   int _pageCount = 10;
   int _readingDuration = 10;
@@ -1414,18 +1414,14 @@ class _StyleSelector extends StatelessWidget {
       '/landing-assets/styles';
 
   static const _styles = [
-    _StyleData('watercolor', 'Акварель',
-        'Мягкие цвета и нежные переходы', '$_baseUrl/watercolor.png'),
-    _StyleData('disney', 'Disney',
-        'Волшебство в стиле Disney', '$_baseUrl/disney.png'),
-    _StyleData('anime', 'Аниме',
-        'Японский стиль с большими глазами', '$_baseUrl/anime.png'),
     _StyleData('classic-book', 'Книжная классика',
         'Тёплый стиль классических иллюстраций', '$_baseUrl/classic-book.png'),
-    _StyleData('pixar', 'Pixar',
-        'Объёмный стиль сказочных мультфильмов', '$_baseUrl/pixar.png'),
-    _StyleData('painterly', 'Живописная сказка',
-        'Кинематографичные иллюстрации в стиле масляной живописи', '$_baseUrl/painterly.png'),
+    _StyleData('painterly', 'Кинематографичная живопись',
+        'Сочные кинематографичные иллюстрации', '$_baseUrl/painterly.png'),
+    _StyleData('pixar', 'Объёмный мультяшный 3D',
+        'Pixar-стиль сказочных мультфильмов', '$_baseUrl/pixar.png'),
+    _StyleData('anime', 'Аниме-фэнтези',
+        'Японский аниме стиль с магическими фонами', '$_baseUrl/anime.png'),
   ];
 
   const _StyleSelector({required this.selected, required this.onChanged});
