@@ -1416,19 +1416,16 @@ class _StyleSelector extends StatelessWidget {
   static const _styles = [
     _StyleData('watercolor', 'Акварель',
         'Мягкие цвета и нежные переходы', '$_baseUrl/watercolor.png'),
-    _StyleData('3d-pixar', '3D Анимация',
-        'Яркий мир как в мультфильмах Pixar', '$_baseUrl/3d-pixar.png'),
     _StyleData('disney', 'Disney',
         'Волшебство в стиле Disney', '$_baseUrl/disney.png'),
-    _StyleData('comic', 'Комикс',
-        'Динамичные сцены с яркими контурами', '$_baseUrl/comic.png'),
     _StyleData('anime', 'Аниме',
         'Японский стиль с большими глазами', '$_baseUrl/anime.png'),
-    _StyleData('pastel', 'Пастель',
-        'Нежные пастельные тона', '$_baseUrl/pastel.png'),
     _StyleData('classic-book', 'Книжная классика',
         'Тёплый стиль классических иллюстраций', '$_baseUrl/classic-book.png'),
-    // pop-art hidden from UI
+    _StyleData('pixar', 'Pixar',
+        'Объёмный стиль сказочных мультфильмов', '$_baseUrl/pixar.png'),
+    _StyleData('whimsical', 'Волшебная фантазия',
+        'Сказочная атмосфера с магическими деталями', '$_baseUrl/whimsical.png'),
   ];
 
   const _StyleSelector({required this.selected, required this.onChanged});
