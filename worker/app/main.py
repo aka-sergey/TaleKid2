@@ -32,6 +32,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import UUID
 
+import langsmith
+
 # Make shared package importable
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
@@ -122,43 +124,57 @@ async def run_pipeline(payload: dict, redis: RedisService) -> None:
                 payload=payload,
             )
 
-            # ---- Stage 1: Photo Analysis (5% → 15%) ----
-            stage1 = PhotoAnalysisStage(db, redis, openai_svc)
-            await stage1.execute(ctx)
+            # All OpenAI calls inside this block are grouped under one LangSmith trace.
+            with langsmith.trace(
+                name="generation_pipeline",
+                run_type="chain",
+                metadata={
+                    "job_id": job_id,
+                    "story_id": story_id,
+                    "user_id": user_id,
+                },
+                tags=[f"job:{job_id[:8]}", f"story:{story_id[:8]}"],
+            ):
+                # ---- Stage 1: Photo Analysis (5% → 15%) ----
+                with langsmith.trace(name="1_photo_analysis", run_type="chain"):
+                    stage1 = PhotoAnalysisStage(db, redis, openai_svc)
+                    await stage1.execute(ctx)
 
-            # ---- Stage 2: Story Bible (15% → 30%) ----
-            stage2 = StoryBibleStage(db, redis, openai_svc)
-            await stage2.execute(ctx)
+                # ---- Stage 2: Story Bible (15% → 30%) ----
+                with langsmith.trace(name="2_story_bible", run_type="chain"):
+                    stage2 = StoryBibleStage(db, redis, openai_svc)
+                    await stage2.execute(ctx)
 
-            # ---- Stage 3+4: Text + Scene Generation (30% → 65%, 2-wave parallel) ----
-            # Wave 1: pages 1-3 in parallel; Wave 2: pages 4-N with Wave-1 context.
-            # Each page generates text + scene description in a single GPT call.
-            stage3 = TextGenerationStage(db, redis, openai_svc)
-            await stage3.execute(ctx)
+                # ---- Stage 3+4: Text + Scene Generation (30% → 65%, 2-wave parallel) ----
+                with langsmith.trace(name="3_text_generation", run_type="chain"):
+                    stage3 = TextGenerationStage(db, redis, openai_svc)
+                    await stage3.execute(ctx)
 
-            # Stage 4 is now a no-op (ctx.scenes already populated above).
-            stage4 = SceneDecompositionStage(db, redis, openai_svc)
-            await stage4.execute(ctx)
+                # Stage 4 is now a no-op (ctx.scenes already populated above).
+                stage4 = SceneDecompositionStage(db, redis, openai_svc)
+                await stage4.execute(ctx)
 
-            # ---- Stage 5: Character References (65% → 70%) ----
-            stage5 = CharacterReferencesStage(db, redis, image_svc, s3_svc)
-            await stage5.execute(ctx)
+                # ---- Stage 5: Character References (65% → 70%) ----
+                stage5 = CharacterReferencesStage(db, redis, image_svc, s3_svc)
+                await stage5.execute(ctx)
 
-            # ---- Stage 6: Illustration Generation (70% → 90%) ----
-            stage6 = IllustrationStage(db, redis, image_svc, s3_svc)
-            await stage6.execute(ctx)
+                # ---- Stage 6: Illustration Generation (70% → 90%) ----
+                stage6 = IllustrationStage(db, redis, image_svc, s3_svc)
+                await stage6.execute(ctx)
 
-            # ---- Stage 7: Educational Content (90% → 93%) ----
-            stage7 = EducationStage(db, redis, openai_svc)
-            await stage7.execute(ctx)
+                # ---- Stage 7: Educational Content (90% → 93%) ----
+                with langsmith.trace(name="7_education", run_type="chain"):
+                    stage7 = EducationStage(db, redis, openai_svc)
+                    await stage7.execute(ctx)
 
-            # ---- Stage 8: Title Generation (93% → 96%) ----
-            stage8 = TitleGenerationStage(db, redis, openai_svc)
-            await stage8.execute(ctx)
+                # ---- Stage 8: Title Generation (93% → 96%) ----
+                with langsmith.trace(name="8_title_generation", run_type="chain"):
+                    stage8 = TitleGenerationStage(db, redis, openai_svc)
+                    await stage8.execute(ctx)
 
-            # ---- Stage 9: Finalization + Push (96% → 100%) ----
-            stage9 = FinalizationStage(db, redis)
-            await stage9.execute(ctx)
+                # ---- Stage 9: Finalization + Push (96% → 100%) ----
+                stage9 = FinalizationStage(db, redis)
+                await stage9.execute(ctx)
 
             # Mark as completed
             await db.execute(

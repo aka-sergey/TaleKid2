@@ -1,6 +1,7 @@
 import logging
 
 from openai import AsyncOpenAI
+from langsmith import wrappers as ls_wrappers
 
 from app.config import get_settings
 
@@ -10,7 +11,10 @@ logger = logging.getLogger("worker.openai")
 class OpenAIService:
     def __init__(self):
         settings = get_settings()
-        self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+        raw_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+        # Wrap with LangSmith — automatically traces all calls
+        # (prompts, responses, tokens, latency). No-op if LANGCHAIN_TRACING_V2 is not set.
+        self.client = ls_wrappers.wrap_openai(raw_client)
         self.model = settings.OPENAI_MODEL
         self.vision_model = settings.OPENAI_VISION_MODEL
         self.max_tokens = settings.OPENAI_MAX_TOKENS
